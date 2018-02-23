@@ -1,0 +1,5 @@
+﻿{
+  "Database": {
+    "ConnectionString": "Server=localhost;Port=5432;Database=vision_20180208;User Id=postgres;Password=macaraig"
+  }
+}
