@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
+using diagnostics = System.Diagnostics;
 
-namespace DeskTiny.Tools
+namespace DeskTiny.System.Diagnostics
 {
-    public static class Diagnostics
+    public static class Debug
     {
-        public static void WriteDebug(string title, string details)
+        public static void WriteLine(string title, string details)
         {
-            Debug.WriteLine(
+            diagnostics.Debug.WriteLine(
                 $"------------------------------" + Environment.NewLine +
                 $"[{title}]:" + Environment.NewLine +
                 details + Environment.NewLine +

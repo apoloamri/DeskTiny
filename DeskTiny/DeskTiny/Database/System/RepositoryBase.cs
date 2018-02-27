@@ -1,10 +1,29 @@
-﻿namespace DeskTiny.Database
+﻿using System.Linq;
+
+namespace DeskTiny.Database.System
 {
     public class RepositoryBase<T> where T : class, new()
     {
         protected string TableName { get; set; }
-        
-        public RepositoryBase(string tableName) { this.TableName = tableName; }
+
+        protected string GetWhere()
+        {
+            string where = $"WHERE ";
+
+            if (this.QueryConditions.MultiWhere?.Count() > 0)
+            {
+                where += string.Join(" ", this.QueryConditions.MultiWhere);
+            }
+
+            where +=
+                !string.IsNullOrEmpty(this.QueryConditions.Where) ?
+                this.QueryConditions.Where :
+                string.Empty;
+
+            return where;
+        }
+
+        protected RepositoryBase(string tableName) { this.TableName = tableName; }
 
         public QueryConditions QueryConditions { get; set; } = new QueryConditions();
 

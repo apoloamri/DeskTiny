@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using DeskTiny.Tools;
 
-namespace DeskTiny.Database
+namespace DeskTiny.Database.System
 {
     public class Query : Connect
     {
@@ -50,7 +50,7 @@ namespace DeskTiny.Database
         {
             this.NpgsqlConnection.Open();
 
-            var scalar = Convert.ToInt32(this.NpgsqlCommand.ExecuteScalar());
+            var scalar = Convert.ToInt64(this.NpgsqlCommand.ExecuteScalar());
             
             this.NpgsqlConnection.Close();
 

@@ -1,9 +1,11 @@
-﻿using Npgsql;
+﻿using DeskTiny.System;
+using DeskTiny.System.Diagnostics;
+using DeskTiny.Tools;
+using Npgsql;
 using System;
 using System.Collections.Generic;
-using DeskTiny.Tools;
 
-namespace DeskTiny.Database
+namespace DeskTiny.Database.System
 {
     public class Connect
     {
@@ -15,16 +17,16 @@ namespace DeskTiny.Database
         {
             if (string.IsNullOrEmpty(sql))
             {
-                throw new Exception("SQL not provided.");
+                throw new CustomException("SQL not provided.");
             }
 
             string connectionString = ConfigurationBuilder.ConnectionString;
             
-            Diagnostics.WriteDebug("Connecting database", connectionString);
+            Debug.WriteLine("Connecting database", connectionString);
             
             this.NpgsqlConnection = new NpgsqlConnection(connectionString);
 
-            Diagnostics.WriteDebug("Executing query", sql);
+            Debug.WriteLine("Executing query", sql);
 
             this.NpgsqlCommand = new NpgsqlCommand(sql, NpgsqlConnection);
 
@@ -33,7 +35,7 @@ namespace DeskTiny.Database
                 this.NpgsqlCommand.Parameters.Add(new NpgsqlParameter(parameter.Key, parameter.Value));
             }
 
-            Diagnostics.WriteDebug("SQL Parameters", string.Join(Environment.NewLine, parameters));
+            Debug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
         }
     }
 }
