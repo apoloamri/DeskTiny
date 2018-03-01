@@ -1,12 +1,15 @@
-﻿using DeskTiny.Database.System;
-using DeskTiny.Database.Tables;
+﻿using DeskTiny.Database.Tables;
 
 namespace DeskTiny.Database
 {
-    public static class Schemas
+    public class Schemas
     {
-        public static Repository<Affiliate> Affiliate() => new Repository<Affiliate>("affiliate_t");
-        public static Repository<Accesses> Accesses() => new Repository<Accesses>("accesses");
-        public static Repository<Clients> Clients() => new Repository<Clients>("clients");
+        public static Schema<T> CreateTable<T>(string tableName) where T : Entity, new()
+        {
+            return new Schema<T>(tableName);
+        }
+
+        public static Schema<Accesses> Accesses => CreateTable<Accesses>("accesses");
+        public static Schema<Clients> Clients => CreateTable<Clients>("clients");
     }
 }

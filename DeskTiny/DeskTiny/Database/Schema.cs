@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using DeskTiny.Database.System;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace DeskTiny.Database.System
+namespace DeskTiny.Database
 {
-    public class Repository<Entity> : RepositoryBase<Entity> where Entity : class, new()
+    public class Schema<T> : SchemaBase<T> where T : Entity, new()
     {
-        public Repository(string tableName) : base(tableName)
+        public Schema(string tableName) : base(tableName)
         {
-            this.Select = new Select<Entity> {
+            this.Select = new Select<T> {
                 TableName = tableName,
-                Repository = this
+                Schema = this
             };
         }
 
@@ -36,7 +37,7 @@ namespace DeskTiny.Database.System
                 );
         }
 
-        public Select<Entity> Select { get; set; }
+        public Select<T> Select { get; set; }
         
         public virtual long Count()
         {
@@ -57,9 +58,14 @@ namespace DeskTiny.Database.System
         {
             this.NonQueryConditions.CreateColumnParameters(this.Entity);
 
+            if (this.NonQueryConditions.Parameters.Count() == 0)
+            {
+                return 0;
+            }
+
             var nonQuery = new NonQuery(
                 $"{Operations.INSERT} INTO {this.TableName}({this.NonQueryConditions.ColumnNames}) VALUES({this.NonQueryConditions.ColumnParameters})",
-                this.NonQueryConditions.EntityDictionary
+                this.NonQueryConditions.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.INSERT);
@@ -69,9 +75,14 @@ namespace DeskTiny.Database.System
         {
             this.NonQueryConditions.CreateColumnParameters(this.Entity);
 
+            if (this.NonQueryConditions.Parameters.Count() == 0)
+            {
+                return 0;
+            }
+
             var nonQuery = new NonQuery(
                 $"{Operations.UPDATE} {this.TableName} SET {this.NonQueryConditions.ColumnValues} {this.GetWhere()}",
-                this.NonQueryConditions.EntityDictionary.Union(this.QueryConditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
+                this.NonQueryConditions.Parameters.Union(this.QueryConditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.UPDATE);
@@ -81,26 +92,18 @@ namespace DeskTiny.Database.System
         {
             var nonQuery = new NonQuery(
                 $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()}",
-                this.NonQueryConditions.EntityDictionary.Union(this.QueryConditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
+                this.QueryConditions.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.DELETE);
         }
     }
-
-    public class Select<Entity> where Entity : class, new()
+    
+    public class Select<T> where T : Entity, new()
     {
         internal string TableName { get; set; }
-        internal Repository<Entity> Repository { get; set; }
-        
-        public List<Dictionary<string, object>> Dictionaries()
-        {
-            return this.Repository.SelectBase().GetListDictionary();
-        }
-
-        public List<Entity> Entities()
-        {
-            return this.Repository.SelectBase().GetListEntity<Entity>();
-        }
+        internal Schema<T> Schema { get; set; }
+        public List<Dictionary<string, object>> Dictionaries => this.Schema.SelectBase().GetListDictionary();
+        public List<T> Entities => this.Schema.SelectBase().GetListEntity<T>();
     }
 }

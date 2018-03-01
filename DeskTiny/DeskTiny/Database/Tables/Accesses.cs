@@ -1,6 +1,6 @@
 ﻿namespace DeskTiny.Database.Tables
 {
-    public class Accesses
+    public class Accesses : Entity
     {
         public long? id { get; set; }
         public string token { get; set; }

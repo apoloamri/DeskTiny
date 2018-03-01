@@ -16,6 +16,6 @@
     "ConnectionLifeTime": ""
   },
   "API": {
-
+    "ApiUrl": "api/v1/[controller]"
   }
 }

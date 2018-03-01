@@ -31,11 +31,16 @@ namespace DeskTiny.Database.System
         internal Dictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>();
 
         public void AddWhere(
-            string column, 
+            object column, 
             Condition condition, 
             object value, 
             Operator? oper = null)
         {
+            if (value == null)
+            {
+                return;
+            }
+            
             string columnParameter = this.OptionalName + column + this.ColumnCount;
             string statement = $"{column} {this.GetCondition(condition)} :{columnParameter} ";
 

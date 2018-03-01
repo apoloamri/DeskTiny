@@ -50,5 +50,12 @@ namespace DeskTiny.Tools
                     (!string.IsNullOrEmpty(connectionLifeTime) ? $"ConnectionLifeTime={connectionLifeTime};" : string.Empty);
             }
         }
+
+        public static class API
+        {
+            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("API");
+
+            public static string ApiUrl => ConfigurationSection.GetSection("ApiUrl").Value;
+        }
     }
 }

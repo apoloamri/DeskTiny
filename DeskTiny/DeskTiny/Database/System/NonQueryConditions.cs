@@ -11,7 +11,7 @@ namespace DeskTiny.Database.System
         internal string ColumnNames { get; set; }
         internal string ColumnParameters { get; set; }
         internal string ColumnValues { get; set; }
-        internal Dictionary<string, object> EntityDictionary { get; set; } = new Dictionary<string, object>();
+        internal Dictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>();
 
         internal void CreateColumnParameters(object entity)
         {
@@ -25,7 +25,7 @@ namespace DeskTiny.Database.System
             this.ColumnNames = string.Join(", ", properties?.Select(x => x.Name));
             this.ColumnParameters = string.Join(", ", properties?.Select(x => $":{this.OptionalName}{x.Name}"));
             this.ColumnValues = string.Join(", ", properties?.Select(x => { return $"{x.Name} = :{this.OptionalName}{x.Name}"; }));
-            this.EntityDictionary =
+            this.Parameters =
                 DictionaryClassConverter.ClassToDictionary(entity, this.OptionalName)
                 .Where(x => x.Value != null)
                 .ToDictionary(x => x.Key, x => x.Value);

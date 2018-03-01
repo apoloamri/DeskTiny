@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="desktiny_v1.0.0.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Library\Tables\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -15,6 +20,10 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="desktiny_v1.0.0.json" />
   </ItemGroup>
 
   <ItemGroup>
