@@ -9,7 +9,7 @@ namespace DeskTiny.Tools
         {
             var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("desktiny_v1.0.0.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("dtconfig.1.0.0.json", optional: true, reloadOnChange: true);
 
             return configurationBuilder.Build();
         }

@@ -1,0 +1,21 @@
+﻿{
+  "Database": {
+    "Server": "localhost",
+    "Port": "5432",
+    "Database": "desktiny",
+    "UserId": "postgres",
+    "Password": "macaraig",
+    "CommandTimeout": "",
+    "Timeout": "",
+    "Protocol": "",
+    "SSL": "",
+    "SslMode": "",
+    "Pooling": "",
+    "MinPoolSize": "",
+    "MaxPoolSize": "",
+    "ConnectionLifeTime": ""
+  },
+  "API": {
+
+  }
+}
