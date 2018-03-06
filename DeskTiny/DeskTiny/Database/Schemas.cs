@@ -11,5 +11,6 @@ namespace DeskTiny.Database
 
         public static Schema<Accesses> Accesses => CreateTable<Accesses>("accesses");
         public static Schema<Clients> Clients => CreateTable<Clients>("clients");
+        public static Schema<Sessions> Sessions => CreateTable<Sessions>("sessions");
     }
 }

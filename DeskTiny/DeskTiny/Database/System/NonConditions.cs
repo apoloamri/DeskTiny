@@ -5,7 +5,7 @@ using DeskTiny.Tools;
 
 namespace DeskTiny.Database.System
 {
-    public class NonQueryConditions
+    public class NonConditions
     {
         private string OptionalName = "nq_";
         internal string ColumnNames { get; set; }

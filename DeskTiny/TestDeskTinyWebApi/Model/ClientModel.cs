@@ -1,4 +1,4 @@
-﻿using DeskTiny.Database;
+﻿using DeskTiny.Database.Enums;
 using DeskTiny.Mvc.CustomAttributes;
 using System.Collections.Generic;
 using TestDekTinyWebApi.Library;
@@ -31,7 +31,7 @@ namespace TestDekTinyWebApi.Model
             client.Entity.id = this.Id;
             client.Entity.username = this.Username;
             client.Entity.password = this.Password;
-            client.QueryConditions.AddWhere(nameof(client.Entity.id), Condition.Equal, this.Id);
+            client.Conditions.AddWhere(nameof(client.Entity.id), Condition.Equal, this.Id);
 
             client.Update();
         }

@@ -1,4 +1,5 @@
 ﻿using DeskTiny.Database.System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,23 +18,23 @@ namespace DeskTiny.Database
         internal Query SelectBase()
         {
             string columns =
-                this.QueryConditions.Columns?.Count() > 0 ?
-                string.Join(", ", this.QueryConditions.Columns) :
+                this.Conditions.Columns?.Count() > 0 ?
+                string.Join(", ", this.Conditions.Columns) :
                 "*";
             
             string order =
-                this.QueryConditions.Order.HasValue ?
-                $"ORDER BY {this.QueryConditions.Order}" :
+                this.Conditions.Order.HasValue ?
+                $"ORDER BY {this.Conditions.Order}" :
                 string.Empty;
 
             string limit =
-                this.QueryConditions.Limit.HasValue ?
-                $"LIMIT {this.QueryConditions.Limit}" :
+                this.Conditions.Limit.HasValue ?
+                $"LIMIT {this.Conditions.Limit}" :
                 string.Empty;
 
             return new Query(
                 $"{Operations.SELECT} {columns} FROM {TableName} {this.GetWhere()} {order} {limit};",
-                this.QueryConditions.Parameters
+                this.Conditions.Parameters
                 );
         }
 
@@ -42,13 +43,13 @@ namespace DeskTiny.Database
         public virtual long Count()
         {
             string columns =
-                this.QueryConditions.Columns?.Count() > 0 ?
-                string.Join(", ", this.QueryConditions.Columns) :
+                this.Conditions.Columns?.Count() > 0 ?
+                string.Join(", ", this.Conditions.Columns) :
                 "*";
             
             var query = new Query(
                 $"{Operations.SELECT} COUNT({columns}) FROM {TableName} {this.GetWhere()};",
-                this.QueryConditions.Parameters
+                this.Conditions.Parameters
                 );
 
             return query.GetScalar();
@@ -56,16 +57,21 @@ namespace DeskTiny.Database
 
         public int Insert()
         {
-            this.NonQueryConditions.CreateColumnParameters(this.Entity);
+            this.NonConditions.CreateColumnParameters(this.Entity);
 
-            if (this.NonQueryConditions.Parameters.Count() == 0)
+            if (this.NonConditions.Parameters.Count() == 0)
             {
                 return 0;
             }
 
+            if (!this.Entity.insert_time.HasValue)
+            {
+                this.Entity.insert_time = DateTime.Now;
+            }
+
             var nonQuery = new NonQuery(
-                $"{Operations.INSERT} INTO {this.TableName}({this.NonQueryConditions.ColumnNames}) VALUES({this.NonQueryConditions.ColumnParameters})",
-                this.NonQueryConditions.Parameters
+                $"{Operations.INSERT} INTO {this.TableName}({this.NonConditions.ColumnNames}) VALUES({this.NonConditions.ColumnParameters})",
+                this.NonConditions.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.INSERT);
@@ -73,16 +79,16 @@ namespace DeskTiny.Database
 
         public int Update()
         {
-            this.NonQueryConditions.CreateColumnParameters(this.Entity);
+            this.NonConditions.CreateColumnParameters(this.Entity);
 
-            if (this.NonQueryConditions.Parameters.Count() == 0)
+            if (this.NonConditions.Parameters.Count() == 0)
             {
                 return 0;
             }
 
             var nonQuery = new NonQuery(
-                $"{Operations.UPDATE} {this.TableName} SET {this.NonQueryConditions.ColumnValues} {this.GetWhere()}",
-                this.NonQueryConditions.Parameters.Union(this.QueryConditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
+                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere()}",
+                this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.UPDATE);
@@ -92,7 +98,7 @@ namespace DeskTiny.Database
         {
             var nonQuery = new NonQuery(
                 $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()}",
-                this.QueryConditions.Parameters
+                this.Conditions.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.DELETE);
@@ -104,6 +110,8 @@ namespace DeskTiny.Database
         internal string TableName { get; set; }
         internal Schema<T> Schema { get; set; }
         public List<Dictionary<string, object>> Dictionaries => this.Schema.SelectBase().GetListDictionary();
+        public Dictionary<string, object> Dictionary => this.Schema.SelectBase().GetListDictionary().FirstOrDefault();
         public List<T> Entities => this.Schema.SelectBase().GetListEntity<T>();
+        public T Entity => this.Schema.SelectBase().GetListEntity<T>().FirstOrDefault();
     }
 }

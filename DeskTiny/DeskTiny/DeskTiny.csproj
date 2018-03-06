@@ -9,8 +9,4 @@
     <PackageReference Include="Npgsql" Version="3.2.6" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="WebApi\" />
-  </ItemGroup>
-
 </Project>

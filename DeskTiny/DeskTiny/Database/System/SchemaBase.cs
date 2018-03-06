@@ -10,14 +10,14 @@ namespace DeskTiny.Database.System
         {
             string where = string.Empty;
 
-            if (this.QueryConditions.MultiWhere?.Count() > 0)
+            if (this.Conditions.MultiWhere?.Count() > 0)
             {
-                where += string.Join(" ", this.QueryConditions.MultiWhere);
+                where += string.Join(" ", this.Conditions.MultiWhere);
             }
 
             where +=
-                !string.IsNullOrEmpty(this.QueryConditions.Where) ?
-                this.QueryConditions.Where :
+                !string.IsNullOrEmpty(this.Conditions.Where) ?
+                this.Conditions.Where :
                 string.Empty;
 
             return 
@@ -28,13 +28,13 @@ namespace DeskTiny.Database.System
 
         protected SchemaBase(string tableName) { this.TableName = tableName; }
 
-        public QueryConditions QueryConditions { get; set; } = new QueryConditions();
+        public Conditions Conditions { get; set; } = new Conditions();
 
-        public void ClearQueryConditions() { this.QueryConditions = new QueryConditions(); }
+        public void ClearConditions() { this.Conditions = new Conditions(); }
         
-        protected NonQueryConditions NonQueryConditions { get; set; } = new NonQueryConditions();
+        protected NonConditions NonConditions { get; set; } = new NonConditions();
 
-        public void ClearNonQueryConditions() { this.NonQueryConditions = new NonQueryConditions(); }
+        protected void ClearNonConditions() { this.NonConditions = new NonConditions(); }
 
         public T Entity { get; set; } = new T();
         

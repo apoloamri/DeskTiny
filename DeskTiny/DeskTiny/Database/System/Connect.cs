@@ -20,7 +20,7 @@ namespace DeskTiny.Database.System
                 throw new CustomException("SQL not provided.");
             }
 
-            string connectionString = ConfigurationBuilder.ConnectionString;
+            string connectionString = ConfigurationBuilder.Database.ConnectionString;
             
             Debug.WriteLine("Connecting database", connectionString);
             

@@ -1,6 +1,6 @@
 ﻿using DeskTiny.Mvc.CustomAttributes;
+using DeskTiny.Mvc.System;
 using DeskTiny.Tools;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,32 +10,61 @@ using System.Text;
 
 namespace DeskTiny.Mvc
 {
-    public class CustomController : Controller
+    public class CustomController : BaseController
     {
-        public Model GetJson<Model>()
+        public void BindModel<Model>(ref Model model)
         {
-            Type type = typeof(Model);
+            var dictionary = new Dictionary<string, object>();
 
+            Type type = typeof(Model);
             object obj = Activator.CreateInstance(type);
             
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var request = reader.ReadToEndAsync();
                 var jsonObject = (JObject)JsonConvert.DeserializeObject(request.Result);
-
-                var dictionary = new Dictionary<string, object>();
-
-                foreach (var token in jsonObject)
-                {
-                    dictionary.Add(token.Key, token.Value.ToObject<object>());
-                }
                 
-                return DictionaryClassConverter.DictionaryToClass<Model>(dictionary);
+                if (jsonObject != null)
+                {
+                    foreach (var token in jsonObject)
+                    {
+                        var property = obj.GetType().GetProperty(token.Key);
+
+                        foreach (var attribute in property.GetCustomAttributes(false))
+                        {
+                            if (attribute is InputAttribute)
+                            {
+                                dictionary.Add(token.Key, token.Value.ToObject<object>());
+                            }
+                        }
+                    }
+                }
             }
+
+            foreach (var property in model.GetType().GetProperties())
+            {
+                if (!dictionary.ContainsKey(property.Name))
+                {
+                    foreach (var attribute in property.GetCustomAttributes(false))
+                    {
+                        if (attribute is InputAttribute)
+                        {
+                            dictionary.Add(property.Name, property.GetValue(model));
+                        }
+                    }
+                }
+            }
+
+            model = DictionaryClassConverter.DictionaryToClass<Model>(dictionary);
         }
         
-        public override JsonResult Json(object data)
+        public void BuildJson(object data)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return;
+            }
+
             var jsonDictionary = new Dictionary<string, object>();
             var properties = data.GetType().GetProperties();
             
@@ -45,20 +74,27 @@ namespace DeskTiny.Mvc
                 
                 foreach (var attribute in attributes)
                 {
-                    var customAttribute = attribute as JsonResultAttribute;
-
-                    if (customAttribute != null)
+                    if (attribute is JsonResultAttribute)
                     {
-                        jsonDictionary.Add(property.Name, property.GetValue(data));
+                        var value = property.GetValue(data);
+
+                        if (value != null)
+                        {
+                            jsonDictionary.Add(property.Name, value);
+                        }
                     }
                 }
             }
-
-            var jsonSettings = new JsonSerializerSettings();
-
-            jsonSettings.Formatting = Formatting.Indented;
             
-            return base.Json(jsonDictionary, jsonSettings);
+            this.JsonResult = base.Json(jsonDictionary, this.jsonSettings);
+        }
+
+        public void Validate()
+        {
+            if (!this.ModelState.IsValid)
+            {
+                this.JsonResult = base.Json("problem occured", jsonSettings);
+            }
         }
     }
 }

@@ -1,8 +1,12 @@
-﻿namespace DeskTiny.Database.Tables
+﻿using System;
+
+namespace DeskTiny.Database.Tables
 {
     public class Clients : Entity
     {
-        public long? id { get; set; }
+        public override int? id { get; set; }
+        public override DateTime? insert_time { get; set; }
+
         public string username { get; set; }
         public string password { get; set; }
     }

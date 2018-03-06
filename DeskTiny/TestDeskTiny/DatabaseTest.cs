@@ -1,4 +1,5 @@
 ﻿using DeskTiny.Database;
+using DeskTiny.Database.Enums;
 
 namespace TestDeskTiny
 {
@@ -16,12 +17,12 @@ namespace TestDeskTiny
         {
             var clients = Schemas.Clients;
 
-            clients.QueryConditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
-            clients.QueryConditions.AddLimit(5);
+            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
+            clients.Conditions.AddLimit(5);
             
             var result = clients.Select.Dictionaries;
 
-            clients.ClearQueryConditions();
+            clients.ClearConditions();
         }
 
         private static void TestInsert()
@@ -39,7 +40,7 @@ namespace TestDeskTiny
             var clients = Schemas.Clients;
 
             clients.Entity.password = "updated";
-            clients.QueryConditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
+            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
             clients.Update();
             clients.ClearEntity();
         }
@@ -48,7 +49,7 @@ namespace TestDeskTiny
         {
             var clients = Schemas.Clients;
 
-            clients.QueryConditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
+            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
             clients.Delete();
             clients.ClearEntity();
         }

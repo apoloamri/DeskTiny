@@ -16,6 +16,6 @@
     "ConnectionLifeTime": ""
   },
   "API": {
-
+    "SessionTimeOut": 60
   }
 }

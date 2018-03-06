@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DeskTiny.Database
 {
-    public class Entity
+    public abstract class Entity
     {
+        public abstract int? id { get; set; }
+        public abstract DateTime? insert_time { get; set; }
+
         public void OverwriteWithModel(object model)
         {
 

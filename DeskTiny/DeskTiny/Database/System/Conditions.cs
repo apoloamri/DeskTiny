@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using DeskTiny.Database.Enums;
+using System.Collections.Generic;
 
 namespace DeskTiny.Database.System
 {
-    public class QueryConditions
+    public class Conditions
     {
         internal string[] Columns { get; set; }
 
