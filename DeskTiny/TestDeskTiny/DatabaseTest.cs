@@ -1,5 +1,5 @@
-﻿using DeskTiny.Database;
-using DeskTiny.Database.Enums;
+﻿using DTCore.Database;
+using DTCore.Database.Enums;
 
 namespace TestDeskTiny
 {
@@ -17,10 +17,10 @@ namespace TestDeskTiny
         {
             var clients = Schemas.Clients;
 
-            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
+            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1", Operator.OR);
             clients.Conditions.AddLimit(5);
             
-            var result = clients.Select.Dictionaries;
+            var result = clients.Select.Entities;
 
             clients.ClearConditions();
         }

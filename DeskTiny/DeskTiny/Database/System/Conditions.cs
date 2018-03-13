@@ -1,18 +1,19 @@
-﻿using DeskTiny.Database.Enums;
+﻿using DTCore.Database.Enums;
+using DTCore.Tools.Extensions;
 using System.Collections.Generic;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class Conditions
     {
-        internal string[] Columns { get; set; }
+        public string[] Columns { get; private set; }
 
         public void AddColumns(params string[] columns)
         {
             this.Columns = columns;
         }
 
-        internal int? Limit { get; set; }
+        public int? Limit { get; private set; }
 
         public void AddLimit(int limit)
         {
@@ -26,10 +27,10 @@ namespace DeskTiny.Database.System
         
         private int ColumnCount = 0;
         private string OptionalName = "q_";
-        internal Order? Order { get; set; }
-        internal string Where { get; set; } = "";
-        internal List<string> MultiWhere { get; set; } = new List<string>();
-        internal Dictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>();
+        public Order? Order { get; private set; }
+        public string Where { get; private set; } = "";
+        public List<string> MultiWhere { get; private set; } = new List<string>();
+        public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
         public void AddWhere(
             object column, 
@@ -81,7 +82,9 @@ namespace DeskTiny.Database.System
                 case Condition.LesserEqual:
                     return "<=";
                 case Condition.LIKE:
-                    return "LIKE";
+                    return Condition.LIKE.GetString();
+                case Condition.NOT_LIKE:
+                    return Condition.NOT_LIKE.GetString();
                 default:
                     return "=";
             }

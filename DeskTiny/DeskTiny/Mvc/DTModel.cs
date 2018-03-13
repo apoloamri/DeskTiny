@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskTiny.Mvc
+namespace DTCore.Mvc
 {
-    public class CustomModel
+    public class DTModel
     {
-        public CustomModel()
+        public DTModel()
         {
 
         }

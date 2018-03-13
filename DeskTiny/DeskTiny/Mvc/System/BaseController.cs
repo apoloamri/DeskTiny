@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace DeskTiny.Mvc.System
+namespace DTCore.Mvc.System
 {
     public class BaseController : Controller
     {

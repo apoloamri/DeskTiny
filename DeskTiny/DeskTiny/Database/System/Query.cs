@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using DeskTiny.Tools;
+using DTCore.Tools;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class Query : Connect
     {

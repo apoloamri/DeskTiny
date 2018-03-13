@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace DeskTiny.Tools
+namespace DTCore.Tools
 {
     public static class KeyGenerator
     {

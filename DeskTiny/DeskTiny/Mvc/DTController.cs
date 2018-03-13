@@ -1,16 +1,17 @@
-﻿using DeskTiny.Mvc.CustomAttributes;
-using DeskTiny.Mvc.System;
-using DeskTiny.Tools;
+﻿using DTCore.Mvc.Attributes;
+using DTCore.Mvc.System;
+using DTCore.Tools;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
-namespace DeskTiny.Mvc
+namespace DTCore.Mvc
 {
-    public class CustomController : BaseController
+    public class DTController : BaseController
     {
         public void BindModel<Model>(ref Model model)
         {
@@ -32,7 +33,7 @@ namespace DeskTiny.Mvc
 
                         foreach (var attribute in property.GetCustomAttributes(false))
                         {
-                            if (attribute is InputAttribute)
+                            if (attribute is Input)
                             {
                                 dictionary.Add(token.Key, token.Value.ToObject<object>());
                             }
@@ -47,7 +48,7 @@ namespace DeskTiny.Mvc
                 {
                     foreach (var attribute in property.GetCustomAttributes(false))
                     {
-                        if (attribute is InputAttribute)
+                        if (attribute is Input)
                         {
                             dictionary.Add(property.Name, property.GetValue(model));
                         }
@@ -74,13 +75,19 @@ namespace DeskTiny.Mvc
                 
                 foreach (var attribute in attributes)
                 {
-                    if (attribute is JsonResultAttribute)
+                    if (attribute is JsonResult)
                     {
                         var value = property.GetValue(data);
 
                         if (value != null)
                         {
-                            jsonDictionary.Add(property.Name, value);
+                            string propertyName = 
+                                string.Concat(property.Name.Select((x, i) => 
+                                    i > 0 && char.IsUpper(x) ? 
+                                    "_" + x.ToString()?.ToLower() : 
+                                    x.ToString().ToLower()));
+
+                            jsonDictionary.Add(propertyName, value);
                         }
                     }
                 }

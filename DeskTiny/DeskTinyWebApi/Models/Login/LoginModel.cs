@@ -1,11 +1,11 @@
-﻿using DeskTiny.Database.Enums;
-using DeskTiny.Mvc.CustomAttributes;
-using DeskTiny.WebApi;
-using DeskTinyWebApi.DT.Database;
+﻿using DeskTinyWebApi.DT.Database;
+using DTCore.Database.Enums;
+using DTCore.Mvc.Attributes;
+using DTCore.WebApi;
 
 namespace DeskTinyWebApi.Models.Login
 {
-    public class LoginModel : DeskTiny.Mvc.CustomModel
+    public class LoginModel : DTCore.Mvc.DTModel
     {
         [Input]
         public string Username { get; set; }

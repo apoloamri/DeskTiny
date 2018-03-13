@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace DeskTiny.Tools
+namespace DTCore.Tools
 {
     public static class DictionaryClassConverter
     {

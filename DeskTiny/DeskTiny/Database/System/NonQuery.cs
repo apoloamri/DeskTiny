@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DTCore.System.Diagnostics;
+using DTCore.Tools.Extensions;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class NonQuery : Connect
     {
@@ -16,7 +17,7 @@ namespace DeskTiny.Database.System
 
             this.NpgsqlConnection.Close();
 
-            Debug.WriteLine($"{operation} count", Convert.ToString(executionCount));
+            Debug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
 
             return executionCount;
         }

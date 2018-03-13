@@ -1,7 +1,7 @@
-﻿using DeskTiny.System.Diagnostics;
+﻿using DTCore.System.Diagnostics;
 using System;
 
-namespace DeskTiny.System
+namespace DTCore.System
 {
     public class CustomException : Exception
     {

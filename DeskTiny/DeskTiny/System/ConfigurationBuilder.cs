@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace DeskTiny.Tools
+namespace DTCore.Tools
 {
     public static class ConfigurationBuilder
     {

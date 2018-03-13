@@ -1,9 +1,10 @@
-﻿using DeskTiny.Database.System;
+﻿using DTCore.Database.System;
+using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DeskTiny.Database
+namespace DTCore.Database
 {
     public class Schema<T> : SchemaBase<T> where T : Entity, new()
     {
@@ -15,7 +16,7 @@ namespace DeskTiny.Database
             };
         }
 
-        internal Query SelectBase()
+        public Query SelectBase()
         {
             string columns =
                 this.Conditions.Columns?.Count() > 0 ?
@@ -70,7 +71,7 @@ namespace DeskTiny.Database
             }
 
             var nonQuery = new NonQuery(
-                $"{Operations.INSERT} INTO {this.TableName}({this.NonConditions.ColumnNames}) VALUES({this.NonConditions.ColumnParameters})",
+                $"{Operations.INSERT} INTO {this.TableName}({this.NonConditions.ColumnNames}) VALUES({this.NonConditions.ColumnParameters});",
                 this.NonConditions.Parameters
                 );
 
@@ -87,7 +88,7 @@ namespace DeskTiny.Database
             }
 
             var nonQuery = new NonQuery(
-                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere()}",
+                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere()};",
                 this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
                 );
 
@@ -97,11 +98,51 @@ namespace DeskTiny.Database
         public int Delete()
         {
             var nonQuery = new NonQuery(
-                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()}",
+                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()};",
                 this.Conditions.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.DELETE);
+        }
+
+        public int CreateTable()
+        {
+            var nonQuery = new NonQuery(
+                $"{Operations.CREATE_TABLE.GetString()} {this.TableName} ({this.CreateColumns()});",
+                this.NonConditions.Parameters
+                );
+
+            return nonQuery.ExecuteNonQuery(Operations.CREATE_TABLE);
+        }
+
+        public int AddTableColumns(params string[] columns)
+        {
+            if (columns.Count() == 0)
+            {
+                return 0;
+            }
+            
+            var nonQuery = new NonQuery(
+                $"{Operations.ALTER_TABLE.GetString()} {this.TableName} {this.AddColumns(columns)};",
+                this.NonConditions.Parameters
+                );
+            
+            return nonQuery.ExecuteNonQuery(Operations.ALTER_TABLE); ;
+        }
+
+        public int DropTableColumns(params string[] columns)
+        {
+            if (columns.Count() == 0)
+            {
+                return 0;
+            }
+
+            var nonQuery = new NonQuery(
+                $"{Operations.ALTER_TABLE.GetString()} {this.TableName} {this.DropColumns(columns)};",
+                this.NonConditions.Parameters
+                );
+
+            return nonQuery.ExecuteNonQuery(Operations.ALTER_TABLE); ;
         }
     }
     

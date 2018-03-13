@@ -2,8 +2,8 @@
 
 namespace DeskTinyWebApi.DT.Database
 {
-    public class Schemas : DeskTiny.Database.Schemas
+    public class Schemas : DTCore.Database.Schemas
     {
-        public static DeskTiny.Database.Schema<Members> Members => CreateTable<Members>("members");
+        public static DTCore.Database.Schema<Members> Members => CreateTable<Members>("members");
     }
 }

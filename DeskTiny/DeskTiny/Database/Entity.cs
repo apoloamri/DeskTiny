@@ -1,15 +1,29 @@
-﻿using System;
+﻿using DTCore.Database.Attributes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace DeskTiny.Database
+namespace DTCore.Database
 {
     public abstract class Entity
     {
-        public abstract int? id { get; set; }
-        public abstract DateTime? insert_time { get; set; }
+        [Serial]
+        [PrimaryKey]
+        [NotNull(true)]
+        public virtual int? id { get; set; }
+
+        [NotNull(true)]
+        [Default(DefaultFunctions.Now)]
+        public virtual DateTime? insert_time { get; set; }
+
+        public List<string> GetColumns()
+        {
+            return this.GetType().GetProperties().Select(x => x.Name).ToList();
+        }
 
         public void OverwriteWithModel(object model)
         {
-
+            //To do...
         }
     }
 }

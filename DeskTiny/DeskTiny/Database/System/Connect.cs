@@ -1,11 +1,11 @@
-﻿using DeskTiny.System;
-using DeskTiny.System.Diagnostics;
-using DeskTiny.Tools;
+﻿using DTCore.System;
+using DTCore.System.Diagnostics;
+using DTCore.Tools;
 using Npgsql;
 using System;
 using System.Collections.Generic;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class Connect
     {

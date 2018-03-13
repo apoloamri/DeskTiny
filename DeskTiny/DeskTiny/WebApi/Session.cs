@@ -1,9 +1,9 @@
-﻿using DeskTiny.Database;
-using DeskTiny.Database.Enums;
-using DeskTiny.Tools;
+﻿using DTCore.Database;
+using DTCore.Database.Enums;
+using DTCore.Tools;
 using System;
 
-namespace DeskTiny.WebApi
+namespace DTCore.WebApi
 {
     public static class Session
     {
