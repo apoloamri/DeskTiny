@@ -1,14 +1,15 @@
-﻿using System;
+﻿using DTCore.Mvc.Attributes;
+using DTCore.Mvc.Enums;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace DTCore.Mvc
 {
-    public class DTModel
+    public abstract class DTModel
     {
-        public DTModel()
-        {
-
-        }
+        public abstract void HandleModel();
+        public abstract void MapModel();
+        public abstract IEnumerable<ValidationResult> Validate();
+        public HttpMethod HttpMethod { get; set; }
     }
 }

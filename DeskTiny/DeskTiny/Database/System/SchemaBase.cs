@@ -188,11 +188,7 @@ namespace DTCore.Database.System
                 if (attribute is NotNull)
                 {
                     var attr = attribute as NotNull;
-
-                    if (attr.IsNotNull == true)
-                    {
-                        attributeString += $"{ColumnAttributes.NOT_NULL.GetString()} ";
-                    }
+                    attributeString += $"{ColumnAttributes.NOT_NULL.GetString()} ";
                 }
 
                 if (attribute is Default)

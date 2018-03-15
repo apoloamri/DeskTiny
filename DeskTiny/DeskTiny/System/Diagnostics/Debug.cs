@@ -1,5 +1,5 @@
 ﻿using System;
-using diagnostics = System.Diagnostics;
+using SystemDiagnostics = System.Diagnostics;
 
 namespace DTCore.System.Diagnostics
 {
@@ -7,7 +7,7 @@ namespace DTCore.System.Diagnostics
     {
         public static void WriteLine(string title, string details)
         {
-            diagnostics.Debug.WriteLine(
+            SystemDiagnostics.Debug.WriteLine(
                 $"------------------------------{Environment.NewLine}" + 
                 $"[{title}]:{Environment.NewLine}" +
                 $"{details}{Environment.NewLine}" +

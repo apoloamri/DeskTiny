@@ -9,10 +9,10 @@ namespace DTCore.Database
     {
         [Serial]
         [PrimaryKey]
-        [NotNull(true)]
+        [NotNull]
         public virtual int? id { get; set; }
 
-        [NotNull(true)]
+        [NotNull]
         [Default(DefaultFunctions.Now)]
         public virtual DateTime? insert_time { get; set; }
 

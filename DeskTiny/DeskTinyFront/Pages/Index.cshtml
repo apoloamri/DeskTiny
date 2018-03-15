@@ -1,0 +1,64 @@
+﻿@page
+@model DeskTinyFront.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+<script>
+    $(function () {
+        new Vue({
+            el: '#login',
+
+            data: {
+                username: "",
+                password: "",
+            },
+
+            methods: {
+                ApiLogin: function () {
+                    var that = this;
+
+                    $.ajax({
+                        url: apiUrl + "login",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            "username": that.username,
+                            "password": that.password
+                        },
+                        success: function (data) {
+                            var session_key = data.session_key;
+                            
+                            if (session_key) {
+                                setCookie("username", that.username, 1);
+                                setCookie("session_key", session_key, 1);
+
+                                window.location = "/Home";
+                            }
+                            else {
+                                alert("Invalid username or password.");
+                            }
+                        }
+                    });
+                }
+            },
+
+            created: function () {
+                checkLogin(true);
+            }
+        });
+    });
+</script>
+
+<div class="glass center-absolute window-400-550" id="login">
+    <h3>DTCore</h3>
+    <div class="center-relative circle-150-150"></div>
+    <center>
+        <p>Welcome!</p>
+        <input type="text" placeholder="Email" class="text-390" v-model="username" />
+        <input type="password" placeholder="Password" class="text-390" v-model="password" />
+        <button v-on:click="ApiLogin()">Login</button><br />
+        <a href="/Member/Register">Register new user</a>
+    </center>
+</div>

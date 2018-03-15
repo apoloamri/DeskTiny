@@ -4,10 +4,10 @@ namespace DeskTinyWebApi.DT.Database.Tables
 {
     public class Members : DTCore.Database.Entity
     {
-        [NotNull(true)]
+        [NotNull]
         public string username { get; set; }
 
-        [NotNull(true)]
+        [NotNull]
         public string password { get; set; }
     }
 }

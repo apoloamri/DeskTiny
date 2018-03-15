@@ -2,7 +2,7 @@
 
 namespace DTCore.Mvc.Attributes
 {
-    public class JsonResult : Attribute { }
+    public class JsonProperty : Attribute { }
 
     public class Input : Attribute { }
 }

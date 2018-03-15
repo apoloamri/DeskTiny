@@ -1,4 +1,6 @@
-﻿using DeskTinyWebApi.DT.Database;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using DeskTinyWebApi.DT.Database;
 using DTCore.Database.Enums;
 using DTCore.Mvc.Attributes;
 using DTCore.WebApi;
@@ -14,12 +16,12 @@ namespace DeskTinyWebApi.Models.Login
         public string Password { get; set; }
 
         [Input]
-        [JsonResult]
+        [JsonProperty]
         public string SessionKey { get; set; }
 
-        [JsonResult]
+        [JsonProperty]
         public bool? LoggedIn { get; set; }
-
+        
         internal void IsLogin()
         {
             this.LoggedIn = Session.IsSessionActive(this.Username, this.SessionKey);
@@ -43,6 +45,40 @@ namespace DeskTinyWebApi.Models.Login
             {
                 this.SessionKey = Session.AddSession(this.Username);
             }
+        }
+
+        public override IEnumerable<ValidationResult> Validate()
+        {
+            if (string.IsNullOrEmpty(this.Username))
+            {
+                yield return new ValidationResult("Username is a required field.", new[] { nameof(this.Username) });
+            }
+
+            if (this.HttpMethod == DTCore.Mvc.Enums.HttpMethod.GET)
+            {
+                if (string.IsNullOrEmpty(this.SessionKey))
+                {
+                    yield return new ValidationResult("SessionKey is a required field.", new[] { nameof(this.SessionKey) });
+                }
+            }
+
+            if (this.HttpMethod == DTCore.Mvc.Enums.HttpMethod.POST)
+            {
+                if (string.IsNullOrEmpty(this.Password))
+                {
+                    yield return new ValidationResult("Password is a required field.", new[] { nameof(this.Password) });
+                }
+            }
+        }
+
+        public override void MapModel()
+        {
+            this.IsLogin();
+        }
+
+        public override void HandleModel()
+        {
+            this.Login();
         }
     }
 }

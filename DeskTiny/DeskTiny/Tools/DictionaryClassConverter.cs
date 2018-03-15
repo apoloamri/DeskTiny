@@ -15,18 +15,21 @@ namespace DTCore.Tools
 
             foreach (var keyValue in dictionary)
             {
-                if (type.GetProperty(keyValue.Key) != null)
+                var property = type.GetProperty(keyValue.Key);
+                if (property != null)
                 {
                     if (keyValue.Value != DBNull.Value)
                     {
-                        type.GetProperty(keyValue.Key).SetValue(obj, keyValue.Value);
+                        var value = System.Convert.ChangeType(keyValue.Value, property.PropertyType);
+                        
+                        type.GetProperty(keyValue.Key).SetValue(obj, value);
                     }
                 }
             }
 
             return (Object)obj;
         }
-
+        
         public static Dictionary<string, object> ClassToDictionary(object obj, string optionalName = null)
         {
             return obj.GetType()

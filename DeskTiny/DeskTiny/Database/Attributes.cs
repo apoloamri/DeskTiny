@@ -32,15 +32,7 @@ namespace DTCore.Database.Attributes
 
     public class PrimaryKey : Attribute { }
 
-    public class NotNull : Attribute
-    {
-        public bool IsNotNull { get; set; }
-
-        public NotNull(bool isNotNull = true)
-        {
-            this.IsNotNull = isNotNull;
-        }
-    }
+    public class NotNull : Attribute { }
 
     public class Serial : Attribute { }
 

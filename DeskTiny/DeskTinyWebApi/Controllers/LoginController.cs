@@ -7,27 +7,19 @@ namespace DeskTinyWebApi.Controllers
     public class LoginController : DTCore.Mvc.DTController
     {
         [HttpGet]
-        public JsonResult Get(LoginModel model)
+        public JsonResult Get()
         {
-            this.BindModel(ref model);
-            this.Validate();
+            this.Initiate<LoginModel>(true);
 
-            model.IsLogin();
-
-            this.BuildJson(model);
-            return this.JsonResult;
+            return this.Conclude();
         }
 
         [HttpPost]
-        public JsonResult Post(LoginModel model)
+        public JsonResult Post()
         {
-            this.BindModel(ref model);
-            this.Validate();
+            this.Initiate<LoginModel>(true);
 
-            model.Login();
-
-            this.BuildJson(model);
-            return this.JsonResult;
+            return this.Conclude();
         }
     }
 }

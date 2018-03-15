@@ -1,73 +1,88 @@
 ﻿using DTCore.Mvc.Attributes;
 using DTCore.Mvc.System;
 using DTCore.Tools;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using DTCore.Tools.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 
 namespace DTCore.Mvc
 {
     public class DTController : BaseController
     {
-        public void BindModel<Model>(ref Model model)
+        public void Initiate<Model>(bool validate = false) where Model : DTModel, new()
         {
-            var dictionary = new Dictionary<string, object>();
+            var obj = Activator.CreateInstance(typeof(Model));
 
-            Type type = typeof(Model);
-            object obj = Activator.CreateInstance(type);
-            
-            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+            this.GetMethod();
+            this.GetBody(obj);
+            this.GetQueries(obj);
+
+            this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.JsonDictionary);
+
+            if (validate)
             {
-                var request = reader.ReadToEndAsync();
-                var jsonObject = (JObject)JsonConvert.DeserializeObject(request.Result);
-                
-                if (jsonObject != null)
-                {
-                    foreach (var token in jsonObject)
-                    {
-                        var property = obj.GetType().GetProperty(token.Key);
-
-                        foreach (var attribute in property.GetCustomAttributes(false))
-                        {
-                            if (attribute is Input)
-                            {
-                                dictionary.Add(token.Key, token.Value.ToObject<object>());
-                            }
-                        }
-                    }
-                }
+                this.ValidateModel();
             }
-
-            foreach (var property in model.GetType().GetProperties())
-            {
-                if (!dictionary.ContainsKey(property.Name))
-                {
-                    foreach (var attribute in property.GetCustomAttributes(false))
-                    {
-                        if (attribute is Input)
-                        {
-                            dictionary.Add(property.Name, property.GetValue(model));
-                        }
-                    }
-                }
-            }
-
-            model = DictionaryClassConverter.DictionaryToClass<Model>(dictionary);
         }
-        
-        public void BuildJson(object data)
+
+        private void ValidateModel()
         {
-            if (!this.ModelState.IsValid)
+            var jsonDictionary = new Dictionary<string, object>();
+
+            var validationResults = this.ModelObject.Validate() as IEnumerable<ValidationResult>;
+            
+            if (validationResults.Count() > 0)
             {
-                return;
+                var validationList = new List<Dictionary<string, string>>();
+
+                foreach (var result in validationResults)
+                {
+                    foreach (var name in result.MemberNames)
+                    {
+                        var keyName = name.ToUnderscore();
+
+                        if (jsonDictionary.ContainsKey(keyName))
+                        {
+                            jsonDictionary[keyName] += Environment.NewLine + result.ErrorMessage;
+                        }
+                        else
+                        {
+                            jsonDictionary.Add(keyName, result.ErrorMessage);
+                        }
+
+                        this.ControllerContext.ModelState.AddModelError(name, result.ErrorMessage);
+                    }
+                }
             }
 
+            jsonDictionary.Add("is_valid", false);
+
+            this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
+        }
+
+        private void ExecuteMapping()
+        {
+            if (this.ModelObject.HttpMethod == Enums.HttpMethod.GET)
+            {
+                this.ModelObject.MapModel();
+            }
+        }
+
+        private void ExecuteHandling()
+        {
+            if (this.ModelObject.HttpMethod != Enums.HttpMethod.GET)
+            {
+                this.ModelObject.HandleModel();
+            }
+        }
+
+        private void BuildJson()
+        {
             var jsonDictionary = new Dictionary<string, object>();
-            var properties = data.GetType().GetProperties();
+            var properties = this.ModelObject.GetType().GetProperties();
             
             foreach (var property in properties)
             {
@@ -75,33 +90,33 @@ namespace DTCore.Mvc
                 
                 foreach (var attribute in attributes)
                 {
-                    if (attribute is JsonResult)
+                    if (attribute is JsonProperty)
                     {
-                        var value = property.GetValue(data);
+                        var value = property.GetValue(this.ModelObject);
 
                         if (value != null)
                         {
-                            string propertyName = 
-                                string.Concat(property.Name.Select((x, i) => 
-                                    i > 0 && char.IsUpper(x) ? 
-                                    "_" + x.ToString()?.ToLower() : 
-                                    x.ToString().ToLower()));
-
-                            jsonDictionary.Add(propertyName, value);
+                            jsonDictionary.Add(StringExtensions.ToUnderscore(property.Name), value);
                         }
                     }
                 }
             }
-            
-            this.JsonResult = base.Json(jsonDictionary, this.jsonSettings);
+
+            jsonDictionary.Add("is_valid", true);
+
+            this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
         }
 
-        public void Validate()
+        public JsonResult Conclude()
         {
-            if (!this.ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                this.JsonResult = base.Json("problem occured", jsonSettings);
+                this.ExecuteMapping();
+                this.ExecuteHandling();
+                this.BuildJson();
             }
+            
+            return this.JsonResult;
         }
     }
 }

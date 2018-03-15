@@ -11,17 +11,16 @@ namespace TestDeskTiny
         {
             do
             {
-                while (!Console.KeyAvailable)
-                {
-                    Start();
+                Start();
 
-                    DatabaseTest.TestAll();
+                DatabaseTest.TestAll();
 
-                    End();
+                End();
 
-                    Console.WriteLine($"Press any key to redo test.{Environment.NewLine}");
-                    Console.ReadKey();
-                }
+                Console.WriteLine(
+                    $"Press any key to redo test.{Environment.NewLine}" +
+                    $"Press ESC to exit the test.{Environment.NewLine}");
+
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
 
