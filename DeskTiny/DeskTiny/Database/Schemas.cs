@@ -1,7 +1,8 @@
-﻿using DTCore.Tools.Extensions;
+﻿using DTCore.Database.Enums;
 using DTCore.Database.Tables;
-using System.Linq;
 using DTCore.Tools;
+using DTCore.Tools.Extensions;
+using System.Linq;
 
 namespace DTCore.Database
 {
@@ -16,12 +17,12 @@ namespace DTCore.Database
 
             var table = InformationSchemaTables;
 
-            table.Conditions.AddWhere(
+            table.Wherein.Which(
                 nameof(table.Entity.table_name),
-                Enums.Condition.Equal,
+                Condition.EqualTo,
                 tableName);
 
-            table.Conditions.AddColumns(
+            table.Wherein.AddColumns(
                 nameof(table.Entity.table_name));
 
             var newSchema = new Schema<T>(tableName);
@@ -34,12 +35,12 @@ namespace DTCore.Database
             {
                 var columns = InformationSchemaColumns;
 
-                columns.Conditions.AddWhere(
+                columns.Wherein.Which(
                     nameof(table.Entity.table_name),
-                    Enums.Condition.Equal,
+                    Condition.EqualTo,
                     tableName);
 
-                columns.Conditions.AddColumns(
+                columns.Wherein.AddColumns(
                     nameof(table.Entity.column_name));
 
                 var currentColumns = columns.Select.Entities?.Select(x => x.column_name)?.ToList();

@@ -11,14 +11,14 @@ namespace DTCore.WebApi
         {
             var session = Schemas.Sessions;
             
-            session.Conditions.AddWhere(
+            session.Wherein.Which(
                 nameof(session.Entity.session_id), 
-                Condition.Equal, 
+                Condition.EqualTo, 
                 sessionId);
 
-            session.Conditions.AddWhere(
+            session.Wherein.Which(
                 nameof(session.Entity.session_time), 
-                Condition.Greater, 
+                Condition.GreaterThan, 
                 DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
 
             var result = session.Select.Entity;
@@ -32,9 +32,9 @@ namespace DTCore.WebApi
 
             var sessionKey = KeyGenerator.GetUniqueKey(64);
             
-            session.Conditions.AddWhere(
+            session.Wherein.Which(
                 nameof(session.Entity.session_key), 
-                Condition.Equal, 
+                Condition.EqualTo, 
                 sessionKey);
 
             while (session.Count() > 0)
@@ -55,19 +55,19 @@ namespace DTCore.WebApi
         {
             var session = Schemas.Sessions;
 
-            session.Conditions.AddWhere(
+            session.Wherein.Which(
                 nameof(session.Entity.session_id),
-                Condition.Equal,
+                Condition.EqualTo,
                 sessionId);
 
-            session.Conditions.AddWhere(
+            session.Wherein.Which(
                 nameof(session.Entity.session_key),
-                Condition.Equal,
+                Condition.EqualTo,
                 sessionKey);
 
-            session.Conditions.AddWhere(
+            session.Wherein.Which(
                 nameof(session.Entity.session_time),
-                Condition.Greater,
+                Condition.GreaterThan,
                 DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
             
             var count = session.Count();

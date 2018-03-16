@@ -19,6 +19,8 @@
                 ApiLogin: function () {
                     var that = this;
 
+                    showLoading();
+
                     $.ajax({
                         url: apiUrl + "login",
                         type: "POST",
@@ -39,6 +41,8 @@
                             else {
                                 alert("Invalid username or password.");
                             }
+
+                            hideLoading();
                         }
                     });
                 }

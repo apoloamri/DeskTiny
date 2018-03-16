@@ -14,10 +14,10 @@ function getCookie(cname) {
     var ca = decodedCookie.split(';');
     for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
@@ -57,4 +57,28 @@ function logout() {
     setCookie("username", "", 0);
     setCookie("session_key", "", 0);
     window.location = "/Index";
+}
+
+function showLoading() {
+    $("#loading").addClass("show");
+    $("#loading-background").addClass("show");
+}
+
+function hideLoading() {
+    $("#loading").removeClass("show");
+    $("#loading-background").removeClass("show");
+}
+
+function QuickAjax(url, method, dataObject) {
+    var returnData;
+    $.ajax({
+        url: apiUrl + url,
+        type: method,
+        dataType: "json",
+        data: dataObject,
+        success: function (data) {
+            returnData = data;
+        }
+    });
+    return returnData;
 }

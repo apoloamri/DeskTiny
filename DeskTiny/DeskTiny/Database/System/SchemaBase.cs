@@ -24,14 +24,14 @@ namespace DTCore.Database.System
         {
             string where = string.Empty;
 
-            if (this.Conditions.MultiWhere?.Count() > 0)
+            if (this.Wherein.MultiWhere?.Count() > 0)
             {
-                where += string.Join(" ", this.Conditions.MultiWhere);
+                where += string.Join(" ", this.Wherein.MultiWhere);
             }
 
             where +=
-                !string.IsNullOrEmpty(this.Conditions.Where) ?
-                this.Conditions.Where :
+                !string.IsNullOrEmpty(this.Wherein.Where) ?
+                this.Wherein.Where :
                 string.Empty;
 
             return 
@@ -226,9 +226,9 @@ namespace DTCore.Database.System
             return attributeString;
         }
         
-        public Conditions Conditions { get; set; } = new Conditions();
+        public Conditions Wherein { get; set; } = new Conditions();
 
-        public void ClearConditions() { this.Conditions = new Conditions(); }
+        public void ClearConditions() { this.Wherein = new Conditions(); }
 
         public T Entity { get; set; } = new T();
         

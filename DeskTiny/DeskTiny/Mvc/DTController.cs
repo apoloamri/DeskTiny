@@ -34,6 +34,11 @@ namespace DTCore.Mvc
 
             var validationResults = this.ModelObject.Validate() as IEnumerable<ValidationResult>;
             
+            if (validationResults == null)
+            {
+                return;
+            }
+
             if (validationResults.Count() > 0)
             {
                 var validationList = new List<Dictionary<string, string>>();

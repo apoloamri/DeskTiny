@@ -6,32 +6,33 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DeskTinyWebApi.Models.Member
 {
-    public class RegisterModel : DTModel
+    public class InformationModel : DTModel
     {
         [Input]
         public string Username { get; set; }
 
-        [Input]
-        public string Password { get; set; }
-        
+        [JsonProperty]
+        public Dictionary<string, object> MemberDictionary { get; set; }
+
         public override void HandleModel()
         {
-            var member = Schemas.Members;
-
-            member.Entity.username = this.Username;
-            member.Entity.password = this.Password;
-
-            member.Insert();
         }
 
         public override void MapModel()
         {
+            var member = Schemas.Members;
+
+            member.Wherein.Which(
+                nameof(member.Entity.username),
+                DTCore.Database.Enums.Condition.EqualTo,
+                this.Username);
+
+            this.MemberDictionary = member.Select.Dictionary;
         }
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
-            yield return DTValidationResult.FieldRequired(nameof(this.Password), this.Password);
+            return null;
         }
     }
 }

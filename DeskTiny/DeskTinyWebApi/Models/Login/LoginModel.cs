@@ -31,14 +31,14 @@ namespace DeskTinyWebApi.Models.Login
         {
             var members = Schemas.Members;
 
-            members.Conditions.AddWhere(
+            members.Wherein.Which(
                 nameof(members.Entity.username), 
-                Condition.Equal, 
+                Condition.EqualTo, 
                 this.Username);
 
-            members.Conditions.AddWhere(
+            members.Wherein.Which(
                 nameof(members.Entity.password), 
-                Condition.Equal, 
+                Condition.EqualTo, 
                 this.Password);
             
             if (members.Count() == 1)

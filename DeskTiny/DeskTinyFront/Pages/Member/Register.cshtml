@@ -19,6 +19,8 @@
 
             methods: {
                 ApiLogin: function () {
+                    showLoading();
+
                     var that = this;
 
                     $.ajax({
@@ -39,6 +41,8 @@
                                 that.usernameMessage = data.username;
                                 that.passwordMessage = data.password;
                             }
+
+                            hideLoading();
                         }
                     });
                 }

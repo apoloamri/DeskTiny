@@ -9,5 +9,7 @@ namespace DeskTinyWebApi.DT.Database.Tables
 
         [NotNull]
         public string password { get; set; }
+        
+        public string email { get; set; }
     }
 }

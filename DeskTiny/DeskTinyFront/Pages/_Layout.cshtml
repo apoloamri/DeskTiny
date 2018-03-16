@@ -6,6 +6,7 @@
     <title>@ViewData["Title"]</title>
 
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/normalize.css" />
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/vuejs/vue.js"></script>
@@ -13,10 +14,11 @@
 </head>
 <body>
     <div id="content">
-        @*<header></header>*@
         @RenderBody()
-        @*<footer></footer>*@
     </div>
+
+    <div id="loading-background"></div>
+    <div id="loading" class="center-absolute"></div>
 
     @RenderSection("Scripts", required: false)
 </body>

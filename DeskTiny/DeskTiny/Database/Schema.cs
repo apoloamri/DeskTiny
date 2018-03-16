@@ -19,23 +19,23 @@ namespace DTCore.Database
         public Query SelectBase()
         {
             string columns =
-                this.Conditions.Columns?.Count() > 0 ?
-                string.Join(", ", this.Conditions.Columns) :
+                this.Wherein.Columns?.Count() > 0 ?
+                string.Join(", ", this.Wherein.Columns) :
                 "*";
             
             string order =
-                this.Conditions.Order.HasValue ?
-                $"ORDER BY {this.Conditions.Order}" :
+                this.Wherein.Order.HasValue ?
+                $"ORDER BY {this.Wherein.Order}" :
                 string.Empty;
 
             string limit =
-                this.Conditions.Limit.HasValue ?
-                $"LIMIT {this.Conditions.Limit}" :
+                this.Wherein.Limit.HasValue ?
+                $"LIMIT {this.Wherein.Limit}" :
                 string.Empty;
 
             return new Query(
                 $"{Operations.SELECT} {columns} FROM {TableName} {this.GetWhere()} {order} {limit};",
-                this.Conditions.Parameters
+                this.Wherein.Parameters
                 );
         }
 
@@ -44,13 +44,13 @@ namespace DTCore.Database
         public virtual long Count()
         {
             string columns =
-                this.Conditions.Columns?.Count() > 0 ?
-                string.Join(", ", this.Conditions.Columns) :
+                this.Wherein.Columns?.Count() > 0 ?
+                string.Join(", ", this.Wherein.Columns) :
                 "*";
             
             var query = new Query(
                 $"{Operations.SELECT} COUNT({columns}) FROM {TableName} {this.GetWhere()};",
-                this.Conditions.Parameters
+                this.Wherein.Parameters
                 );
 
             return query.GetScalar();
@@ -89,7 +89,7 @@ namespace DTCore.Database
 
             var nonQuery = new NonQuery(
                 $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere()};",
-                this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
+                this.NonConditions.Parameters.Union(this.Wherein.Parameters).ToDictionary(x => x.Key, x => x.Value)
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.UPDATE);
@@ -99,7 +99,7 @@ namespace DTCore.Database
         {
             var nonQuery = new NonQuery(
                 $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()};",
-                this.Conditions.Parameters
+                this.Wherein.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.DELETE);

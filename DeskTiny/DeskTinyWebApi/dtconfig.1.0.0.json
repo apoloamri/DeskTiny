@@ -17,5 +17,8 @@
   },
   "API": {
     "SessionTimeOut": 60
+  },
+  "DefaultMessages": {
+    "RequiredField": "{0} is a required field"
   }
 }

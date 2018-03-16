@@ -15,12 +15,12 @@ namespace DTCore.Database.System
 
         public int? Limit { get; private set; }
 
-        public void AddLimit(int limit)
+        public void LimitBy(int limit)
         {
             this.Limit = limit;
         }
 
-        public void AddOrder(Order order)
+        public void OrderBy(Order order)
         {
             this.Order = order;
         }
@@ -32,7 +32,7 @@ namespace DTCore.Database.System
         public List<string> MultiWhere { get; private set; } = new List<string>();
         public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
-        public void AddWhere(
+        public void Which(
             object column, 
             Condition condition, 
             object value, 
@@ -59,7 +59,7 @@ namespace DTCore.Database.System
             this.ColumnCount++;
         }
 
-        public void EndWhere(Operator? oper = null)
+        public void End(Operator? oper = null)
         {
             this.MultiWhere.Add($"({this.Where}) {oper} ");
             this.Where = string.Empty;
@@ -69,22 +69,22 @@ namespace DTCore.Database.System
         {
             switch (condition)
             {
-                case Condition.Equal:
+                case Condition.EqualTo:
                     return "=";
-                case Condition.NotEqual:
+                case Condition.NotEqualTo:
                     return "!=";
-                case Condition.Greater:
+                case Condition.GreaterThan:
                     return ">";
-                case Condition.Lesser:
+                case Condition.LessThan:
                     return "<";
-                case Condition.GreaterEqual:
+                case Condition.GreaterThanEqualTo:
                     return ">=";
-                case Condition.LesserEqual:
+                case Condition.LessThanEqualTo:
                     return "<=";
-                case Condition.LIKE:
-                    return Condition.LIKE.GetString();
-                case Condition.NOT_LIKE:
-                    return Condition.NOT_LIKE.GetString();
+                case Condition.Like:
+                    return "LIKE";
+                case Condition.NotLike:
+                    return "NOT LIKE";
                 default:
                     return "=";
             }
