@@ -7,17 +7,21 @@ namespace TestDeskTiny
     {
         public static void TestAll()
         {
-            TestInsert();
+            //TestInsert();
             TestSelect();
-            TestUpdate();
-            TestDelete();
+            //TestUpdate();
+            //TestDelete();
         }
 
         private static void TestSelect()
         {
             var clients = Schemas.Clients;
+            
+            clients.Wherein.Which(
+                clients.Column(x => x.username), 
+                Condition.EqualTo, 
+                "username1");
 
-            clients.Wherein.Which(nameof(clients.Entity.username), Condition.EqualTo, "username1", Operator.OR);
             clients.Wherein.LimitBy(5);
             
             var result = clients.Select.Entities;
@@ -40,7 +44,12 @@ namespace TestDeskTiny
             var clients = Schemas.Clients;
 
             clients.Entity.password = "updated";
-            clients.Wherein.Which(nameof(clients.Entity.username), Condition.EqualTo, "username1");
+
+            clients.Wherein.Which(
+                clients.Column(x => x.username), 
+                Condition.EqualTo, 
+                "username1");
+
             clients.Update();
             clients.ClearEntity();
         }
@@ -49,7 +58,11 @@ namespace TestDeskTiny
         {
             var clients = Schemas.Clients;
 
-            clients.Wherein.Which(nameof(clients.Entity.username), Condition.EqualTo, "username1");
+            clients.Wherein.Which(
+                clients.Column(x => x.username), 
+                Condition.EqualTo, 
+                "username1");
+
             clients.Delete();
             clients.ClearEntity();
         }

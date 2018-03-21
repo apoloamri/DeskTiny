@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace DTCore.Database
 {
@@ -23,7 +24,7 @@ namespace DTCore.Database
 
         public void OverwriteWithModel(object model)
         {
-            //To do...
+            throw new NotImplementedException();
         }
     }
 }

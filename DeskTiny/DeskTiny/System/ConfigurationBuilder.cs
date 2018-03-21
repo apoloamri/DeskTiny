@@ -14,7 +14,14 @@ namespace DTCore.Tools
 
             return configurationBuilder.Build();
         }
-        
+
+        public static class API
+        {
+            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("API");
+
+            public static int SessionTimeOut => Convert.ToInt32(ConfigurationSection.GetSection("SessionTimeOut").Value);
+        }
+
         public static class Database
         {
             private static IConfigurationSection ConfigurationSection = Configuration().GetSection("Database");
@@ -55,13 +62,15 @@ namespace DTCore.Tools
                         (!string.IsNullOrEmpty(connectionLifeTime) ? $"ConnectionLifeTime={connectionLifeTime};" : string.Empty);
                 }
             }
+
+            public static bool Migrate => Convert.ToBoolean(ConfigurationSection.GetSection("Migrate").Value);
         }
-
-        public static class API
+        
+        public static class Logs
         {
-            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("API");
+            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("Logs");
 
-            public static int SessionTimeOut => Convert.ToInt32(ConfigurationSection.GetSection("SessionTimeOut").Value);
+            public static string Migration => ConfigurationSection.GetSection("Migration").Value;
         }
     }
 }

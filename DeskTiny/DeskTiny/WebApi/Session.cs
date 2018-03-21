@@ -12,12 +12,12 @@ namespace DTCore.WebApi
             var session = Schemas.Sessions;
             
             session.Wherein.Which(
-                nameof(session.Entity.session_id), 
+                session.Column(x => x.session_id), 
                 Condition.EqualTo, 
                 sessionId);
 
             session.Wherein.Which(
-                nameof(session.Entity.session_time), 
+                session.Column(x => x.session_time), 
                 Condition.GreaterThan, 
                 DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
 
@@ -33,7 +33,7 @@ namespace DTCore.WebApi
             var sessionKey = KeyGenerator.GetUniqueKey(64);
             
             session.Wherein.Which(
-                nameof(session.Entity.session_key), 
+                session.Column(x => x.session_key), 
                 Condition.EqualTo, 
                 sessionKey);
 
@@ -56,17 +56,17 @@ namespace DTCore.WebApi
             var session = Schemas.Sessions;
 
             session.Wherein.Which(
-                nameof(session.Entity.session_id),
+                session.Column(x => x.session_id),
                 Condition.EqualTo,
                 sessionId);
 
             session.Wherein.Which(
-                nameof(session.Entity.session_key),
+                session.Column(x => x.session_key),
                 Condition.EqualTo,
                 sessionKey);
 
             session.Wherein.Which(
-                nameof(session.Entity.session_time),
+                session.Column(x => x.session_time),
                 Condition.GreaterThan,
                 DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
             

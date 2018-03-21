@@ -13,12 +13,16 @@
     "Pooling": "",
     "MinPoolSize": "",
     "MaxPoolSize": "",
-    "ConnectionLifeTime": ""
+    "ConnectionLifeTime": "",
+    "Migrate": true
   },
   "API": {
     "SessionTimeOut": 60
   },
   "DefaultMessages": {
     "RequiredField": "{0} is a required field"
+  },
+  "Logs": {
+    "Migration": "C:\\logs\\migration_log.txt"
   }
 }

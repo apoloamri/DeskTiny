@@ -12,6 +12,7 @@ namespace DTCore.Database.System
         public NpgsqlConnection NpgsqlConnection { get; set; } = null;
         public NpgsqlCommand NpgsqlCommand { get; set; } = null;
         public NpgsqlDataReader NpgsqlDataReader { get; set; } = null;
+        public NpgsqlTransaction NpgsqlTransaction { get; set; } = null;
 
         public Connect(string sql, Dictionary<string, object> parameters)
         {

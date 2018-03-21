@@ -8,9 +8,9 @@ namespace DTCore.Database
 {
     public class Schemas
     {
-        public static Schema<T> CreateTable<T>(string tableName, bool updateTable = true) where T : Entity, new()
+        public static Schema<T> CreateTable<T>(string tableName) where T : Entity, new()
         {
-            if (updateTable == false)
+            if (ConfigurationBuilder.Database.Migrate == false)
             {
                 return new Schema<T>(tableName);
             }
@@ -18,12 +18,12 @@ namespace DTCore.Database
             var table = InformationSchemaTables;
 
             table.Wherein.Which(
-                nameof(table.Entity.table_name),
+                table.Column(x => x.table_name),
                 Condition.EqualTo,
                 tableName);
 
             table.Wherein.AddColumns(
-                nameof(table.Entity.table_name));
+                table.Column(x => x.table_name));
 
             var newSchema = new Schema<T>(tableName);
 
@@ -36,12 +36,12 @@ namespace DTCore.Database
                 var columns = InformationSchemaColumns;
 
                 columns.Wherein.Which(
-                    nameof(table.Entity.table_name),
+                    columns.Column(x => x.table_name),
                     Condition.EqualTo,
                     tableName);
 
                 columns.Wherein.AddColumns(
-                    nameof(table.Entity.column_name));
+                    columns.Column(x => x.column_name));
 
                 var currentColumns = columns.Select.Entities?.Select(x => x.column_name)?.ToList();
                 var entityColumns = newSchema.Entity.GetColumns();

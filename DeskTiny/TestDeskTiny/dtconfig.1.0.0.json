@@ -13,9 +13,10 @@
     "Pooling": "",
     "MinPoolSize": "",
     "MaxPoolSize": "",
-    "ConnectionLifeTime": ""
+    "ConnectionLifeTime": "",
+    "Migrate": true
   },
-  "API": {
-
+  "Logs": {
+    "Migration": "C:\\dt_logs\\migration_log.txt"
   }
 }

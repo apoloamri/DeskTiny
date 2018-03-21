@@ -32,12 +32,12 @@ namespace DeskTinyWebApi.Models.Login
             var members = Schemas.Members;
 
             members.Wherein.Which(
-                nameof(members.Entity.username), 
+                members.Column(x => x.username), 
                 Condition.EqualTo, 
                 this.Username);
 
             members.Wherein.Which(
-                nameof(members.Entity.password), 
+                members.Column(x => x.password), 
                 Condition.EqualTo, 
                 this.Password);
             

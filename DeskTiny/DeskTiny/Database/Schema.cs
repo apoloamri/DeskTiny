@@ -24,7 +24,7 @@ namespace DTCore.Database
                 "*";
             
             string order =
-                this.Wherein.Order.HasValue ?
+                !string.IsNullOrEmpty(this.Wherein.Order) ?
                 $"ORDER BY {this.Wherein.Order}" :
                 string.Empty;
 
@@ -111,7 +111,7 @@ namespace DTCore.Database
                 $"{Operations.CREATE_TABLE.GetString()} {this.TableName} ({this.CreateColumns()});",
                 this.NonConditions.Parameters
                 );
-
+            
             return nonQuery.ExecuteNonQuery(Operations.CREATE_TABLE);
         }
 
@@ -128,6 +128,16 @@ namespace DTCore.Database
                 );
             
             return nonQuery.ExecuteNonQuery(Operations.ALTER_TABLE); ;
+        }
+
+        public void BeginTransaction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Commit()
+        {
+            throw new NotImplementedException();
         }
 
         public int DropTableColumns(params string[] columns)

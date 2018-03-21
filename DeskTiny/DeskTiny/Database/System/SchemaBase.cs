@@ -3,6 +3,7 @@ using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace DTCore.Database.System
@@ -225,12 +226,28 @@ namespace DTCore.Database.System
 
             return attributeString;
         }
-        
+
+        public TableColumn Column<TProp>(Expression<Func<T, TProp>> expression)
+        {
+            var body = expression.Body as MemberExpression;
+
+            if (body == null)
+            {
+                return null;
+            }
+
+            return new TableColumn()
+            {
+                ColumnName = body.Member.Name,
+                TableName = this.TableName
+            };
+        }
+
+        public T Entity { get; set; } = new T();
+
         public Conditions Wherein { get; set; } = new Conditions();
 
         public void ClearConditions() { this.Wherein = new Conditions(); }
-
-        public T Entity { get; set; } = new T();
         
         public void ClearEntity() { this.Entity = new T(); }
     }
@@ -238,4 +255,11 @@ namespace DTCore.Database.System
     public enum DataType { BIGINT, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE }
     public enum Operations { SELECT, INSERT, UPDATE, DELETE, CREATE_TABLE, ALTER_TABLE, ADD, DROP_COLUMN }
     public enum ColumnAttributes { NOT_NULL, PRIMARY_KEY, UNIQUE }
+
+    public class TableColumn
+    {
+        public string ColumnName { get; set; }
+        public string TableName { get; set; }
+        public string Get => $"{this.TableName}.{this.ColumnName}";
+    }
 }

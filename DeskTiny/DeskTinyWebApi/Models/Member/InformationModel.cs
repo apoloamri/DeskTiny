@@ -23,7 +23,7 @@ namespace DeskTinyWebApi.Models.Member
             var member = Schemas.Members;
 
             member.Wherein.Which(
-                nameof(member.Entity.username),
+                member.Column(x => x.username),
                 DTCore.Database.Enums.Condition.EqualTo,
                 this.Username);
 

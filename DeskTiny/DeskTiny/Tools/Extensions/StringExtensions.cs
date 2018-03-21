@@ -47,5 +47,42 @@ namespace DTCore.Tools.Extensions
             
             return newname;
         }
+
+        public static Boolean ToBooleanOrDefault(this String s, Boolean Default)
+        {
+            return ToBooleanOrDefault((Object)s, Default);
+        }
+        
+        public static Boolean ToBooleanOrDefault(this Object o, Boolean Default)
+        {
+            Boolean ReturnVal = Default;
+            try
+            {
+                if (o != null)
+                {
+                    switch (o.ToString().ToLower())
+                    {
+                        case "yes":
+                        case "true":
+                        case "ok":
+                        case "y":
+                            ReturnVal = true;
+                            break;
+                        case "no":
+                        case "false":
+                        case "n":
+                            ReturnVal = false;
+                            break;
+                        default:
+                            ReturnVal = Boolean.Parse(o.ToString());
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return ReturnVal;
+        }
     }
 }
