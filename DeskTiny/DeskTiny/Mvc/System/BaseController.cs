@@ -17,7 +17,6 @@ namespace DTCore.Mvc.System
     public class BaseController : Controller
     {
         protected dynamic ModelObject { get; set; }
-
         protected JsonSerializerSettings JsonSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
         protected JsonResult JsonResult { get; set; }
         protected Dictionary<string, object> JsonDictionary { get; set; } = new Dictionary<string, object>();
@@ -42,8 +41,8 @@ namespace DTCore.Mvc.System
 
         protected void GetMethod()
         {
-            Enum.TryParse(this.Request.Method, out Enums.HttpMethod httpMethod);
-            this.JsonDictionary.Add("HttpMethod", httpMethod);
+            Enum.TryParse(this.Request.Method, out Enums.Method httpMethod);
+            this.JsonDictionary.Add("Method", httpMethod);
         }
 
         protected void GetBody(object obj)

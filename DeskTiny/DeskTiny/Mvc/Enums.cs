@@ -1,4 +1,4 @@
 ﻿namespace DTCore.Mvc.Enums
 {
-    public enum HttpMethod { GET, POST, PUT, DELETE }
+    public enum Method { GET, POST, PUT, DELETE }
 }

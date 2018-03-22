@@ -10,6 +10,8 @@ namespace DTCore.Mvc
         public abstract void HandleModel();
         public abstract void MapModel();
         public abstract IEnumerable<ValidationResult> Validate();
-        public HttpMethod HttpMethod { get; set; }
+        public Method Method { get; set; }
+        public bool Mapping => this.Method == Method.GET;
+        public bool Handling => this.Method != Method.GET;
     }
 }

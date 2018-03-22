@@ -1,4 +1,5 @@
-﻿using DTCore.Database.System;
+﻿using DTCore.Database.Enums;
+using DTCore.Database.System;
 using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
@@ -16,26 +17,38 @@ namespace DTCore.Database
             };
         }
 
+        public void Relate<Joined>(Join join, Schema<Joined> schema, TableColumn[,] columnOn) where Joined : Entity, new()
+        {
+            var onString = new List<string>();
+            
+            for (int i = 0; i < columnOn.GetLength(0); i++)
+            {
+                onString.Add($"{columnOn[i, 0].Get} = {columnOn[i, 1].Get}");
+            }
+
+            this.Join += $"{join.GetString()} JOIN {schema.TableName} ON {string.Join(", ", onString)}";
+        }
+
         public Query SelectBase()
         {
             string columns =
-                this.Wherein.Columns?.Count() > 0 ?
-                string.Join(", ", this.Wherein.Columns) :
+                this.Conditions.Columns?.Count() > 0 ?
+                string.Join(", ", this.Conditions.Columns) :
                 "*";
             
             string order =
-                !string.IsNullOrEmpty(this.Wherein.Order) ?
-                $"ORDER BY {this.Wherein.Order}" :
+                !string.IsNullOrEmpty(this.Conditions.Order) ?
+                $"ORDER BY {this.Conditions.Order}" :
                 string.Empty;
 
             string limit =
-                this.Wherein.Limit.HasValue ?
-                $"LIMIT {this.Wherein.Limit}" :
+                this.Conditions.Limit.HasValue ?
+                $"LIMIT {this.Conditions.Limit}" :
                 string.Empty;
 
             return new Query(
-                $"{Operations.SELECT} {columns} FROM {TableName} {this.GetWhere()} {order} {limit};",
-                this.Wherein.Parameters
+                $"{Operations.SELECT} {columns} FROM {TableName} {this.Join} {this.GetWhere()} {order} {limit};",
+                this.Conditions.Parameters
                 );
         }
 
@@ -44,13 +57,13 @@ namespace DTCore.Database
         public virtual long Count()
         {
             string columns =
-                this.Wherein.Columns?.Count() > 0 ?
-                string.Join(", ", this.Wherein.Columns) :
+                this.Conditions.Columns?.Count() > 0 ?
+                string.Join(", ", this.Conditions.Columns) :
                 "*";
             
             var query = new Query(
                 $"{Operations.SELECT} COUNT({columns}) FROM {TableName} {this.GetWhere()};",
-                this.Wherein.Parameters
+                this.Conditions.Parameters
                 );
 
             return query.GetScalar();
@@ -89,7 +102,7 @@ namespace DTCore.Database
 
             var nonQuery = new NonQuery(
                 $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere()};",
-                this.NonConditions.Parameters.Union(this.Wherein.Parameters).ToDictionary(x => x.Key, x => x.Value)
+                this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.UPDATE);
@@ -99,7 +112,7 @@ namespace DTCore.Database
         {
             var nonQuery = new NonQuery(
                 $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()};",
-                this.Wherein.Parameters
+                this.Conditions.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.DELETE);

@@ -1,4 +1,5 @@
 ﻿using DeskTinyWebApi.DT.Database;
+using DTCore.Database.Enums;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
 using System.Collections.Generic;
@@ -22,11 +23,11 @@ namespace DeskTinyWebApi.Models.Member
         {
             var member = Schemas.Members;
 
-            member.Wherein.Which(
+            member.Conditions.Where(
                 member.Column(x => x.username),
-                DTCore.Database.Enums.Condition.EqualTo,
+                Condition.EqualTo,
                 this.Username);
-
+            
             this.MemberDictionary = member.Select.Dictionary;
         }
 

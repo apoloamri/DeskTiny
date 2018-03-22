@@ -19,7 +19,7 @@ namespace DTCore.System.Diagnostics
 
             stringBuilder.Append(GenerateText(title, details));
 
-            Directory.CreateDirectory(Path.GetFullPath(path));
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
 
             File.AppendAllText(path, stringBuilder.ToString());
 

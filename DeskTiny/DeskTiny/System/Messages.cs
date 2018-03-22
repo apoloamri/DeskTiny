@@ -1,4 +1,5 @@
 ﻿using DTCore.Tools;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DTCore.System
@@ -11,13 +12,27 @@ namespace DTCore.System
 
             if (values != null && values.Count() > 0)
             {
-                return string.Format(defaultMessage, values);
+                var fields = new List<string>();
+
+                foreach (var value in values)
+                {
+                    string fieldName = ConfigurationBuilder.Configuration().GetSection("FieldNames").GetSection(value).Value;
+
+                    if (string.IsNullOrEmpty(fieldName))
+                    {
+                        fields.Add(value);
+                    }
+
+                    fields.Add(fieldName);
+                }
+
+                return string.Format(defaultMessage, fields.ToArray());
             }
 
             return 
                 string.IsNullOrEmpty(defaultMessage) ?
                 message :
-                string.Format(defaultMessage, message);
+                defaultMessage;
         }
     }
 }

@@ -31,46 +31,48 @@ namespace DTCore.Mvc
         private void ValidateModel()
         {
             var jsonDictionary = new Dictionary<string, object>();
+            var validationDictionary = new Dictionary<string, object>();
 
             var validationResults = this.ModelObject.Validate() as IEnumerable<ValidationResult>;
             
-            if (validationResults == null)
-            {
-                return;
-            }
-
-            if (validationResults.Count() > 0)
+            if (validationResults != null && validationResults.Count() > 0)
             {
                 var validationList = new List<Dictionary<string, string>>();
 
                 foreach (var result in validationResults)
                 {
+                    if (result == null)
+                    {
+                        continue;
+                    }
+
                     foreach (var name in result.MemberNames)
                     {
                         var keyName = name.ToUnderscore();
 
-                        if (jsonDictionary.ContainsKey(keyName))
+                        if (validationDictionary.ContainsKey(keyName))
                         {
-                            jsonDictionary[keyName] += Environment.NewLine + result.ErrorMessage;
+                            validationDictionary[keyName] += Environment.NewLine + result.ErrorMessage;
                         }
                         else
                         {
-                            jsonDictionary.Add(keyName, result.ErrorMessage);
+                            validationDictionary.Add(keyName, result.ErrorMessage);
                         }
 
                         this.ControllerContext.ModelState.AddModelError(name, result.ErrorMessage);
                     }
                 }
+
+                jsonDictionary.Add("is_valid", false);
+                jsonDictionary.Add("messages", validationDictionary);
+
+                this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
             }
-
-            jsonDictionary.Add("is_valid", false);
-
-            this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
         }
 
         private void ExecuteMapping()
         {
-            if (this.ModelObject.HttpMethod == Enums.HttpMethod.GET)
+            if (this.ModelObject.Mapping)
             {
                 this.ModelObject.MapModel();
             }
@@ -78,7 +80,7 @@ namespace DTCore.Mvc
 
         private void ExecuteHandling()
         {
-            if (this.ModelObject.HttpMethod != Enums.HttpMethod.GET)
+            if (this.ModelObject.Handling)
             {
                 this.ModelObject.HandleModel();
             }

@@ -9,12 +9,14 @@ namespace DTCore.Mvc
     {
         public static ValidationResult Compose(string message, params string[] memberNames)
         {
+            var newMessage = Messages.Get(message);
+
             if (memberNames != null && memberNames.Count() > 0)
             {
-                return new ValidationResult(message, memberNames.Select(x => x.ToUnderscore()));
+                return new ValidationResult(newMessage, memberNames.Select(x => x.ToUnderscore()));
             }
 
-            return new ValidationResult(message, new[] { "common" });
+            return new ValidationResult(newMessage, new[] { "common" });
         }
 
         public static ValidationResult FieldRequired(string fieldName, object value, string message = null)

@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using DeskTinyWebApi.DT.Database;
-using DTCore.Database.Enums;
+﻿using DeskTinyWebApi.DT.Members;
+using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
 using DTCore.WebApi;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeskTinyWebApi.Models.Login
 {
-    public class LoginModel : DTCore.Mvc.DTModel
+    public class LoginModel : DTModel
     {
         [Input]
         public string Username { get; set; }
@@ -22,63 +22,34 @@ namespace DeskTinyWebApi.Models.Login
         [JsonProperty]
         public bool? LoggedIn { get; set; }
         
-        internal void IsLogin()
+        public override void MapModel()
         {
             this.LoggedIn = Session.IsSessionActive(this.Username, this.SessionKey);
         }
 
-        internal void Login()
+        public override void HandleModel()
         {
-            var members = Schemas.Members;
-
-            members.Wherein.Which(
-                members.Column(x => x.username), 
-                Condition.EqualTo, 
-                this.Username);
-
-            members.Wherein.Which(
-                members.Column(x => x.password), 
-                Condition.EqualTo, 
-                this.Password);
-            
-            if (members.Count() == 1)
-            {
-                this.SessionKey = Session.AddSession(this.Username);
-            }
+            this.SessionKey = Session.AddSession(this.Username);
         }
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            if (string.IsNullOrEmpty(this.Username))
-            {
-                yield return new ValidationResult("Username is a required field.", new[] { nameof(this.Username) });
-            }
+            yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
 
-            if (this.HttpMethod == DTCore.Mvc.Enums.HttpMethod.GET)
+            if (this.Mapping)
             {
-                if (string.IsNullOrEmpty(this.SessionKey))
+                yield return DTValidationResult.FieldRequired(nameof(this.SessionKey), this.SessionKey);
+            }
+            
+            if (this.Handling)
+            {
+                yield return DTValidationResult.FieldRequired(nameof(this.Password), this.Password);
+
+                if (!CheckMember.CheckUsernamePasswordExists(this.Username, this.Password))
                 {
-                    yield return new ValidationResult("SessionKey is a required field.", new[] { nameof(this.SessionKey) });
+                    yield return DTValidationResult.Compose("InvalidLogin", nameof(this.Username), nameof(this.Password));
                 }
             }
-
-            if (this.HttpMethod == DTCore.Mvc.Enums.HttpMethod.POST)
-            {
-                if (string.IsNullOrEmpty(this.Password))
-                {
-                    yield return new ValidationResult("Password is a required field.", new[] { nameof(this.Password) });
-                }
-            }
-        }
-
-        public override void MapModel()
-        {
-            this.IsLogin();
-        }
-
-        public override void HandleModel()
-        {
-            this.Login();
         }
     }
 }

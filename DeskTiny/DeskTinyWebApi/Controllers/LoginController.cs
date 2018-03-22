@@ -1,10 +1,11 @@
 ﻿using DeskTinyWebApi.Models.Login;
+using DTCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeskTinyWebApi.Controllers
 {
-    [Route("[controller]")]
-    public class LoginController : DTCore.Mvc.DTController
+    [Route("login")]
+    public class LoginController : DTController
     {
         [HttpGet]
         public JsonResult Get()

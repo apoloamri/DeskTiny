@@ -1,8 +1,9 @@
-﻿using DTCore.Database.Attributes;
+﻿using DTCore.Database;
+using DTCore.Database.Attributes;
 
 namespace DeskTinyWebApi.DT.Database.Tables
 {
-    public class Members : DTCore.Database.Entity
+    public class Members : Entity
     {
         [NotNull]
         public string username { get; set; }
@@ -10,6 +11,13 @@ namespace DeskTinyWebApi.DT.Database.Tables
         [NotNull]
         public string password { get; set; }
         
+        [NotNull]
         public string email { get; set; }
+
+        [NotNull]
+        public string first_name { get; set; }
+
+        [NotNull]
+        public string last_name { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using DTCore.Database.Enums;
 using DTCore.Tools.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,11 +36,11 @@ namespace DTCore.Database.System
         private int ColumnCount = 0;
         private string OptionalName = "q_";
         public string Order { get; private set; }
-        public string Where { get; private set; } = "";
+        public string WhereBase { get; private set; } = "";
         public List<string> MultiWhere { get; private set; } = new List<string>();
         public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
-        public void Which(
+        public void Where(
             TableColumn column, 
             Condition condition, 
             object value, 
@@ -55,13 +54,13 @@ namespace DTCore.Database.System
             string columnParameter = this.OptionalName + column.Get + this.ColumnCount;
             string statement = $"{column.Get} {this.GetCondition(condition)} :{columnParameter} ";
 
-            if (string.IsNullOrEmpty(this.Where))
+            if (string.IsNullOrEmpty(this.WhereBase))
             {
-                this.Where += $"{statement} ";
+                this.WhereBase += $"{statement} ";
             }
             else
             {
-                this.Where += $"{oper ?? Operator.AND} {statement} ";
+                this.WhereBase += $"{oper ?? Operator.AND} {statement} ";
             }
             
             this.Parameters.Add(columnParameter, value);
@@ -70,8 +69,8 @@ namespace DTCore.Database.System
 
         public void End(Operator? oper = null)
         {
-            this.MultiWhere.Add($"({this.Where}) {oper} ");
-            this.Where = string.Empty;
+            this.MultiWhere.Add($"({this.WhereBase}) {oper} ");
+            this.WhereBase = string.Empty;
         }
         
         private string GetCondition(Condition condition)

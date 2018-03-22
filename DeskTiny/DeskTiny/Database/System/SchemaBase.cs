@@ -13,26 +13,25 @@ namespace DTCore.Database.System
         protected string TableName { get; set; }
 
         protected SchemaBase(string tableName) { this.TableName = tableName; }
+
+        protected string Join { get; set; } = string.Empty;
         
         protected NonConditions NonConditions { get; set; } = new NonConditions();
 
-        protected void ClearNonConditions()
-        {
-            this.NonConditions = new NonConditions();
-        }
+        protected void ClearNonConditions() { this.NonConditions = new NonConditions(); }
 
         protected string GetWhere()
         {
             string where = string.Empty;
 
-            if (this.Wherein.MultiWhere?.Count() > 0)
+            if (this.Conditions.MultiWhere?.Count() > 0)
             {
-                where += string.Join(" ", this.Wherein.MultiWhere);
+                where += string.Join(" ", this.Conditions.MultiWhere);
             }
 
             where +=
-                !string.IsNullOrEmpty(this.Wherein.Where) ?
-                this.Wherein.Where :
+                !string.IsNullOrEmpty(this.Conditions.WhereBase) ?
+                this.Conditions.WhereBase :
                 string.Empty;
 
             return 
@@ -87,7 +86,7 @@ namespace DTCore.Database.System
 
             return string.Join(",", columnList); ;
         }
-
+        
         private string CreateColumn(PropertyInfo property)
         {
             var customAttributes = property.GetCustomAttributes(false);
@@ -227,6 +226,16 @@ namespace DTCore.Database.System
             return attributeString;
         }
 
+        public void ClearRelation() { this.Join = string.Empty; }
+
+        public Conditions Conditions { get; set; } = new Conditions();
+
+        public void ClearConditions() { this.Conditions = new Conditions(); }
+
+        public T Entity { get; set; } = new T();
+
+        public void ClearEntity() { this.Entity = new T(); }
+
         public TableColumn Column<TProp>(Expression<Func<T, TProp>> expression)
         {
             var body = expression.Body as MemberExpression;
@@ -242,14 +251,6 @@ namespace DTCore.Database.System
                 TableName = this.TableName
             };
         }
-
-        public T Entity { get; set; } = new T();
-
-        public Conditions Wherein { get; set; } = new Conditions();
-
-        public void ClearConditions() { this.Wherein = new Conditions(); }
-        
-        public void ClearEntity() { this.Entity = new T(); }
     }
 
     public enum DataType { BIGINT, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE }

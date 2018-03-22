@@ -1,4 +1,7 @@
 ﻿{
+  "API": {
+    "SessionTimeOut": 60
+  },
   "Database": {
     "Server": "localhost",
     "Port": "5432",
@@ -16,11 +19,20 @@
     "ConnectionLifeTime": "",
     "Migrate": true
   },
-  "API": {
-    "SessionTimeOut": 60
-  },
   "DefaultMessages": {
-    "RequiredField": "{0} is a required field"
+    "ConfirmPassword": "Password confirmation does not match.",
+    "EmailExists": "Email already exists.",
+    "InvalidLogin": "Invalid usernamr or password.",
+    "RequiredField": "{0} is a required field",
+    "UsernameExists": "Username already exists."
+  },
+  "FieldNames": {
+    "Username": "Username",
+    "Password": "Password",
+    "ConfirmPassword": "Confirm password",
+    "Email": "Email address",
+    "FirstName": "First name",
+    "LastName": "Last name"
   },
   "Logs": {
     "Migration": "C:\\logs\\migration_log.txt"

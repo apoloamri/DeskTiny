@@ -17,12 +17,12 @@ namespace DTCore.Database
 
             var table = InformationSchemaTables;
 
-            table.Wherein.Which(
+            table.Conditions.Where(
                 table.Column(x => x.table_name),
                 Condition.EqualTo,
                 tableName);
 
-            table.Wherein.AddColumns(
+            table.Conditions.AddColumns(
                 table.Column(x => x.table_name));
 
             var newSchema = new Schema<T>(tableName);
@@ -35,12 +35,12 @@ namespace DTCore.Database
             {
                 var columns = InformationSchemaColumns;
 
-                columns.Wherein.Which(
+                columns.Conditions.Where(
                     columns.Column(x => x.table_name),
                     Condition.EqualTo,
                     tableName);
 
-                columns.Wherein.AddColumns(
+                columns.Conditions.AddColumns(
                     columns.Column(x => x.column_name));
 
                 var currentColumns = columns.Select.Entities?.Select(x => x.column_name)?.ToList();
@@ -60,7 +60,7 @@ namespace DTCore.Database
 
             return newSchema;
         }
-
+        
         private static Schema<InformationSchema> InformationSchemaTables => new Schema<InformationSchema>("information_schema.tables");
         private static Schema<InformationSchema> InformationSchemaColumns => new Schema<InformationSchema>("information_schema.columns");
         public static Schema<Accesses> Accesses => CreateTable<Accesses>("accesses");

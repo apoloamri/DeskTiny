@@ -1,4 +1,5 @@
 ﻿using DTCore.Database.Attributes;
+using DTCore.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,17 @@ namespace DTCore.Database
             return this.GetType().GetProperties().Select(x => x.Name).ToList();
         }
 
-        public void OverwriteWithModel(object model)
+        public void SetValuesFromModel(object model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetValuesFromDictionary(Dictionary<string, object> dictionary)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SetValues(object model, object value)
         {
             throw new NotImplementedException();
         }
