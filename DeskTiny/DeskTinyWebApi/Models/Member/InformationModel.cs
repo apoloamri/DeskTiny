@@ -9,11 +9,8 @@ namespace DeskTinyWebApi.Models.Member
 {
     public class InformationModel : DTModel
     {
-        [Input]
-        public string Username { get; set; }
-
         [JsonProperty]
-        public Dictionary<string, object> MemberDictionary { get; set; }
+        public Dictionary<string, object> Result { get; set; }
 
         public override void HandleModel()
         {
@@ -26,14 +23,14 @@ namespace DeskTinyWebApi.Models.Member
             member.Conditions.Where(
                 member.Column(x => x.username),
                 Condition.EqualTo,
-                this.Username);
+                this.SessionId);
             
-            this.MemberDictionary = member.Select.Dictionary;
+            this.Result = member.Select.Dictionary;
         }
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            return null;
+            yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
         }
     }
 }

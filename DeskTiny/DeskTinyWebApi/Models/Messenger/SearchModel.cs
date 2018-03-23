@@ -47,10 +47,10 @@ namespace DeskTinyWebApi.Models.Messenger
             if (!this.Email.IsEmpty())
             {
                 members.Conditions.Where(
+                    Operator.OR,
                     members.Column(x => x.email),
                     Condition.Like,
-                    $"%{this.Email}%",
-                    Operator.OR);
+                    $"%{this.Email}%");
             }
             
             this.Result = members.Select.Dictionaries

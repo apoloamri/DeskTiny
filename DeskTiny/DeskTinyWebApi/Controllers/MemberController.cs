@@ -14,7 +14,7 @@ namespace DeskTinyWebApi.Controllers
             this.Initiate<ContactsModel>(true);
             return this.Conclude();
         }
-
+        
         [HttpGet]
         [Route("info")]
         public JsonResult Information()

@@ -3,9 +3,13 @@ new Vue({
 
     data: {
         search: "",
+        message: "",
+        username: "",
         messages: [],
         contacts: [],
-        result: []
+        result: [],
+        uncontacts: [],
+        information: {}
     },
 
     methods: {
@@ -45,7 +49,7 @@ new Vue({
                 },
                 success: function (data) {
                     if (data.is_valid) {
-                        this.GetContacts();
+                        that.GetContacts();
                         alert("Contact added.");
                     }
                     else {
@@ -68,6 +72,7 @@ new Vue({
                 success: function (data) {
                     if (data.is_valid) {
                         that.contacts = data.result;
+                        that.uncontacts = data.unaccepted_results
                     }
                     else {
                         
@@ -76,7 +81,13 @@ new Vue({
             });
         },
 
-        ShowMessages: function (username) {
+        SelectRecipient: function (username) {
+            var that = this;
+            that.username = username;
+            that.ShowMessages();
+        },
+
+        ShowMessages: function () {
             var that = this;
             $.ajax({
                 url: apiUrl + "messenger/message",
@@ -85,11 +96,56 @@ new Vue({
                 data: {
                     "session_id": getCookie("session_id"),
                     "session_key": getCookie("session_key"),
-                    "username": username
+                    "username": that.username
                 },
                 success: function (data) {
                     if (data.is_valid) {
                         that.messages = data.result;
+                        setTimeout(function () { that.ShowMessages(that.username) }, 2000);
+                    }
+                    else {
+                        
+                    }
+                }
+            });
+        },
+
+        SendMessage: function () {
+            var that = this;
+            $.ajax({
+                url: apiUrl + "messenger/message",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    "session_id": getCookie("session_id"),
+                    "session_key": getCookie("session_key"),
+                    "username": that.username,
+                    "message": that.message
+                },
+                success: function (data) {
+                    if (data.is_valid) {
+                        
+                    }
+                    else {
+                        
+                    }
+                }
+            });
+        },
+
+        GetInformation: function () {
+            var that = this;
+            $.ajax({
+                url: apiUrl + "member/info",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "session_id": getCookie("session_id"),
+                    "session_key": getCookie("session_key")
+                },
+                success: function (data) {
+                    if (data.is_valid) {
+                        that.information = data.result;
                     }
                     else {
                         
@@ -101,6 +157,7 @@ new Vue({
 
     created: function () {
         this.GetContacts();
+        this.GetInformation();
     }
 
     // watch: {

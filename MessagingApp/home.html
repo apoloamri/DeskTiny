@@ -14,19 +14,36 @@
         <a href="#" onclick="logout()">Logout</a>
         <table id="messenger">
             <tr>
-                <td>
+                <td valign="top">
+                    Logged in as: {{information.email}}<br />
                     <input type="text" v-model="search" />
                     <button v-on:click="Search()">Search</button><br />
                     <div v-for="member in result">
                         <button v-on:click="AddContact(member.username)">Add contact</button> {{member.username}} ({{member.email}})<br />
-                    </div>
+                    </div><br />
+                    <b>Contacts</b>
                     <div v-for="member in contacts">
-                        <a href="#" v-on:click="ShowMessages(member.username1)">{{member.username1}} ({{member.email}})</a><br />
-                    </div>
+                        <a href="#" v-on:click="SelectRecipient(member.username1)">{{member.username1}} ({{member.email}})</a><br />
+                    </div><br />
+                    <b>Incoming</b>
+                    <div v-for="member in uncontacts">
+                        <button v-on:click="AddContact(member.username)">Add contact</button> {{member.username}} ({{member.email}})<br />
+                    </div><br />
                 </td>
-                <td>
-                    <div v-for="member in messages">
-                        {{member.email}} ({{member.message}})<br />
+                <td valign="top">
+                    <div v-if="username != ''">
+                        <input type="text" v-model="message" />
+                        <button v-on:click="SendMessage()">Send message to {{username}}</button>
+                        <div v-for="member in messages">
+                            <span v-if="username == member.username">
+                                <b>{{member.email}}</b><br />
+                                ({{member.insert_time1}}) {{member.message}}==>
+                            </span>
+                            <span v-else>
+                                <span style="float:right;"><=={{member.message}} ({{member.insert_time1}})</span>
+                            </span>
+                            <br /><br />
+                        </div>
                     </div>
                 </td>
             </tr>

@@ -38,7 +38,7 @@ namespace DeskTinyWebApi.Models.Messenger
             var members = Schemas.Members;
 
             messages.Relate(Join.LEFT, members,
-                messages.Relation(messages.Column(x => x.recipient), members.Column(x => x.username)));
+                messages.Relation(messages.Column(x => x.sender), members.Column(x => x.username)));
 
             messages.Conditions.Where(
                 messages.Column(x => x.sender),
@@ -61,6 +61,9 @@ namespace DeskTinyWebApi.Models.Messenger
                 messages.Column(x => x.recipient),
                 Condition.EqualTo,
                 this.SessionId);
+
+            messages.Conditions.OrderBy(messages.Column(x => x.insert_time), Order.DESC);
+            messages.Conditions.LimitBy(10);
 
             this.Result = messages.Select.Dictionaries;
         }

@@ -11,7 +11,7 @@ namespace DTCore.Database.System
 {
     public class SchemaBase<T> where T : Entity, new()
     {
-        protected string TableName { get; set; }
+        public string TableName { get; set; }
 
         protected SchemaBase(string tableName) { this.TableName = tableName; }
 
@@ -273,6 +273,10 @@ namespace DTCore.Database.System
         public string ColumnName { get; set; }
         public string TableName { get; set; }
         public string Get => $"{this.TableName}.{this.ColumnName}";
+        public string GetCustomName(string customName)
+        {
+            return $"{customName}.{ this.ColumnName}";
+        }
     }
 
     public class Relation

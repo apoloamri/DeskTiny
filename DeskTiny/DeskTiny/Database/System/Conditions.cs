@@ -41,10 +41,18 @@ namespace DTCore.Database.System
         public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
         public void Where(
+            TableColumn column,
+            Condition condition,
+            object value)
+        {
+            this.Where(Operator.AND, column, condition, value);
+        }
+
+        public void Where(
+            Operator? oper,
             TableColumn column, 
             Condition condition, 
-            object value, 
-            Operator? oper = null)
+            object value)
         {
             if (value == null)
             {
@@ -65,6 +73,43 @@ namespace DTCore.Database.System
             
             this.Parameters.Add(columnParameter, value);
             this.ColumnCount++;
+        }
+
+        public void Exists<T>(Operator? oper, Schema<T> schema, params Relation[] columnOn) where T : Entity, new()
+        {
+            this.ExistsBase(oper, schema, false, columnOn);
+        }
+
+        public void NotExists<T>(Operator? oper, Schema<T> schema, params Relation[] columnOn) where T : Entity, new()
+        {
+            this.ExistsBase(oper, schema, true, columnOn);
+        }
+
+        private void ExistsBase<T>(Operator? oper, Schema<T> schema, bool notExists, params Relation[] columnOn) where T : Entity, new()
+        {
+            string existence = notExists ?
+                "NOT" :
+                string.Empty;
+
+            string customName = "sub";
+
+            var onString = new List<string>();
+
+            foreach (var column in columnOn)
+            {
+                onString.Add($"{column.Column1.GetCustomName(customName)} {Conditions.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
+            }
+            
+            string statement = $"{existence} EXISTS ({Operations.SELECT} 1 FROM {schema.TableName} AS {customName} WHERE {string.Join(", ", onString)})";
+
+            if (this.WhereBase.IsEmpty())
+            {
+                this.WhereBase += $"{statement} ";
+            }
+            else
+            {
+                this.WhereBase += $"{oper ?? Operator.AND} {statement} ";
+            }
         }
 
         public void End(Operator? oper = null)
