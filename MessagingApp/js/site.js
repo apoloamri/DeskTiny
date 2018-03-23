@@ -25,7 +25,7 @@ function getCookie(cname) {
 }
 
 function checkLogin(logInPage) {
-    var username = getCookie("username");
+    var username = getCookie("session_id");
     var session_key = getCookie("session_key");
 
     $.ajax({

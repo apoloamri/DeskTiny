@@ -1,7 +1,10 @@
 ﻿using DTCore.Database;
 using DTCore.Database.Enums;
+using DTCore.Mvc;
 using DTCore.Tools;
+using DTCore.Tools.Extensions;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DTCore.WebApi
 {
@@ -9,6 +12,11 @@ namespace DTCore.WebApi
     {
         public static string AddSession(string sessionId)
         {
+            if (sessionId.IsEmpty())
+            {
+                return null;
+            }
+
             var session = Schemas.Sessions;
             
             session.Conditions.Where(
@@ -53,6 +61,11 @@ namespace DTCore.WebApi
 
         public static bool IsSessionActive(string sessionId, string sessionKey)
         {
+            if (sessionId.IsEmpty() || sessionKey.IsEmpty())
+            {
+                return false;
+            }
+
             var session = Schemas.Sessions;
 
             session.Conditions.Where(

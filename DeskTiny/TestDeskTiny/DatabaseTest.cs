@@ -74,9 +74,8 @@ namespace TestDeskTiny
             var clients = Schemas.Clients;
             var accesses = Schemas.Accesses;
 
-            clients.Relate(Join.INNER, accesses, new[,] { 
-                { accesses.Column(x => x.token), clients.Column(x => x.username) }
-            });
+            clients.Relate(Join.INNER, accesses,
+                clients.Relation(accesses.Column(x => x.token), clients.Column(x => x.username)));
 
             var dictionaries = clients.Select.Dictionaries;
         }

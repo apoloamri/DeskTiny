@@ -12,10 +12,34 @@ namespace DeskTinyWebApi.Controllers
     public class MessengerController : DTController
     {
         [HttpGet]
+        [Route("message")]
+        public JsonResult GetMessages()
+        {
+            this.Initiate<MessagesModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpPost]
+        [Route("message")]
+        public JsonResult SendMessages()
+        {
+            this.Initiate<MessagesModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpGet]
         [Route("search")]
         public JsonResult Search()
         {
             this.Initiate<SearchModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public JsonResult Add()
+        {
+            this.Initiate<AddModel>(true);
             return this.Conclude();
         }
     }

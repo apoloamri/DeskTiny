@@ -19,7 +19,7 @@ new Vue({
                 },
                 success: function (data) {
                     if (data.is_valid) {
-                        setCookie("username", that.username, 1);
+                        setCookie("session_id", that.username, 1);
                         setCookie("session_key", data.session_key, 1);
                         window.location = "home.html";
                     }
@@ -29,9 +29,5 @@ new Vue({
                 }
             });
         }
-    },
-
-    created: function () {
-        checkLogin(true);
     }
 });

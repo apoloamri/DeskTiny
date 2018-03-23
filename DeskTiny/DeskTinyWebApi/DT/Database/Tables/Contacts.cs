@@ -6,9 +6,11 @@ namespace DeskTinyWebApi.DT.Database.Tables
     public class Contacts : Entity
     {
         [NotNull]
-        public int member_id { get; set; }
+        [Length(50)]
+        public string username { get; set; }
 
         [NotNull]
-        public int contact_id { get; set; }
+        [Length(50)]
+        public string contact_username { get; set; }
     }
 }

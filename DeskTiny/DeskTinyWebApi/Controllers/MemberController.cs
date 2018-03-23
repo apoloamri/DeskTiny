@@ -8,6 +8,14 @@ namespace DeskTinyWebApi.Controllers
     public class MemberController : DTController
     {
         [HttpGet]
+        [Route("contacts")]
+        public JsonResult Contacts()
+        {
+            this.Initiate<ContactsModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpGet]
         [Route("info")]
         public JsonResult Information()
         {

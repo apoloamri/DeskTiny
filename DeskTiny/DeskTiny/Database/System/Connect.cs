@@ -1,6 +1,7 @@
 ﻿using DTCore.System;
 using DTCore.System.Diagnostics;
 using DTCore.Tools;
+using DTCore.Tools.Extensions;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace DTCore.Database.System
 
         public Connect(string sql, Dictionary<string, object> parameters)
         {
-            if (string.IsNullOrEmpty(sql))
+            if (sql.IsEmpty())
             {
                 throw new CustomException("SQL not provided.");
             }

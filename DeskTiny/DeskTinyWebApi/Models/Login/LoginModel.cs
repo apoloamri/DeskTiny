@@ -14,11 +14,7 @@ namespace DeskTinyWebApi.Models.Login
         
         [Input]
         public string Password { get; set; }
-
-        [Input]
-        [JsonProperty]
-        public string SessionKey { get; set; }
-
+        
         [JsonProperty]
         public bool? LoggedIn { get; set; }
         

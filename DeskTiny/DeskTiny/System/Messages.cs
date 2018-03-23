@@ -1,4 +1,5 @@
 ﻿using DTCore.Tools;
+using DTCore.Tools.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace DTCore.System
                 {
                     string fieldName = ConfigurationBuilder.Configuration().GetSection("FieldNames").GetSection(value).Value;
 
-                    if (string.IsNullOrEmpty(fieldName))
+                    if (fieldName.IsEmpty())
                     {
                         fields.Add(value);
                     }
@@ -29,8 +30,8 @@ namespace DTCore.System
                 return string.Format(defaultMessage, fields.ToArray());
             }
 
-            return 
-                string.IsNullOrEmpty(defaultMessage) ?
+            return
+                defaultMessage.IsEmpty() ?
                 message :
                 defaultMessage;
         }

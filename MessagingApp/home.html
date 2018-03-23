@@ -9,7 +9,7 @@
     <script src="js/library/vue.js"></script>
     <script src="js/site.js"></script>
 </head>
-<body>
+<body onload="checkLogin(false)">
     <div id="content">
         <a href="#" onclick="logout()">Logout</a>
         <table id="messenger">
@@ -18,10 +18,16 @@
                     <input type="text" v-model="search" />
                     <button v-on:click="Search()">Search</button><br />
                     <div v-for="member in result">
-                        <button v-on:click="AddContact(member.id)">Add contact</button> {{member.username}} ({{member.email}})<br />
+                        <button v-on:click="AddContact(member.username)">Add contact</button> {{member.username}} ({{member.email}})<br />
+                    </div>
+                    <div v-for="member in contacts">
+                        <a href="#" v-on:click="ShowMessages(member.username1)">{{member.username1}} ({{member.email}})</a><br />
                     </div>
                 </td>
                 <td>
+                    <div v-for="member in messages">
+                        {{member.email}} ({{member.message}})<br />
+                    </div>
                 </td>
             </tr>
         </table>

@@ -11,7 +11,6 @@ namespace DeskTinyWebApi.Controllers
         public JsonResult Get()
         {
             this.Initiate<LoginModel>(true);
-
             return this.Conclude();
         }
 
@@ -19,7 +18,6 @@ namespace DeskTinyWebApi.Controllers
         public JsonResult Post()
         {
             this.Initiate<LoginModel>(true);
-
             return this.Conclude();
         }
     }

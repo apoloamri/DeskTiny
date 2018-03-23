@@ -1,4 +1,5 @@
 ﻿using DTCore.Database.Attributes;
+using DTCore.Database.Enums;
 using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,12 @@ namespace DTCore.Database.System
             }
 
             where +=
-                !string.IsNullOrEmpty(this.Conditions.WhereBase) ?
+                !this.Conditions.WhereBase.IsEmpty() ?
                 this.Conditions.WhereBase :
                 string.Empty;
 
             return 
-                !string.IsNullOrEmpty(where) ?
+                !where.IsEmpty() ?
                 $"WHERE {where}" :
                 string.Empty;
         }
@@ -63,7 +64,7 @@ namespace DTCore.Database.System
                 var property = this.Entity.GetType().GetProperty(column);
                 var newColumn = this.CreateColumn(property);
 
-                if (string.IsNullOrEmpty(newColumn))
+                if (newColumn.IsEmpty())
                 {
                     continue;
                 }
@@ -95,7 +96,7 @@ namespace DTCore.Database.System
             string dataType = this.GetColumnDataType(property.PropertyType, customAttributes);
             string attributes = string.Empty;
             
-            if (string.IsNullOrEmpty(dataType))
+            if (dataType.IsEmpty())
             {
                 return string.Empty;
             }
@@ -251,6 +252,16 @@ namespace DTCore.Database.System
                 TableName = this.TableName
             };
         }
+
+        public Relation Relation(TableColumn column1, TableColumn column2, Condition? condition = null)
+        {
+            return new Relation()
+            {
+                Column1 = column1,
+                Column2 = column2,
+                Condition = condition
+            };
+        }
     }
 
     public enum DataType { BIGINT, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE }
@@ -262,5 +273,12 @@ namespace DTCore.Database.System
         public string ColumnName { get; set; }
         public string TableName { get; set; }
         public string Get => $"{this.TableName}.{this.ColumnName}";
+    }
+
+    public class Relation
+    {
+        public TableColumn Column1 { get; set; }
+        public TableColumn Column2 { get; set; }
+        public Condition? Condition { get; set; }
     }
 }

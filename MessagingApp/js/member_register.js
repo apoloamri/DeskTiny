@@ -38,9 +38,5 @@ new Vue({
                 }
             });
         }
-    },
-
-    created: function () {
-        //checkLogin(false);
     }
 });

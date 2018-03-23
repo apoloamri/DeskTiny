@@ -23,7 +23,7 @@ namespace DTCore.Database.System
         
         public void OrderBy(TableColumn column, Order order)
         {
-            if (string.IsNullOrEmpty(this.Order))
+            if (this.Order.IsEmpty())
             {
                 this.Order = $"{column.Get} {order.GetString()}";
             }
@@ -52,9 +52,9 @@ namespace DTCore.Database.System
             }
             
             string columnParameter = this.OptionalName + column.Get + this.ColumnCount;
-            string statement = $"{column.Get} {this.GetCondition(condition)} :{columnParameter} ";
+            string statement = $"{column.Get} {GetCondition(condition)} :{columnParameter} ";
 
-            if (string.IsNullOrEmpty(this.WhereBase))
+            if (this.WhereBase.IsEmpty())
             {
                 this.WhereBase += $"{statement} ";
             }
@@ -73,7 +73,7 @@ namespace DTCore.Database.System
             this.WhereBase = string.Empty;
         }
         
-        private string GetCondition(Condition condition)
+        public static string GetCondition(Condition condition)
         {
             switch (condition)
             {

@@ -1,5 +1,6 @@
 ﻿using DTCore.System;
 using DTCore.Tools.Extensions;
+using DTCore.WebApi;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -7,6 +8,16 @@ namespace DTCore.Mvc
 {
     public static class DTValidationResult
     {
+        public static ValidationResult CheckSessionActivity(string sessionId, string sessionKey)
+        {
+            if (Session.IsSessionActive(sessionId, sessionKey))
+            {
+                return null;
+            }
+
+            return DTValidationResult.Compose("SessionExpired", "SessionKey");
+        }
+
         public static ValidationResult Compose(string message, params string[] memberNames)
         {
             var newMessage = Messages.Get(message);
@@ -21,7 +32,7 @@ namespace DTCore.Mvc
 
         public static ValidationResult FieldRequired(string fieldName, object value, string message = null)
         {
-            if (string.IsNullOrEmpty(message))
+            if (message.IsEmpty())
             {
                 message = Messages.Get("RequiredField", fieldName);
             }
@@ -32,7 +43,7 @@ namespace DTCore.Mvc
             }
             else
             {
-                if (string.IsNullOrEmpty(value.ToString()))
+                if (value.ToString().IsEmpty())
                 {
                     return Compose(message, fieldName);
                 }

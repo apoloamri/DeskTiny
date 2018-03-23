@@ -3,6 +3,8 @@ new Vue({
 
     data: {
         search: "",
+        messages: [],
+        contacts: [],
         result: []
     },
 
@@ -14,6 +16,8 @@ new Vue({
                 type: "GET",
                 dataType: "json",
                 data: {
+                    "session_id": getCookie("session_id"),
+                    "session_key": getCookie("session_key"),
                     "username": that.search,
                     "email": that.search
                 },
@@ -28,19 +32,64 @@ new Vue({
             });
         },
 
-        Search: function () {
+        AddContact: function (username) {
             var that = this;
             $.ajax({
-                url: apiUrl + "messenger/search",
-                type: "GET",
+                url: apiUrl + "messenger/add",
+                type: "POST",
                 dataType: "json",
                 data: {
-                    "username": that.search,
-                    "email": that.search
+                    "session_id": getCookie("session_id"),
+                    "session_key": getCookie("session_key"),
+                    "username": username
                 },
                 success: function (data) {
                     if (data.is_valid) {
-                        that.result = data.result;
+                        this.GetContacts();
+                        alert("Contact added.");
+                    }
+                    else {
+                        alert(data.messages.username);
+                    }
+                }
+            });
+        },
+
+        GetContacts: function () {
+            var that = this;
+            $.ajax({
+                url: apiUrl + "member/contacts",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "session_id": getCookie("session_id"),
+                    "session_key": getCookie("session_key")
+                },
+                success: function (data) {
+                    if (data.is_valid) {
+                        that.contacts = data.result;
+                    }
+                    else {
+                        
+                    }
+                }
+            });
+        },
+
+        ShowMessages: function (username) {
+            var that = this;
+            $.ajax({
+                url: apiUrl + "messenger/message",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "session_id": getCookie("session_id"),
+                    "session_key": getCookie("session_key"),
+                    "username": username
+                },
+                success: function (data) {
+                    if (data.is_valid) {
+                        that.messages = data.result;
                     }
                     else {
                         
@@ -51,8 +100,8 @@ new Vue({
     },
 
     created: function () {
-        checkLogin(false);
-    },
+        this.GetContacts();
+    }
 
     // watch: {
     //     username: function() {

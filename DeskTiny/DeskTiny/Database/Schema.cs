@@ -17,15 +17,15 @@ namespace DTCore.Database
             };
         }
 
-        public void Relate<Joined>(Join join, Schema<Joined> schema, TableColumn[,] columnOn) where Joined : Entity, new()
+        public void Relate<Joined>(Join join, Schema<Joined> schema, params Relation[] columnOn) where Joined : Entity, new()
         {
             var onString = new List<string>();
             
-            for (int i = 0; i < columnOn.GetLength(0); i++)
+            foreach (var column in columnOn)
             {
-                onString.Add($"{columnOn[i, 0].Get} = {columnOn[i, 1].Get}");
+                onString.Add($"{column.Column1.Get} {Conditions.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
             }
-
+            
             this.Join += $"{join.GetString()} JOIN {schema.TableName} ON {string.Join(", ", onString)}";
         }
 
@@ -37,7 +37,7 @@ namespace DTCore.Database
                 "*";
             
             string order =
-                !string.IsNullOrEmpty(this.Conditions.Order) ?
+                !this.Conditions.Order.IsEmpty() ?
                 $"ORDER BY {this.Conditions.Order}" :
                 string.Empty;
 

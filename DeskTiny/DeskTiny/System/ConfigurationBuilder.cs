@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DTCore.Tools.Extensions;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 
@@ -19,6 +20,7 @@ namespace DTCore.Tools
         {
             private static IConfigurationSection ConfigurationSection = Configuration().GetSection("API");
 
+            public static string[] AllowOrigins => ConfigurationSection.GetSection("AllowOrigins").Value.Split(',');
             public static int SessionTimeOut => Convert.ToInt32(ConfigurationSection.GetSection("SessionTimeOut").Value);
         }
 
@@ -46,20 +48,20 @@ namespace DTCore.Tools
                     string connectionLifeTime = ConfigurationSection.GetSection("ConnectionLifeTime").Value;
 
                     return
-                        (!string.IsNullOrEmpty(server) ? $"Server={server};" : string.Empty) +
-                        (!string.IsNullOrEmpty(port) ? $"Port={port};" : string.Empty) +
-                        (!string.IsNullOrEmpty(database) ? $"Database={database};" : string.Empty) +
-                        (!string.IsNullOrEmpty(userId) ? $"User Id={userId};" : string.Empty) +
-                        (!string.IsNullOrEmpty(password) ? $"Password={password};" : string.Empty) +
-                        (!string.IsNullOrEmpty(commandTimeout) ? $"CommandTimeout={commandTimeout};" : string.Empty) +
-                        (!string.IsNullOrEmpty(timeout) ? $"Timeout={timeout};" : string.Empty) +
-                        (!string.IsNullOrEmpty(protocol) ? $"Protocol={protocol};" : string.Empty) +
-                        (!string.IsNullOrEmpty(ssl) ? $"SSL={ssl};" : string.Empty) +
-                        (!string.IsNullOrEmpty(sslMode) ? $"SslMode={sslMode};" : string.Empty) +
-                        (!string.IsNullOrEmpty(pooling) ? $"Pooling={pooling};" : string.Empty) +
-                        (!string.IsNullOrEmpty(minPoolSize) ? $"MinPoolSize={minPoolSize};" : string.Empty) +
-                        (!string.IsNullOrEmpty(maxPoolSize) ? $"MaxPoolSize={maxPoolSize};" : string.Empty) +
-                        (!string.IsNullOrEmpty(connectionLifeTime) ? $"ConnectionLifeTime={connectionLifeTime};" : string.Empty);
+                        (!server.IsEmpty() ? $"Server={server};" : string.Empty) +
+                        (!port.IsEmpty() ? $"Port={port};" : string.Empty) +
+                        (!database.IsEmpty() ? $"Database={database};" : string.Empty) +
+                        (!userId.IsEmpty() ? $"User Id={userId};" : string.Empty) +
+                        (!password.IsEmpty() ? $"Password={password};" : string.Empty) +
+                        (!commandTimeout.IsEmpty() ? $"CommandTimeout={commandTimeout};" : string.Empty) +
+                        (!timeout.IsEmpty() ? $"Timeout={timeout};" : string.Empty) +
+                        (!protocol.IsEmpty() ? $"Protocol={protocol};" : string.Empty) +
+                        (!ssl.IsEmpty() ? $"SSL={ssl};" : string.Empty) +
+                        (!sslMode.IsEmpty() ? $"SslMode={sslMode};" : string.Empty) +
+                        (!pooling.IsEmpty() ? $"Pooling={pooling};" : string.Empty) +
+                        (!minPoolSize.IsEmpty() ? $"MinPoolSize={minPoolSize};" : string.Empty) +
+                        (!maxPoolSize.IsEmpty() ? $"MaxPoolSize={maxPoolSize};" : string.Empty) +
+                        (!connectionLifeTime.IsEmpty() ? $"ConnectionLifeTime={connectionLifeTime};" : string.Empty);
                 }
             }
 

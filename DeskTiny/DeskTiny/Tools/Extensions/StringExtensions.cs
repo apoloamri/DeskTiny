@@ -7,6 +7,11 @@ namespace DTCore.Tools.Extensions
 {
     public static class StringExtensions
     {
+        public static bool IsEmpty(this string value)
+        {
+            return string.IsNullOrEmpty(value);
+        }
+
         public static string ToUnderscore(this string value)
         {
             return string.Concat(value.Select((x, i) =>
@@ -17,7 +22,7 @@ namespace DTCore.Tools.Extensions
 
         public static string ToCamelCase(this string value)
         {
-            if (string.IsNullOrEmpty(value))
+            if (value.IsEmpty())
             {
                 return value;
             }

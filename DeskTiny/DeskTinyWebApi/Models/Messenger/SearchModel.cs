@@ -2,9 +2,11 @@
 using DTCore.Database.Enums;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
+using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace DeskTinyWebApi.Models.Messenger
 {
@@ -26,29 +28,39 @@ namespace DeskTinyWebApi.Models.Messenger
 
         public override void MapModel()
         {
+            if (this.Email.IsEmpty() && this.Username.IsEmpty())
+            {
+                return;
+            }
+
             var members = Schemas.Members;
 
-            members.Conditions.Where(
-                members.Column(x => x.username),
-                Condition.Like,
-                $"%{this.Username}%");
+            if (!this.Username.IsEmpty())
+            {
+                members.Conditions.Where(
+                    members.Column(x => x.username),
+                    Condition.Like,
+                    $"%{this.Username}%");
+            }
+            
 
-            members.Conditions.Where(
-                members.Column(x => x.email),
-                Condition.Like,
-                $"%{this.Email}%",
-                Operator.OR);
-
-            this.Result = members.Select.Dictionaries;
+            if (!this.Email.IsEmpty())
+            {
+                members.Conditions.Where(
+                    members.Column(x => x.email),
+                    Condition.Like,
+                    $"%{this.Email}%",
+                    Operator.OR);
+            }
+            
+            this.Result = members.Select.Dictionaries
+                .Where(x => (string)x["username"] != this.SessionId)
+                .ToList();
         }
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            if (string.IsNullOrEmpty(this.Email) && string.IsNullOrEmpty(this.Username))
-            {
-                yield return DTValidationResult.FieldRequired(nameof(this.Email), this.Email);
-                yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
-            }
+            return null;
         }
     }
 }
