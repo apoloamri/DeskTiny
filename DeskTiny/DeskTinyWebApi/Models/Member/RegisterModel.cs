@@ -1,11 +1,11 @@
-﻿using DeskTinyWebApi.DT.Database;
-using DeskTinyWebApi.DT.Members;
+﻿using DTMessenger.DT.Database;
+using DTMessenger.DT.Members;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskTinyWebApi.Models.Member
+namespace DTMessenger.Models.Member
 {
     public class RegisterModel : DTModel
     {

@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeskTiny", "DeskTiny\DeskTi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDeskTiny", "TestDeskTiny\TestDeskTiny.csproj", "{07612105-EDE6-4080-A815-C9490BE06128}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeskTinyWebApi", "DeskTinyWebApi\DeskTinyWebApi.csproj", "{3F45C6EA-02B1-4BFF-81E0-94CF9E48D6A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTMessenger", "DeskTinyWebApi\DTMessenger.csproj", "{3F45C6EA-02B1-4BFF-81E0-94CF9E48D6A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeskTinyFront", "DeskTinyFront\DeskTinyFront.csproj", "{BE604ECA-59B9-4A45-967B-07C49979CD1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeskTinyFront", "DeskTinyFront\DeskTinyFront.csproj", "{BE604ECA-59B9-4A45-967B-07C49979CD1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

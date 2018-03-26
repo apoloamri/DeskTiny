@@ -1,7 +1,7 @@
 ﻿using DTCore.Database;
 using DTCore.Database.Attributes;
 
-namespace DeskTinyWebApi.DT.Database.Tables
+namespace DTMessenger.DT.Database.Tables
 {
     public class Messages : Entity
     {
@@ -13,5 +13,9 @@ namespace DeskTinyWebApi.DT.Database.Tables
 
         [NotNull]
         public string message { get; set; }
+
+        [NotNull]
+        [Default("0")]
+        public short? unread { get; set; }
     }
 }

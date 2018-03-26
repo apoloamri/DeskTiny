@@ -1,8 +1,8 @@
-﻿using DeskTinyWebApi.Models.Member;
+﻿using DTMessenger.Models.Member;
 using DTCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DeskTinyWebApi.Controllers
+namespace DTMessenger.Controllers
 {
     [Route("member")]
     public class MemberController : DTController

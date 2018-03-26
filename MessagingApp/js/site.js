@@ -1,5 +1,5 @@
 // Write your Javascript code.
-var apiUrl = "http://localhost:60400/";
+var apiUrl = "http://localhost:60400/"; //"http://192.168.10.62/api/"
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();

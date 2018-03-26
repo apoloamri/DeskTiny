@@ -1,6 +1,6 @@
 ﻿using DTCore.Database;
 
-namespace DeskTinyWebApi.DT.Database
+namespace DTMessenger.DT.Database
 {
     public class Schemas : DTCore.Database.Schemas
     {

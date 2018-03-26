@@ -1,4 +1,4 @@
-﻿using DeskTinyWebApi.DT.Database;
+﻿using DTMessenger.DT.Database;
 using DTCore.Database.Enums;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace DeskTinyWebApi.Models.Messenger
+namespace DTMessenger.Models.Messenger
 {
     public class SearchModel : DTModel
     {

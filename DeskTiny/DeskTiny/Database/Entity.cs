@@ -12,10 +12,10 @@ namespace DTCore.Database
         [Serial]
         [PrimaryKey]
         [NotNull]
-        public virtual int? id { get; set; }
+        public virtual long? id { get; set; }
 
         [NotNull]
-        [Default(DefaultFunctions.Now)]
+        [Default(Functions.Now)]
         public virtual DateTime? insert_time { get; set; }
 
         public List<string> GetColumns()
@@ -31,6 +31,11 @@ namespace DTCore.Database
         public void SetValuesFromDictionary(Dictionary<string, object> dictionary)
         {
             throw new NotImplementedException();
+        }
+
+        public Dictionary<string, object> ToDictionary()
+        {
+            return DictionaryClassConverter.ClassToDictionary(this);
         }
 
         private void SetValues(object model, object value)

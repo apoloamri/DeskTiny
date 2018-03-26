@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeskTinyWebApi.Models.Messenger;
+using DTMessenger.Models.Messenger;
 using DTCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DeskTinyWebApi.Controllers
+namespace DTMessenger.Controllers
 {
     [Route("messenger")]
     public class MessengerController : DTController

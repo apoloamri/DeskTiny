@@ -1,5 +1,5 @@
-﻿using DeskTinyWebApi.DT.Database;
-using DeskTinyWebApi.DT.Messenger;
+﻿using DTMessenger.DT.Database;
+using DTMessenger.DT.Messenger;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
 using DTCore.WebApi;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskTinyWebApi.Models.Messenger
+namespace DTMessenger.Models.Messenger
 {
     public class AddModel : DTModel
     {

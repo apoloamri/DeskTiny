@@ -19,31 +19,41 @@
                     <input type="text" v-model="search" />
                     <button v-on:click="Search()">Search</button><br />
                     <div v-for="member in result">
-                        <button v-on:click="AddContact(member.username)">Add contact</button> {{member.username}} ({{member.email}})<br />
+                        <button v-on:click="AddContact(member.username)">Add contact</button> 
+                        {{member.username}}<br />
+                        {{member.email}}<hr />
                     </div><br />
                     <b>Contacts</b>
                     <div v-for="member in contacts">
-                        <a href="#" v-on:click="SelectRecipient(member.username1)">{{member.username1}} ({{member.email}})</a><br />
+                        <a href="#" v-on:click="SelectRecipient(member.username1)">{{member.last_name}}, {{member.first_name}}</a>
+                        <span v-if="member.message_count > 0"><b>( {{member.message_count}} )</b></span>
+                        <br />
                     </div><br />
                     <b>Incoming</b>
                     <div v-for="member in uncontacts">
-                        <button v-on:click="AddContact(member.username)">Add contact</button> {{member.username}} ({{member.email}})<br />
+                        <button v-on:click="AddContact(member.username)">Add contact</button> 
+                        {{member.username}}<br />
+                        {{member.email}}<hr />
                     </div><br />
                 </td>
-                <td valign="top">
+                <td valign="top" style="width: 75%">
                     <div v-if="username != ''">
                         <input type="text" v-model="message" />
                         <button v-on:click="SendMessage()">Send message to {{username}}</button>
+                        <br /><br />
                         <div v-for="member in messages">
                             <span v-if="username == member.username">
-                                <b>{{member.email}}</b><br />
-                                ({{member.insert_time1}}) {{member.message}}==>
+                                <b>{{member.email}}</b> <span class="small_text">({{member.insert_time1}})</span><br />
+                                <span>{{member.message}} >></span>
                             </span>
                             <span v-else>
-                                <span style="float:right;"><=={{member.message}} ({{member.insert_time1}})</span>
-                            </span>
-                            <br /><br />
+                                <span class="small_text float_right">({{member.insert_time1}})</span><br />
+                                <span class="float_right"><< {{member.message}}</span>
+                            </span><br /><hr />
                         </div>
+                        <center>
+                            <button v-on:click="NextMessages()">Show next 10 messages</a>
+                        </center>
                     </div>
                 </td>
             </tr>

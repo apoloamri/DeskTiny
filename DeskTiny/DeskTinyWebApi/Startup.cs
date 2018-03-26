@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DeskTinyWebApi
+namespace DTMessenger
 {
     public class Startup : DTStartup
     {

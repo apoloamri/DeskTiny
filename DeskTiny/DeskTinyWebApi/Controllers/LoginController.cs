@@ -1,8 +1,8 @@
-﻿using DeskTinyWebApi.Models.Login;
+﻿using DTMessenger.Models.Login;
 using DTCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DeskTinyWebApi.Controllers
+namespace DTMessenger.Controllers
 {
     [Route("login")]
     public class LoginController : DTController

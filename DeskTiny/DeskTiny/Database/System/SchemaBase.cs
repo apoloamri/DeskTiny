@@ -15,15 +15,25 @@ namespace DTCore.Database.System
 
         protected SchemaBase(string tableName) { this.TableName = tableName; }
 
-        protected string Join { get; set; } = string.Empty;
+        protected List<JoinItem> Join { get; set; } = new List<JoinItem>();
         
         protected NonConditions NonConditions { get; set; } = new NonConditions();
 
         protected void ClearNonConditions() { this.NonConditions = new NonConditions(); }
 
-        protected string GetWhere()
+        protected string GetWhere(List<JoinItem> join = null)
         {
             string where = string.Empty;
+            string joinedTables = string.Empty;
+
+            if (join != null && join.Count() > 0)
+            {
+                if (this.Join.Count() > 0)
+                {
+                    joinedTables = $"FROM {string.Join(", ", this.Join.Select(x => x.TableName))}";
+                    where += $"{string.Join(", ", this.Join.Select(x => x.OnString))} AND ";
+                }
+            }
 
             if (this.Conditions.MultiWhere?.Count() > 0)
             {
@@ -37,7 +47,7 @@ namespace DTCore.Database.System
 
             return 
                 !where.IsEmpty() ?
-                $"WHERE {where}" :
+                $"{joinedTables} WHERE {where}" :
                 string.Empty;
         }
         
@@ -202,12 +212,12 @@ namespace DTCore.Database.System
                     {
                         switch (attr.DefaultFunction)
                         {
-                            case DefaultFunctions.Now:
+                            case Functions.Now:
                                 attributeString += $"Now()";
                                 break;
                         }
                     }
-                    else if (attr.DefaultObject != null)
+                    else if (!attr.DefaultObject.IsEmpty())
                     {
                         attributeString += $"'{attr.DefaultObject}'";
                     }
@@ -227,7 +237,7 @@ namespace DTCore.Database.System
             return attributeString;
         }
 
-        public void ClearRelation() { this.Join = string.Empty; }
+        public void ClearRelation() { this.Join = new List<JoinItem>(); }
 
         public Conditions Conditions { get; set; } = new Conditions();
 
@@ -284,5 +294,12 @@ namespace DTCore.Database.System
         public TableColumn Column1 { get; set; }
         public TableColumn Column2 { get; set; }
         public Condition? Condition { get; set; }
+    }
+
+    public class JoinItem
+    {
+        public Join? Join { get; set; }
+        public string TableName { get; set; }
+        public string OnString { get; set; }
     }
 }

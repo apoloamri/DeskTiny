@@ -1,7 +1,7 @@
-﻿using DeskTinyWebApi.DT.Database;
+﻿using DTMessenger.DT.Database;
 using DTCore.Database.Enums;
 
-namespace DeskTinyWebApi.DT.Members
+namespace DTMessenger.DT.Members
 {
     public static class CheckMember
     {

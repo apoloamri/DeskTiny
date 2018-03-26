@@ -26,7 +26,7 @@ namespace DTCore.Database
                 onString.Add($"{column.Column1.Get} {Conditions.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
             }
             
-            this.Join += $"{join.GetString()} JOIN {schema.TableName} ON {string.Join(", ", onString)}";
+            this.Join.Add(new JoinItem() { Join = join, TableName = schema.TableName, OnString = string.Join(", ", onString) });
         }
 
         public Query SelectBase()
@@ -35,7 +35,12 @@ namespace DTCore.Database
                 this.Conditions.Columns?.Count() > 0 ?
                 string.Join(", ", this.Conditions.Columns) :
                 "*";
-            
+
+            string join =
+                this.Join?.Count() > 0 ?
+                string.Join(" ", this.Join.Select(x => { return $"{x.Join.GetString()} JOIN {x.TableName} ON {x.OnString}"; })) :
+                string.Empty;
+
             string order =
                 !this.Conditions.Order.IsEmpty() ?
                 $"ORDER BY {this.Conditions.Order}" :
@@ -47,7 +52,7 @@ namespace DTCore.Database
                 string.Empty;
 
             return new Query(
-                $"{Operations.SELECT} {columns} FROM {TableName} {this.Join} {this.GetWhere()} {order} {limit};",
+                $"{Operations.SELECT} {columns} FROM {TableName} {join} {this.GetWhere()} {order} {limit};",
                 this.Conditions.Parameters
                 );
         }
@@ -99,9 +104,9 @@ namespace DTCore.Database
             {
                 return 0;
             }
-
+            
             var nonQuery = new NonQuery(
-                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere()};",
+                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere(this.Join)};",
                 this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
                 );
 
@@ -111,7 +116,7 @@ namespace DTCore.Database
         public int Delete()
         {
             var nonQuery = new NonQuery(
-                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()};",
+                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(this.Join)};",
                 this.Conditions.Parameters
                 );
 

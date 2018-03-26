@@ -1,11 +1,11 @@
-﻿using DeskTinyWebApi.DT.Members;
+﻿using DTMessenger.DT.Members;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
 using DTCore.WebApi;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskTinyWebApi.Models.Login
+namespace DTMessenger.Models.Login
 {
     public class LoginModel : DTModel
     {

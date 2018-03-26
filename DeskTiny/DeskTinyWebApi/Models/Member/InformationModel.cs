@@ -1,11 +1,11 @@
-﻿using DeskTinyWebApi.DT.Database;
+﻿using DTMessenger.DT.Database;
 using DTCore.Database.Enums;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskTinyWebApi.Models.Member
+namespace DTMessenger.Models.Member
 {
     public class InformationModel : DTModel
     {

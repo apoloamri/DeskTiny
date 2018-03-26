@@ -1,11 +1,11 @@
-﻿using DeskTinyWebApi.DT.Database;
-using DTCore.Database.Enums;
+﻿using DTCore.Database.Enums;
 using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
+using DTMessenger.DT.Database;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskTinyWebApi.Models.Messenger
+namespace DTMessenger.Models.Messenger
 {
     public class MessagesModel : DTModel
     {
@@ -18,6 +18,9 @@ namespace DeskTinyWebApi.Models.Messenger
         [Input]
         public string ContactUsername { get; set; }
 
+        [Input]
+        public int? Count { get; set; }
+
         [JsonProperty]
         public List<Dictionary<string, object>> Result { get; set; }
 
@@ -28,11 +31,45 @@ namespace DeskTinyWebApi.Models.Messenger
             messages.Entity.sender = this.SessionId;
             messages.Entity.recipient = this.Username;
             messages.Entity.message = this.Message;
+            messages.Entity.unread = 1;
 
             messages.Insert();
         }
 
         public override void MapModel()
+        {
+            this.GetMessages();
+            this.ReadMessages();
+            
+        }
+
+        private void ReadMessages()
+        {
+            var messages = Schemas.Messages;
+            var members = Schemas.Members;
+
+            messages.Relate(Join.LEFT, members,
+                messages.Relation(messages.Column(x => x.sender), members.Column(x => x.username)));
+
+            messages.Conditions.Where(
+                messages.Column(x => x.sender),
+                Condition.EqualTo,
+                this.Username);
+
+            messages.Conditions.Where(
+                messages.Column(x => x.recipient),
+                Condition.EqualTo,
+                this.SessionId);
+
+            messages.Conditions.OrderBy(messages.Column(x => x.insert_time), Order.DESC);
+            messages.Conditions.LimitBy(this.Count ?? 10);
+
+            messages.Entity.unread = 0;
+
+            messages.Update();
+        }
+
+        private void GetMessages()
         {
             var messages = Schemas.Messages;
             var members = Schemas.Members;
@@ -63,8 +100,8 @@ namespace DeskTinyWebApi.Models.Messenger
                 this.SessionId);
 
             messages.Conditions.OrderBy(messages.Column(x => x.insert_time), Order.DESC);
-            messages.Conditions.LimitBy(10);
-
+            messages.Conditions.LimitBy(this.Count ?? 10);
+            
             this.Result = messages.Select.Dictionaries;
         }
 

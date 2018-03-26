@@ -1,8 +1,8 @@
-﻿using DeskTinyWebApi.DT.Database;
+﻿using DTMessenger.DT.Database;
 using DTCore.Database.Enums;
 using DTCore.Tools.Extensions;
 
-namespace DeskTinyWebApi.DT.Messenger
+namespace DTMessenger.DT.Messenger
 {
     public static class CheckAdd
     {

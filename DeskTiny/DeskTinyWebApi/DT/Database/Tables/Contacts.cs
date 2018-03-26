@@ -1,7 +1,7 @@
 ﻿using DTCore.Database;
 using DTCore.Database.Attributes;
 
-namespace DeskTinyWebApi.DT.Database.Tables
+namespace DTMessenger.DT.Database.Tables
 {
     public class Contacts : Entity
     {

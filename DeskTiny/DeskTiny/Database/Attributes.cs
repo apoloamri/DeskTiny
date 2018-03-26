@@ -5,16 +5,16 @@ namespace DTCore.Database.Attributes
 {
     public class Default : Attribute
     {
-        public object DefaultObject { get; set; }
+        public string DefaultObject { get; set; }
 
-        public Default(object defaultValue)
+        public Default(string defaultValue)
         {
             this.DefaultObject = defaultValue;
         }
 
-        public DefaultFunctions? DefaultFunction { get; set; }
+        public Functions? DefaultFunction { get; set; }
 
-        public Default(DefaultFunctions defaultValue)
+        public Default(Functions defaultValue)
         {
             this.DefaultFunction = defaultValue;
         }
@@ -40,5 +40,5 @@ namespace DTCore.Database.Attributes
 
     public class Unique : Attribute { }
 
-    public enum DefaultFunctions { Now }
+    public enum Functions { Now }
 }

@@ -2,6 +2,7 @@ new Vue({
     el: '#messenger',
 
     data: {
+        count: 10,
         search: "",
         message: "",
         username: "",
@@ -28,6 +29,7 @@ new Vue({
                 success: function (data) {
                     if (data.is_valid) {
                         that.result = data.result;
+                        that.search = "";
                     }
                     else {
                         
@@ -72,7 +74,8 @@ new Vue({
                 success: function (data) {
                     if (data.is_valid) {
                         that.contacts = data.result;
-                        that.uncontacts = data.unaccepted_results
+                        that.uncontacts = data.unaccepted_results;
+                        setTimeout(function () { that.GetContacts() }, 2000);
                     }
                     else {
                         
@@ -84,6 +87,7 @@ new Vue({
         SelectRecipient: function (username) {
             var that = this;
             that.username = username;
+            that.count = 10;
             that.ShowMessages();
         },
 
@@ -96,12 +100,13 @@ new Vue({
                 data: {
                     "session_id": getCookie("session_id"),
                     "session_key": getCookie("session_key"),
-                    "username": that.username
+                    "username": that.username,
+                    "count": that.count
                 },
                 success: function (data) {
                     if (data.is_valid) {
                         that.messages = data.result;
-                        setTimeout(function () { that.ShowMessages(that.username) }, 2000);
+                        setTimeout(function () { that.ShowMessages(that.username) }, 1000);
                     }
                     else {
                         
@@ -110,6 +115,11 @@ new Vue({
             });
         },
 
+        NextMessages: function () {
+            var that = this;
+            that.count += 10;
+        },
+        
         SendMessage: function () {
             var that = this;
             $.ajax({
@@ -124,7 +134,7 @@ new Vue({
                 },
                 success: function (data) {
                     if (data.is_valid) {
-                        
+                        that.message = "";
                     }
                     else {
                         
