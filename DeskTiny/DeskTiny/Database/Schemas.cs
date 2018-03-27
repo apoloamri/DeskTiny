@@ -1,8 +1,10 @@
 ﻿using DTCore.Database.Enums;
 using DTCore.Database.Tables;
+using DTCore.DTSystem;
 using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using System.Linq;
+using System.Threading;
 
 namespace DTCore.Database
 {
@@ -52,6 +54,8 @@ namespace DTCore.Database
                 }
 
                 newSchema.AddTableColumns(entityColumns.MissingItems(currentColumns));
+
+                Thread.Sleep(1000);
 
                 currentColumns = columns.Select.Entities?.Select(x => x.column_name)?.ToList();
 

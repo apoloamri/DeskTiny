@@ -27,27 +27,20 @@ function getCookie(cname) {
 function checkLogin(logInPage) {
     var username = getCookie("session_id");
     var session_key = getCookie("session_key");
-
-    $.ajax({
-        url: apiUrl + "login",
-        type: "GET",
-        dataType: "json",
-        data: {
-            "username": username,
-            "session_key": session_key
-        },
-        success: function (data) {
-            var logged_in = data.logged_in;
-
-            if (logInPage) {
-                if (logged_in) {
-                    window.location = "home.html";
-                }
+    $.get(apiUrl + "login", {
+        "username": username,
+        "session_key": session_key
+    },
+    function (data) {
+        var logged_in = data.logged_in;
+        if (logInPage) {
+            if (logged_in) {
+                window.location = "home.html";
             }
-            else {
-                if (!logged_in) {
-                    window.location = "index.html";
-                }
+        }
+        else {
+            if (!logged_in) {
+                window.location = "index.html";
             }
         }
     });

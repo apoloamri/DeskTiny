@@ -121,12 +121,15 @@ namespace DTCore.Database.System
                 dataType = string.Empty;
             }
 
-            return $"{column} {dataType} {attributes}";
+            string array = property.PropertyType.IsArray ? "[]" : string.Empty;
+
+            return $"{column} {dataType} {attributes} {array}";
         }
 
         private string GetColumnDataType(Type type, object[] attributes)
         {
             bool hasSerial = false;
+            bool hasText = false;
 
             foreach (var attribute in attributes)
             {
@@ -135,28 +138,41 @@ namespace DTCore.Database.System
                     hasSerial = true;
                 }
 
+                if (attribute is Text)
+                {
+                    hasText = true;
+                }
+
                 if (attribute is NonTableColumn)
                 {
                     return string.Empty;
                 }
             }
             
-            if (type == typeof(string))
+            if (type == typeof(string) ||
+                type == typeof(string[]))
             {
-                return DataType.CHARACTER_VARYING.GetString();
+                return
+                    !hasText ?
+                    DataType.CHARACTER_VARYING.GetString() :
+                    DataType.TEXT.GetString();
             }
             else if (
                 type == typeof(int) ||
-                type == typeof(int?))
+                type == typeof(int?) ||
+                type == typeof(int[]) ||
+                type == typeof(int?[]))
             {
-                return 
-                    !hasSerial ? 
+                return
+                    !hasSerial ?
                     DataType.INTEGER.GetString() :
                     DataType.SERIAL.GetString();
             }
             else if (
                 type == typeof(long) ||
-                type == typeof(long?))
+                type == typeof(long?) ||
+                type == typeof(long[]) ||
+                type == typeof(long?[]))
             {
                 return
                     !hasSerial ?
@@ -167,7 +183,11 @@ namespace DTCore.Database.System
                 type == typeof(short) ||
                 type == typeof(short?) ||
                 type == typeof(bool) ||
-                type == typeof(bool?))
+                type == typeof(bool?) ||
+                type == typeof(short[]) ||
+                type == typeof(short?[]) ||
+                type == typeof(bool[]) ||
+                type == typeof(bool?[]))
             {
                 return
                     !hasSerial ?
@@ -176,7 +196,9 @@ namespace DTCore.Database.System
             }
             else if (
                 type == typeof(DateTime) ||
-                type == typeof(DateTime?))
+                type == typeof(DateTime?) ||
+                type == typeof(DateTime[]) ||
+                type == typeof(DateTime?[]))
             {
                 return DataType.TIMESTAMP_WITHOUT_TIME_ZONE.GetString();
             }
@@ -274,7 +296,7 @@ namespace DTCore.Database.System
         }
     }
 
-    public enum DataType { BIGINT, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE }
+    public enum DataType { BIGINT, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE, TEXT }
     public enum Operations { SELECT, INSERT, UPDATE, DELETE, CREATE_TABLE, ALTER_TABLE, ADD, DROP_COLUMN }
     public enum ColumnAttributes { NOT_NULL, PRIMARY_KEY, UNIQUE }
 

@@ -10,76 +10,81 @@ new Vue({
         contacts: [],
         result: [],
         uncontacts: [],
-        information: {}
+        information: {},
+
+        group_name: "",
+        members: "",
+        groups: []
     },
 
     methods: {
+        GetInformation: function () {
+            var that = this;
+            $.get(apiUrl + "member/info", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key")
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.information = data.result;
+                }
+                else {
+                    
+                }
+            });
+        },
+
+//Messanging - start
         Search: function () {
             var that = this;
-            $.ajax({
-                url: apiUrl + "messenger/search",
-                type: "GET",
-                dataType: "json",
-                data: {
-                    "session_id": getCookie("session_id"),
-                    "session_key": getCookie("session_key"),
-                    "username": that.search,
-                    "email": that.search
-                },
-                success: function (data) {
-                    if (data.is_valid) {
-                        that.result = data.result;
-                        that.search = "";
-                    }
-                    else {
-                        
-                    }
+            $.get(apiUrl + "messenger/search", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key"),
+                "username": that.search,
+                "email": that.search
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.result = data.result;
+                    that.search = "";
+                }
+                else {
+                    
                 }
             });
         },
 
         AddContact: function (username) {
             var that = this;
-            $.ajax({
-                url: apiUrl + "messenger/add",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "session_id": getCookie("session_id"),
-                    "session_key": getCookie("session_key"),
-                    "username": username
-                },
-                success: function (data) {
-                    if (data.is_valid) {
-                        that.GetContacts();
-                        alert("Contact added.");
-                    }
-                    else {
-                        alert(data.messages.username);
-                    }
+            $.post(apiUrl + "messenger/add", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key"),
+                "username": username
+            },
+            function (data) {
+                if (data.is_valid) {
+                    alert("Contact added.");
+                }
+                else {
+                    alert(data.messages.username);
                 }
             });
         },
 
         GetContacts: function () {
             var that = this;
-            $.ajax({
-                url: apiUrl + "member/contacts",
-                type: "GET",
-                dataType: "json",
-                data: {
-                    "session_id": getCookie("session_id"),
-                    "session_key": getCookie("session_key")
-                },
-                success: function (data) {
-                    if (data.is_valid) {
-                        that.contacts = data.result;
-                        that.uncontacts = data.unaccepted_results;
-                        setTimeout(function () { that.GetContacts() }, 2000);
-                    }
-                    else {
-                        
-                    }
+            $.get(apiUrl + "member/contacts", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key")
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.contacts = data.result;
+                    that.uncontacts = data.unaccepted_results;
+                    //setTimeout(function () { that.GetContacts() }, 2000);
+                }
+                else {
+                    
                 }
             });
         },
@@ -93,24 +98,19 @@ new Vue({
 
         ShowMessages: function () {
             var that = this;
-            $.ajax({
-                url: apiUrl + "messenger/message",
-                type: "GET",
-                dataType: "json",
-                data: {
-                    "session_id": getCookie("session_id"),
-                    "session_key": getCookie("session_key"),
-                    "username": that.username,
-                    "count": that.count
-                },
-                success: function (data) {
-                    if (data.is_valid) {
-                        that.messages = data.result;
-                        setTimeout(function () { that.ShowMessages(that.username) }, 1000);
-                    }
-                    else {
-                        
-                    }
+            $.get(apiUrl + "messenger/message", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key"),
+                "username": that.username,
+                "count": that.count
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.messages = data.result;
+                    setTimeout(function () { that.ShowMessages(that.username) }, 1000);
+                }
+                else {
+                    
                 }
             });
         },
@@ -122,60 +122,48 @@ new Vue({
         
         SendMessage: function () {
             var that = this;
-            $.ajax({
-                url: apiUrl + "messenger/message",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "session_id": getCookie("session_id"),
-                    "session_key": getCookie("session_key"),
-                    "username": that.username,
-                    "message": that.message
-                },
-                success: function (data) {
-                    if (data.is_valid) {
-                        that.message = "";
-                    }
-                    else {
-                        
-                    }
+            $.post(apiUrl + "messenger/message", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key"),
+                "username": that.username,
+                "message": that.message
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.message = "";
+                }
+                else {
+                    
                 }
             });
         },
+//Messanging - end
 
-        GetInformation: function () {
+//Grouping - start   
+        AddGroup: function () {
             var that = this;
-            $.ajax({
-                url: apiUrl + "member/info",
-                type: "GET",
-                dataType: "json",
-                data: {
-                    "session_id": getCookie("session_id"),
-                    "session_key": getCookie("session_key")
-                },
-                success: function (data) {
-                    if (data.is_valid) {
-                        that.information = data.result;
-                    }
-                    else {
-                        
-                    }
+            var members = that.members.replace(/ /g,'');
+            $.post(apiUrl + "messenger/group/create", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key"),
+                "group_name": that.group_name,
+                "members": members.split(",")
+            },
+            function (data) {
+                if (data.is_valid) {
+                    alert("Group created.");
+                    that.messages = [];
+                }
+                else {
+                    that.messages = data.messages;
                 }
             });
         }
+//Grouping - end
     },
 
     created: function () {
         this.GetContacts();
         this.GetInformation();
     }
-
-    // watch: {
-    //     username: function() {
-    //         this.Search();
-    //     },
-    //     email: function() {
-    //         this.Search();
-    //     }
-    // }
 });

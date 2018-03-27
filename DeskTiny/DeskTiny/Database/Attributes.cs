@@ -24,7 +24,7 @@ namespace DTCore.Database.Attributes
     {
         public int LengthCount { get; set; }
 
-        public Length([Range(1, 255)]int lenth)
+        public Length(int lenth)
         {
             this.LengthCount = lenth;
         }
@@ -39,6 +39,8 @@ namespace DTCore.Database.Attributes
     public class NonTableColumn : Attribute { }
 
     public class Unique : Attribute { }
+
+    public class Text : Attribute { }
 
     public enum Functions { Now }
 }

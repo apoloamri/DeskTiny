@@ -3,7 +3,7 @@ using DTCore.Tools.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DTCore.System
+namespace DTCore.DTSystem
 {
     public static class Messages
     {

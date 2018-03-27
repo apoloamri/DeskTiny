@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 
-namespace DTCore.Tools
+namespace DTCore.DTSystem
 {
     public static class ConfigurationBuilder
     {
@@ -73,6 +73,7 @@ namespace DTCore.Tools
             private static IConfigurationSection ConfigurationSection = Configuration().GetSection("Logs");
 
             public static string Migration => ConfigurationSection.GetSection("Migration").Value;
+            public static string System => ConfigurationSection.GetSection("System").Value;
         }
     }
 }

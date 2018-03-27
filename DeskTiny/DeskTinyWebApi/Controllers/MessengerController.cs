@@ -11,6 +11,22 @@ namespace DTMessenger.Controllers
     [Route("messenger")]
     public class MessengerController : DTController
     {
+        [HttpPost]
+        [Route("add")]
+        public JsonResult Add()
+        {
+            this.Initiate<AddModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpPost]
+        [Route("group/create")]
+        public JsonResult CreateGroup()
+        {
+            this.Initiate<CreateGroupModel>(true);
+            return this.Conclude();
+        }
+
         [HttpGet]
         [Route("message")]
         public JsonResult GetMessages()
@@ -32,14 +48,6 @@ namespace DTMessenger.Controllers
         public JsonResult Search()
         {
             this.Initiate<SearchModel>(true);
-            return this.Conclude();
-        }
-
-        [HttpPost]
-        [Route("add")]
-        public JsonResult Add()
-        {
-            this.Initiate<AddModel>(true);
             return this.Conclude();
         }
     }

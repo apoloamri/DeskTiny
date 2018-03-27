@@ -1,5 +1,5 @@
-﻿using DTCore.System;
-using DTCore.System.Diagnostics;
+﻿using DTCore.DTSystem;
+using DTCore.DTSystem.Diagnostics;
 using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using Npgsql;
@@ -24,11 +24,11 @@ namespace DTCore.Database.System
 
             string connectionString = ConfigurationBuilder.Database.ConnectionString;
             
-            Debug.WriteLine("Connecting database", connectionString);
+            DTDebug.WriteLine("Connecting database", connectionString);
             
             this.NpgsqlConnection = new NpgsqlConnection(connectionString);
 
-            Debug.WriteLine("Executing query", sql);
+            DTDebug.WriteLine("Executing query", sql);
 
             this.NpgsqlCommand = new NpgsqlCommand(sql, NpgsqlConnection);
 
@@ -37,7 +37,7 @@ namespace DTCore.Database.System
                 this.NpgsqlCommand.Parameters.Add(new NpgsqlParameter(parameter.Key, parameter.Value));
             }
 
-            Debug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
+            DTDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
         }
     }
 }

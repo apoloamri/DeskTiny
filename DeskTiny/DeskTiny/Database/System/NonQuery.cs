@@ -1,4 +1,5 @@
-﻿using DTCore.System.Diagnostics;
+﻿using DTCore.DTSystem;
+using DTCore.DTSystem.Diagnostics;
 using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using System;
@@ -19,7 +20,7 @@ namespace DTCore.Database.System
 
             this.NpgsqlConnection.Close();
 
-            Debug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
+            DTDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
 
             if (new[] {
                 Operations.ADD,
@@ -27,7 +28,7 @@ namespace DTCore.Database.System
                 Operations.CREATE_TABLE,
                 Operations.DROP_COLUMN }.Contains(operation))
             {
-                Debug.WriteLog(
+                DTDebug.WriteLog(
                     ConfigurationBuilder.Logs.Migration,
                     $"Migration Details - {DateTime.Now}", 
                     CommandToSql.CommandAsSql(this.NpgsqlCommand));

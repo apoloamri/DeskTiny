@@ -23,6 +23,8 @@ namespace DTCore.Mvc.System
 
         protected PropertyInfo GetModelProperty(ref string name, object obj)
         {
+            name = name.Replace("[]", "");
+
             var property = obj.GetType().GetProperty(name);
 
             if (property == null)

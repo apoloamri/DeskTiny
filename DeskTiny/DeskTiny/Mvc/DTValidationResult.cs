@@ -1,4 +1,4 @@
-﻿using DTCore.System;
+﻿using DTCore.DTSystem;
 using DTCore.Tools.Extensions;
 using DTCore.WebApi;
 using System.ComponentModel.DataAnnotations;
@@ -20,7 +20,12 @@ namespace DTCore.Mvc
 
         public static ValidationResult Compose(string message, params string[] memberNames)
         {
-            var newMessage = Messages.Get(message);
+            return Compose(message, null, memberNames);
+        }
+
+        public static ValidationResult Compose(string message, string[] values, params string[] memberNames)
+        {
+            var newMessage = Messages.Get(message, values);
 
             if (memberNames != null && memberNames.Count() > 0)
             {

@@ -27,7 +27,8 @@
     "InvalidLogin": "Invalid usernamr or password.",
     "RequiredField": "{0} is a required field.",
     "SessionExpired": "Current session is expired.",
-    "UsernameExists": "Username already exists."
+    "UsernameExists": "Username already exists.",
+    "UsernameNotExists": "Username {0} does not exists."
   },
   "FieldNames": {
     "Username": "Username",
@@ -38,6 +39,7 @@
     "LastName": "Last name"
   },
   "Logs": {
-    "Migration": "C:\\logs\\migration_log.txt"
+    "Migration": "C:\\logs\\migration_log.txt",
+    "System": "C:\\logs\\system_log.txt"
   }
 }

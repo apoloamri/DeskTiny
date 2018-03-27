@@ -4,6 +4,7 @@ using DTCore.Mvc;
 using DTCore.Mvc.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace DTMessenger.Models.Member
 {
@@ -40,6 +41,7 @@ namespace DTMessenger.Models.Member
 
         public override void MapModel()
         {
+            throw new NotImplementedException();
         }
 
         public override IEnumerable<ValidationResult> Validate()

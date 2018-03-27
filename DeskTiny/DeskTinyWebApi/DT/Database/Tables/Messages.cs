@@ -12,6 +12,7 @@ namespace DTMessenger.DT.Database.Tables
         public string recipient { get; set; }
 
         [NotNull]
+        [Text]
         public string message { get; set; }
 
         [NotNull]

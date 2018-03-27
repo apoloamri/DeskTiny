@@ -1,16 +1,28 @@
-﻿using DTCore.Tools;
-using System;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using SystemDiagnostics = System.Diagnostics;
 
-namespace DTCore.System.Diagnostics
+namespace DTCore.DTSystem.Diagnostics
 {
-    public static class Debug
+    public static class DTDebug
     {
         public static void WriteLine(string title, string details)
         {
-            SystemDiagnostics.Debug.WriteLine(GenerateText(title, details));
+            Debug.WriteLine(GenerateText(title, details));
+        }
+
+        public static void WriteLog(Exception details)
+        {
+            var errorDetails =
+                $"Stack trace: {details.StackTrace}{Environment.NewLine}" +
+                $"Source: {details.Source}{Environment.NewLine}" +
+                $"Message: {details.Message}";
+
+            WriteLog(
+                ConfigurationBuilder.Logs.System, 
+                $"System Exception Details - {DateTime.Now}", 
+                errorDetails);
         }
 
         public static void WriteLog(string path, string title, string details)

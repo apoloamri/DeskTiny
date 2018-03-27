@@ -1,13 +1,13 @@
-﻿using DTCore.System.Diagnostics;
+﻿using DTCore.DTSystem.Diagnostics;
 using System;
 
-namespace DTCore.System
+namespace DTCore.DTSystem
 {
     public class CustomException : Exception
     {
         public CustomException(string message)
         {
-            Debug.WriteLine("System Exception:", message);
+            DTDebug.WriteLine("System Exception:", message);
 
             throw new Exception(message);
         }

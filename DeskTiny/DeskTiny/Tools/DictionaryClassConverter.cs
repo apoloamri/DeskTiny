@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DTCore.DTSystem;
+using DTCore.DTSystem.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -20,9 +22,21 @@ namespace DTCore.Tools
                 {
                     if (keyValue.Value != DBNull.Value)
                     {
-                        var value = System.Convert.ChangeType(keyValue.Value, property.PropertyType);
-                        
-                        type.GetProperty(keyValue.Key).SetValue(obj, value);
+                        try
+                        {
+                            var value = DTConvert.ChangeType(keyValue.Value, property.PropertyType);
+
+                            type.GetProperty(keyValue.Key).SetValue(obj, value);
+                        }
+                        catch
+                        {
+                            DTDebug.WriteLog(
+                                ConfigurationBuilder.Logs.System,
+                                $"Ignored Malformed Line - {DateTime.Now}",
+                                $"Name: {keyValue.Key}{Environment.NewLine}" +
+                                $"Value: {keyValue.Value}{Environment.NewLine}" +
+                                $"Type: {property.PropertyType}");
+                        }
                     }
                 }
             }

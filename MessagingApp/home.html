@@ -25,7 +25,7 @@
                     </div><br />
                     <b>Contacts</b>
                     <div v-for="member in contacts">
-                        <a href="#" v-on:click="SelectRecipient(member.username1)">{{member.last_name}}, {{member.first_name}}</a>
+                        <a href="#" v-on:click="SelectRecipient(member.username1)">{{member.last_name}}, {{member.first_name}} ({{member.username1}})</a>
                         <span v-if="member.message_count > 0"><b>( {{member.message_count}} )</b></span>
                         <br />
                     </div><br />
@@ -35,10 +35,25 @@
                         {{member.username}}<br />
                         {{member.email}}<hr />
                     </div><br />
+                    <b>Groups</b>
+                    <div v-for="member in groups">
+                        <button v-on:click="AddContact(member.username)">Add contact</button> 
+                        {{member.username}}<br />
+                        {{member.email}}<hr />
+                    </div><br />
+                    <b>Create group</b>
+                    <div>
+                        Group name <input type="text" v-model="group_name" />
+                        <span>{{messages.group_name}}</span><br />
+                        Members <input type="text" v-model="members" />
+                        <span>{{messages.members}}</span><br />
+                        <span class="small_text">Memberes separate by comma.</span>
+                        <button v-on:click="AddGroup()">Create group</button> 
+                    </div>
                 </td>
                 <td valign="top" style="width: 75%">
                     <div v-if="username != ''">
-                        <input type="text" v-model="message" />
+                        <textarea v-model="message"></textarea>
                         <button v-on:click="SendMessage()">Send message to {{username}}</button>
                         <br /><br />
                         <div v-for="member in messages">
@@ -60,5 +75,6 @@
         </table>
     </div>
     <script src="js/home.js"></script>
+    <script src="js/home2.js"></script>
 </body>
 </html>

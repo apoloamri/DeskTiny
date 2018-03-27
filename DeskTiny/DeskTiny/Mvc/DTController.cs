@@ -1,5 +1,6 @@
 ﻿using DTCore.Mvc.Attributes;
 using DTCore.Mvc.System;
+using DTCore.DTSystem.Diagnostics;
 using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using MainSystem = System;
 
 namespace DTCore.Mvc
 {
@@ -14,17 +16,24 @@ namespace DTCore.Mvc
     {
         public void Initiate<Model>(bool validate = false) where Model : DTModel, new()
         {
-            var obj = Activator.CreateInstance(typeof(Model));
-
-            this.GetMethod();
-            this.GetBody(obj);
-            this.GetQueries(obj);
-
-            this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.JsonDictionary);
-
-            if (validate)
+            try
             {
-                this.ValidateModel();
+                var obj = Activator.CreateInstance(typeof(Model));
+
+                this.GetMethod();
+                this.GetBody(obj);
+                this.GetQueries(obj);
+
+                this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.JsonDictionary);
+
+                if (validate)
+                {
+                    this.ValidateModel();
+                }
+            }
+            catch (Exception ex) when (!MainSystem.Diagnostics.Debugger.IsAttached)
+            {
+                DTDebug.WriteLog(ex);
             }
         }
 
@@ -116,13 +125,20 @@ namespace DTCore.Mvc
 
         public JsonResult Conclude()
         {
-            if (this.ModelState.IsValid)
+            try
             {
-                this.ExecuteMapping();
-                this.ExecuteHandling();
-                this.BuildJson();
+                if (this.ModelState.IsValid)
+                {
+                    this.ExecuteMapping();
+                    this.ExecuteHandling();
+                    this.BuildJson();
+                }
             }
-            
+            catch (Exception ex) when (!MainSystem.Diagnostics.Debugger.IsAttached)
+            {
+                DTDebug.WriteLog(ex);
+            }
+
             return this.JsonResult;
         }
     }

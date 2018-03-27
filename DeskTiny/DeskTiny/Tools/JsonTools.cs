@@ -1,4 +1,4 @@
-﻿using DTCore.System.Diagnostics;
+﻿using DTCore.DTSystem.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,7 +15,7 @@ namespace DTCore.Tools
             }
             catch (JsonReaderException ex)
             {
-                Debug.WriteLine(ex.Message, ex.StackTrace);
+                DTDebug.WriteLine(ex.Message, ex.StackTrace);
                 return false;
             }
         }
