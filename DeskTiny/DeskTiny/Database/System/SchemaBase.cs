@@ -59,7 +59,14 @@ namespace DTCore.Database.System
 
             foreach (var property in type.GetProperties())
             {
-                columnList.Add(this.CreateColumn(property));
+                string column = this.CreateColumn(property);
+
+                if (column.IsEmpty())
+                {
+                    continue;
+                }
+                 
+                columnList.Add(column);
             }
 
             return string.Join(",", columnList);

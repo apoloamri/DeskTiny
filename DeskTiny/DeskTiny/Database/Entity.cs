@@ -20,7 +20,25 @@ namespace DTCore.Database
 
         public List<string> GetColumns()
         {
-            return this.GetType().GetProperties().Select(x => x.Name).ToList();
+            return this
+                 .GetType()
+                .GetProperties()
+                .Where(x =>
+                {
+                    var attributes = x.GetCustomAttributes(false);
+
+                    foreach (var attribute in attributes)
+                    {
+                        if (attribute is NonTableColumn)
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                })
+                .Select(x => x.Name)
+                .ToList();
         }
 
         public void SetValuesFromModel(object model)
