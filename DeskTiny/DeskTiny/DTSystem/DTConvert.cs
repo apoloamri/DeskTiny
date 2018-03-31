@@ -40,18 +40,9 @@ namespace DTCore.DTSystem
                 }
             }
             
-            if (conversion.IsGenericType && 
-                conversion.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-            {
-                if (value == null)
-                {
-                    return null;
-                }
+            Type type = Nullable.GetUnderlyingType(conversion) ?? conversion;
 
-                conversion = Nullable.GetUnderlyingType(conversion);
-            }
-            
-            return Convert.ChangeType(value, conversion);
+            return (value == null) ? null : Convert.ChangeType(value, type);
         }
     }
 }
