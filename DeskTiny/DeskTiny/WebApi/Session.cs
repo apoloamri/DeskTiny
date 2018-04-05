@@ -1,24 +1,31 @@
-﻿using DeskTiny.Database;
-using DeskTiny.Database.Enums;
-using DeskTiny.Tools;
+﻿using DTCore.Database;
+using DTCore.Database.Enums;
+using DTCore.DTSystem;
+using DTCore.Tools;
+using DTCore.Tools.Extensions;
 using System;
 
-namespace DeskTiny.WebApi
+namespace DTCore.WebApi
 {
     public static class Session
     {
         public static string AddSession(string sessionId)
         {
+            if (sessionId.IsEmpty())
+            {
+                return null;
+            }
+
             var session = Schemas.Sessions;
             
-            session.Conditions.AddWhere(
-                nameof(session.Entity.session_id), 
-                Condition.Equal, 
+            session.Conditions.Where(
+                session.Column(x => x.session_id), 
+                Condition.EqualTo, 
                 sessionId);
 
-            session.Conditions.AddWhere(
-                nameof(session.Entity.session_time), 
-                Condition.Greater, 
+            session.Conditions.Where(
+                session.Column(x => x.session_time), 
+                Condition.GreaterThan, 
                 DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
 
             var result = session.Select.Entity;
@@ -32,9 +39,9 @@ namespace DeskTiny.WebApi
 
             var sessionKey = KeyGenerator.GetUniqueKey(64);
             
-            session.Conditions.AddWhere(
-                nameof(session.Entity.session_key), 
-                Condition.Equal, 
+            session.Conditions.Where(
+                session.Column(x => x.session_key), 
+                Condition.EqualTo, 
                 sessionKey);
 
             while (session.Count() > 0)
@@ -53,21 +60,26 @@ namespace DeskTiny.WebApi
 
         public static bool IsSessionActive(string sessionId, string sessionKey)
         {
+            if (sessionId.IsEmpty() || sessionKey.IsEmpty())
+            {
+                return false;
+            }
+
             var session = Schemas.Sessions;
 
-            session.Conditions.AddWhere(
-                nameof(session.Entity.session_id),
-                Condition.Equal,
+            session.Conditions.Where(
+                session.Column(x => x.session_id),
+                Condition.EqualTo,
                 sessionId);
 
-            session.Conditions.AddWhere(
-                nameof(session.Entity.session_key),
-                Condition.Equal,
+            session.Conditions.Where(
+                session.Column(x => x.session_key),
+                Condition.EqualTo,
                 sessionKey);
 
-            session.Conditions.AddWhere(
-                nameof(session.Entity.session_time),
-                Condition.Greater,
+            session.Conditions.Where(
+                session.Column(x => x.session_time),
+                Condition.GreaterThan,
                 DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
             
             var count = session.Count();

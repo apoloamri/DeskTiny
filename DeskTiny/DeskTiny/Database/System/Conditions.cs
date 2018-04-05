@@ -1,87 +1,143 @@
-﻿using DeskTiny.Database.Enums;
+﻿using DTCore.Database.Enums;
+using DTCore.Tools.Extensions;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class Conditions
     {
-        internal string[] Columns { get; set; }
+        public string[] Columns { get; private set; }
 
-        public void AddColumns(params string[] columns)
+        public void AddColumns(params TableColumn[] columns)
         {
-            this.Columns = columns;
+            this.Columns = columns.Select(x => x.Get)?.ToArray();
         }
 
-        internal int? Limit { get; set; }
+        public int? Limit { get; private set; }
 
-        public void AddLimit(int limit)
+        public void LimitBy(int limit)
         {
             this.Limit = limit;
         }
-
-        public void AddOrder(Order order)
+        
+        public void OrderBy(TableColumn column, Order order)
         {
-            this.Order = order;
+            if (this.Order.IsEmpty())
+            {
+                this.Order = $"{column.Get} {order.GetString()}";
+            }
+            else
+            {
+                this.Order = $", {column.Get} {order.GetString()}";
+            }
         }
         
         private int ColumnCount = 0;
         private string OptionalName = "q_";
-        internal Order? Order { get; set; }
-        internal string Where { get; set; } = "";
-        internal List<string> MultiWhere { get; set; } = new List<string>();
-        internal Dictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>();
+        public string Order { get; private set; }
+        public string WhereBase { get; private set; } = "";
+        public List<string> MultiWhere { get; private set; } = new List<string>();
+        public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
-        public void AddWhere(
-            object column, 
+        public void Where(
+            TableColumn column,
+            Condition condition,
+            object value)
+        {
+            this.Where(Operator.AND, column, condition, value);
+        }
+
+        public void Where(
+            Operator? oper,
+            TableColumn column, 
             Condition condition, 
-            object value, 
-            Operator? oper = null)
+            object value)
         {
             if (value == null)
             {
                 return;
             }
             
-            string columnParameter = this.OptionalName + column + this.ColumnCount;
-            string statement = $"{column} {this.GetCondition(condition)} :{columnParameter} ";
+            string columnParameter = this.OptionalName + column.Get + this.ColumnCount;
+            string statement = $"{column.Get} {GetCondition(condition)} :{columnParameter} ";
 
-            if (string.IsNullOrEmpty(this.Where))
+            if (this.WhereBase.IsEmpty())
             {
-                this.Where += $"{statement} ";
+                this.WhereBase += $"{statement} ";
             }
             else
             {
-                this.Where += $"{oper ?? Operator.AND} {statement} ";
+                this.WhereBase += $"{oper ?? Operator.AND} {statement} ";
             }
             
             this.Parameters.Add(columnParameter, value);
             this.ColumnCount++;
         }
 
-        public void EndWhere(Operator? oper = null)
+        public void Exists<T>(Operator? oper, Schema<T> schema, params Relation[] columnOn) where T : Entity, new()
         {
-            this.MultiWhere.Add($"({this.Where}) {oper} ");
-            this.Where = string.Empty;
+            this.ExistsBase(oper, schema, false, columnOn);
+        }
+
+        public void NotExists<T>(Operator? oper, Schema<T> schema, params Relation[] columnOn) where T : Entity, new()
+        {
+            this.ExistsBase(oper, schema, true, columnOn);
+        }
+
+        private void ExistsBase<T>(Operator? oper, Schema<T> schema, bool notExists, params Relation[] columnOn) where T : Entity, new()
+        {
+            string existence = notExists ?
+                "NOT" :
+                string.Empty;
+
+            string customName = "sub";
+
+            var onString = new List<string>();
+
+            foreach (var column in columnOn)
+            {
+                onString.Add($"{column.Column1.GetCustomName(customName)} {Conditions.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
+            }
+            
+            string statement = $"{existence} EXISTS ({Operations.SELECT} 1 FROM {schema.TableName} AS {customName} WHERE {string.Join(", ", onString)})";
+
+            if (this.WhereBase.IsEmpty())
+            {
+                this.WhereBase += $"{statement} ";
+            }
+            else
+            {
+                this.WhereBase += $"{oper ?? Operator.AND} {statement} ";
+            }
+        }
+
+        public void End(Operator? oper = null)
+        {
+            this.MultiWhere.Add($"({this.WhereBase}) {oper} ");
+            this.WhereBase = string.Empty;
         }
         
-        private string GetCondition(Condition condition)
+        public static string GetCondition(Condition condition)
         {
             switch (condition)
             {
-                case Condition.Equal:
+                case Condition.EqualTo:
                     return "=";
-                case Condition.NotEqual:
+                case Condition.NotEqualTo:
                     return "!=";
-                case Condition.Greater:
+                case Condition.GreaterThan:
                     return ">";
-                case Condition.Lesser:
+                case Condition.LessThan:
                     return "<";
-                case Condition.GreaterEqual:
+                case Condition.GreaterThanEqualTo:
                     return ">=";
-                case Condition.LesserEqual:
+                case Condition.LessThanEqualTo:
                     return "<=";
-                case Condition.LIKE:
+                case Condition.Like:
                     return "LIKE";
+                case Condition.NotLike:
+                    return "NOT LIKE";
                 default:
                     return "=";
             }

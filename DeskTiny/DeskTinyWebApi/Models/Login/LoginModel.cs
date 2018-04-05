@@ -1,47 +1,50 @@
-﻿using DeskTiny.Database.Enums;
-using DeskTiny.Mvc.CustomAttributes;
-using DeskTiny.WebApi;
-using DeskTinyWebApi.DT.Database;
+﻿using DTMessenger.DT.Members;
+using DTCore.Mvc;
+using DTCore.Mvc.Attributes;
+using DTCore.WebApi;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace DeskTinyWebApi.Models.Login
+namespace DTMessenger.Models.Login
 {
-    public class LoginModel : DeskTiny.Mvc.CustomModel
+    public class LoginModel : DTModel
     {
         [Input]
         public string Username { get; set; }
         
         [Input]
         public string Password { get; set; }
-
-        [Input]
-        [JsonResult]
-        public string SessionKey { get; set; }
-
-        [JsonResult]
+        
+        [JsonProperty]
         public bool? LoggedIn { get; set; }
-
-        internal void IsLogin()
+        
+        public override void MapModel()
         {
             this.LoggedIn = Session.IsSessionActive(this.Username, this.SessionKey);
         }
 
-        internal void Login()
+        public override void HandleModel()
         {
-            var members = Schemas.Members;
+            this.SessionKey = Session.AddSession(this.Username);
+        }
 
-            members.Conditions.AddWhere(
-                nameof(members.Entity.username), 
-                Condition.Equal, 
-                this.Username);
+        public override IEnumerable<ValidationResult> Validate()
+        {
+            yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
 
-            members.Conditions.AddWhere(
-                nameof(members.Entity.password), 
-                Condition.Equal, 
-                this.Password);
-            
-            if (members.Count() == 1)
+            if (this.Mapping)
             {
-                this.SessionKey = Session.AddSession(this.Username);
+                yield return DTValidationResult.FieldRequired(nameof(this.SessionKey), this.SessionKey);
+            }
+            
+            if (this.Handling)
+            {
+                yield return DTValidationResult.FieldRequired(nameof(this.Password), this.Password);
+
+                if (!CheckMember.CheckUsernamePasswordExists(this.Username, this.Password))
+                {
+                    yield return DTValidationResult.Compose("InvalidLogin", nameof(this.Username), nameof(this.Password));
+                }
             }
         }
     }

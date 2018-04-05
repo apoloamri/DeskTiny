@@ -1,4 +1,8 @@
 ﻿{
+  "API": {
+    "AllowOrigins": "http://www.dtmessenger.com,http://www.dtcore.com",
+    "SessionTimeOut": 60
+  },
   "Database": {
     "Server": "localhost",
     "Port": "5432",
@@ -13,9 +17,29 @@
     "Pooling": "",
     "MinPoolSize": "",
     "MaxPoolSize": "",
-    "ConnectionLifeTime": ""
+    "ConnectionLifeTime": "",
+    "Migrate": true
   },
-  "API": {
-    "SessionTimeOut": 60
+  "DefaultMessages": {
+    "ConfirmPassword": "Password confirmation does not match.",
+    "ContactExists": "Contact already exists in your address book.",
+    "EmailExists": "Email already exists.",
+    "InvalidLogin": "Invalid usernamr or password.",
+    "RequiredField": "{0} is a required field.",
+    "SessionExpired": "Current session is expired.",
+    "UsernameExists": "Username already exists.",
+    "UsernameNotExists": "Username {0} does not exists."
+  },
+  "FieldNames": {
+    "Username": "Username",
+    "Password": "Password",
+    "ConfirmPassword": "Confirm password",
+    "Email": "Email address",
+    "FirstName": "First name",
+    "LastName": "Last name"
+  },
+  "Logs": {
+    "Migration": "C:\\logs\\migration_log.txt",
+    "System": "C:\\logs\\system_log.txt"
   }
 }

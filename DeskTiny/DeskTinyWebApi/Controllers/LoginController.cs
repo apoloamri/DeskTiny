@@ -1,33 +1,24 @@
-﻿using DeskTinyWebApi.Models.Login;
+﻿using DTMessenger.Models.Login;
+using DTCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DeskTinyWebApi.Controllers
+namespace DTMessenger.Controllers
 {
-    [Route("[controller]")]
-    public class LoginController : DeskTiny.Mvc.CustomController
+    [Route("login")]
+    public class LoginController : DTController
     {
         [HttpGet]
-        public JsonResult Get(LoginModel model)
+        public JsonResult Get()
         {
-            this.BindModel(ref model);
-            this.Validate();
-
-            model.IsLogin();
-
-            this.BuildJson(model);
-            return this.JsonResult;
+            this.Initiate<LoginModel>(true);
+            return this.Conclude();
         }
 
         [HttpPost]
-        public JsonResult Post(LoginModel model)
+        public JsonResult Post()
         {
-            this.BindModel(ref model);
-            this.Validate();
-
-            model.Login();
-
-            this.BuildJson(model);
-            return this.JsonResult;
+            this.Initiate<LoginModel>(true);
+            return this.Conclude();
         }
     }
 }

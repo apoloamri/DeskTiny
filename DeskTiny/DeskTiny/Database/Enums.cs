@@ -1,6 +1,7 @@
-﻿namespace DeskTiny.Database.Enums
+﻿namespace DTCore.Database.Enums
 {
-    public enum Condition { Equal, NotEqual, Greater, Lesser, GreaterEqual, LesserEqual, LIKE }
+    public enum Condition { EqualTo, NotEqualTo, GreaterThan, LessThan, GreaterThanEqualTo, LessThanEqualTo, Like, NotLike }
+    public enum Join { INNER, OUTER, LEFT, RIGHT }
     public enum Operator { AND, OR }
     public enum Order { ASC, DESC }
 }

@@ -1,0 +1,11 @@
+.float_left {
+    float: left;
+}
+
+.float_right {
+    float: right;
+}
+
+.small_text {
+    font-size: 10px;
+}

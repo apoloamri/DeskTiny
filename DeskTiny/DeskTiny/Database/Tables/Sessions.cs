@@ -1,14 +1,17 @@
-﻿using System;
+﻿using DTCore.Database.Attributes;
+using System;
 
-namespace DeskTiny.Database.Tables
+namespace DTCore.Database.Tables
 {
     public class Sessions : Entity
     {
-        public override int? id { get; set; }
-        public override DateTime? insert_time { get; set; }
-
+        [NotNull]
         public string session_id { get; set; }
+
+        [NotNull]
         public string session_key { get; set; }
+
+        [NotNull]
         public DateTime? session_time { get; set; }
     }
 }

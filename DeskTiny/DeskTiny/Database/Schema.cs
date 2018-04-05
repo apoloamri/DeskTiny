@@ -1,9 +1,11 @@
-﻿using DeskTiny.Database.System;
+﻿using DTCore.Database.Enums;
+using DTCore.Database.System;
+using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DeskTiny.Database
+namespace DTCore.Database
 {
     public class Schema<T> : SchemaBase<T> where T : Entity, new()
     {
@@ -15,15 +17,32 @@ namespace DeskTiny.Database
             };
         }
 
-        internal Query SelectBase()
+        public void Relate<Joined>(Join join, Schema<Joined> schema, params Relation[] columnOn) where Joined : Entity, new()
+        {
+            var onString = new List<string>();
+            
+            foreach (var column in columnOn)
+            {
+                onString.Add($"{column.Column1.Get} {Conditions.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
+            }
+            
+            this.Join.Add(new JoinItem() { Join = join, TableName = schema.TableName, OnString = string.Join(", ", onString) });
+        }
+
+        public Query SelectBase()
         {
             string columns =
                 this.Conditions.Columns?.Count() > 0 ?
                 string.Join(", ", this.Conditions.Columns) :
                 "*";
-            
+
+            string join =
+                this.Join?.Count() > 0 ?
+                string.Join(" ", this.Join.Select(x => { return $"{x.Join.GetString()} JOIN {x.TableName} ON {x.OnString}"; })) :
+                string.Empty;
+
             string order =
-                this.Conditions.Order.HasValue ?
+                !this.Conditions.Order.IsEmpty() ?
                 $"ORDER BY {this.Conditions.Order}" :
                 string.Empty;
 
@@ -33,7 +52,7 @@ namespace DeskTiny.Database
                 string.Empty;
 
             return new Query(
-                $"{Operations.SELECT} {columns} FROM {TableName} {this.GetWhere()} {order} {limit};",
+                $"{Operations.SELECT} {columns} FROM {TableName} {join} {this.GetWhere()} {order} {limit};",
                 this.Conditions.Parameters
                 );
         }
@@ -70,7 +89,7 @@ namespace DeskTiny.Database
             }
 
             var nonQuery = new NonQuery(
-                $"{Operations.INSERT} INTO {this.TableName}({this.NonConditions.ColumnNames}) VALUES({this.NonConditions.ColumnParameters})",
+                $"{Operations.INSERT} INTO {this.TableName}({this.NonConditions.ColumnNames}) VALUES({this.NonConditions.ColumnParameters});",
                 this.NonConditions.Parameters
                 );
 
@@ -85,9 +104,9 @@ namespace DeskTiny.Database
             {
                 return 0;
             }
-
+            
             var nonQuery = new NonQuery(
-                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere()}",
+                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere(this.Join)};",
                 this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
                 );
 
@@ -97,11 +116,61 @@ namespace DeskTiny.Database
         public int Delete()
         {
             var nonQuery = new NonQuery(
-                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere()}",
+                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(this.Join)};",
                 this.Conditions.Parameters
                 );
 
             return nonQuery.ExecuteNonQuery(Operations.DELETE);
+        }
+
+        public int CreateTable()
+        {
+            var nonQuery = new NonQuery(
+                $"{Operations.CREATE_TABLE.GetString()} {this.TableName} ({this.CreateColumns()});",
+                this.NonConditions.Parameters
+                );
+            
+            return nonQuery.ExecuteNonQuery(Operations.CREATE_TABLE);
+        }
+
+        public int AddTableColumns(params string[] columns)
+        {
+            if (columns.Count() == 0)
+            {
+                return 0;
+            }
+            
+            var nonQuery = new NonQuery(
+                $"{Operations.ALTER_TABLE.GetString()} {this.TableName} {this.AddColumns(columns)};",
+                this.NonConditions.Parameters
+                );
+            
+            return nonQuery.ExecuteNonQuery(Operations.ALTER_TABLE); ;
+        }
+
+        public void BeginTransaction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Commit()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int DropTableColumns(params string[] columns)
+        {
+            if (columns.Count() == 0)
+            {
+                return 0;
+            }
+
+            var nonQuery = new NonQuery(
+                $"{Operations.ALTER_TABLE.GetString()} {this.TableName} {this.DropColumns(columns)};",
+                this.NonConditions.Parameters
+                );
+
+            return nonQuery.ExecuteNonQuery(Operations.ALTER_TABLE); ;
         }
     }
     

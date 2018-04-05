@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DeskTiny.Tools;
+using DTCore.Tools;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class NonConditions
     {

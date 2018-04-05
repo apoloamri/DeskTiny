@@ -1,8 +1,12 @@
-﻿using System;
+﻿using DTCore.DTSystem;
+using DTCore.DTSystem.Diagnostics;
+using DTCore.Tools;
+using DTCore.Tools.Extensions;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class NonQuery : Connect
     {
@@ -11,14 +15,38 @@ namespace DeskTiny.Database.System
         public int ExecuteNonQuery(Operations operation)
         {
             this.NpgsqlConnection.Open();
-
+            
             var executionCount = this.NpgsqlCommand.ExecuteNonQuery();
 
             this.NpgsqlConnection.Close();
 
-            Debug.WriteLine($"{operation} count", Convert.ToString(executionCount));
+            DTDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
 
+            if (new[] {
+                Operations.ADD,
+                Operations.ALTER_TABLE,
+                Operations.CREATE_TABLE,
+                Operations.DROP_COLUMN }.Contains(operation))
+            {
+                DTDebug.WriteLog(
+                    ConfigurationBuilder.Logs.Migration,
+                    $"Migration Details - {DateTime.Now}", 
+                    CommandToSql.CommandAsSql(this.NpgsqlCommand));
+            }
+            
             return executionCount;
+        }
+
+        public void BeginTransaction()
+        {
+            this.NpgsqlConnection.Open();
+            this.NpgsqlTransaction = this.NpgsqlConnection.BeginTransaction();
+        }
+
+        public void Commit()
+        {
+            this.NpgsqlTransaction.Commit();
+            this.NpgsqlConnection.Close();
         }
     }
 }

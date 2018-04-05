@@ -1,5 +1,6 @@
-﻿using DeskTiny.Database;
-using DeskTiny.Database.Enums;
+﻿using System;
+using DTCore.Database;
+using DTCore.Database.Enums;
 
 namespace TestDeskTiny
 {
@@ -11,16 +12,21 @@ namespace TestDeskTiny
             TestSelect();
             TestUpdate();
             TestDelete();
+            TestJoinSelect();
         }
-
+        
         private static void TestSelect()
         {
             var clients = Schemas.Clients;
-
-            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
-            clients.Conditions.AddLimit(5);
             
-            var result = clients.Select.Dictionaries;
+            clients.Conditions.Where(
+                clients.Column(x => x.username), 
+                Condition.EqualTo, 
+                "username1");
+
+            clients.Conditions.LimitBy(5);
+            
+            var result = clients.Select.Entities;
 
             clients.ClearConditions();
         }
@@ -40,7 +46,12 @@ namespace TestDeskTiny
             var clients = Schemas.Clients;
 
             clients.Entity.password = "updated";
-            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
+
+            clients.Conditions.Where(
+                clients.Column(x => x.username), 
+                Condition.EqualTo, 
+                "username1");
+
             clients.Update();
             clients.ClearEntity();
         }
@@ -49,9 +60,24 @@ namespace TestDeskTiny
         {
             var clients = Schemas.Clients;
 
-            clients.Conditions.AddWhere(nameof(clients.Entity.username), Condition.Equal, "username1");
+            clients.Conditions.Where(
+                clients.Column(x => x.username), 
+                Condition.EqualTo, 
+                "username1");
+
             clients.Delete();
             clients.ClearEntity();
+        }
+
+        private static void TestJoinSelect()
+        {
+            var clients = Schemas.Clients;
+            var accesses = Schemas.Accesses;
+
+            clients.Relate(Join.INNER, accesses,
+                clients.Relation(accesses.Column(x => x.token), clients.Column(x => x.username)));
+
+            var dictionaries = clients.Select.Dictionaries;
         }
     }
 }

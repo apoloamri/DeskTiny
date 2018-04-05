@@ -1,9 +1,12 @@
-﻿using DeskTinyWebApi.DT.Database.Tables;
+﻿using DTCore.Database;
 
-namespace DeskTinyWebApi.DT.Database
+namespace DTMessenger.DT.Database
 {
-    public class Schemas : DeskTiny.Database.Schemas
+    public class Schemas : DTCore.Database.Schemas
     {
-        public static DeskTiny.Database.Schema<Members> Members => CreateTable<Members>("members");
+        public static Schema<Tables.Contacts> Contacts => CreateTable<Tables.Contacts>("contacts");
+        public static Schema<Tables.Groups> Groups => CreateTable<Tables.Groups>("groups");
+        public static Schema<Tables.Members> Members => CreateTable<Tables.Members>("members");
+        public static Schema<Tables.Messages> Messages => CreateTable<Tables.Messages>("messages");
     }
 }

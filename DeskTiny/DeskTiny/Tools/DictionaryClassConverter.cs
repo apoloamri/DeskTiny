@@ -1,9 +1,11 @@
-﻿using System;
+﻿using DTCore.DTSystem;
+using DTCore.DTSystem.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace DeskTiny.Tools
+namespace DTCore.Tools
 {
     public static class DictionaryClassConverter
     {
@@ -15,18 +17,33 @@ namespace DeskTiny.Tools
 
             foreach (var keyValue in dictionary)
             {
-                if (type.GetProperty(keyValue.Key) != null)
+                var property = type.GetProperty(keyValue.Key);
+                if (property != null)
                 {
                     if (keyValue.Value != DBNull.Value)
                     {
-                        type.GetProperty(keyValue.Key).SetValue(obj, keyValue.Value);
+                        try
+                        {
+                            var value = DTConvert.ChangeType(keyValue.Value, property.PropertyType);
+
+                            type.GetProperty(keyValue.Key).SetValue(obj, value);
+                        }
+                        catch
+                        {
+                            DTDebug.WriteLog(
+                                ConfigurationBuilder.Logs.System,
+                                $"Ignored Malformed Line - {DateTime.Now}",
+                                $"Name: {keyValue.Key}{Environment.NewLine}" +
+                                $"Value: {keyValue.Value}{Environment.NewLine}" +
+                                $"Type: {property.PropertyType}");
+                        }
                     }
                 }
             }
 
             return (Object)obj;
         }
-
+        
         public static Dictionary<string, object> ClassToDictionary(object obj, string optionalName = null)
         {
             return obj.GetType()

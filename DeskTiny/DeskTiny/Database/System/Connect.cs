@@ -1,32 +1,34 @@
-﻿using DeskTiny.System;
-using DeskTiny.System.Diagnostics;
-using DeskTiny.Tools;
+﻿using DTCore.DTSystem;
+using DTCore.DTSystem.Diagnostics;
+using DTCore.Tools;
+using DTCore.Tools.Extensions;
 using Npgsql;
 using System;
 using System.Collections.Generic;
 
-namespace DeskTiny.Database.System
+namespace DTCore.Database.System
 {
     public class Connect
     {
         public NpgsqlConnection NpgsqlConnection { get; set; } = null;
         public NpgsqlCommand NpgsqlCommand { get; set; } = null;
         public NpgsqlDataReader NpgsqlDataReader { get; set; } = null;
+        public NpgsqlTransaction NpgsqlTransaction { get; set; } = null;
 
         public Connect(string sql, Dictionary<string, object> parameters)
         {
-            if (string.IsNullOrEmpty(sql))
+            if (sql.IsEmpty())
             {
                 throw new CustomException("SQL not provided.");
             }
 
             string connectionString = ConfigurationBuilder.Database.ConnectionString;
             
-            Debug.WriteLine("Connecting database", connectionString);
+            DTDebug.WriteLine("Connecting database", connectionString);
             
             this.NpgsqlConnection = new NpgsqlConnection(connectionString);
 
-            Debug.WriteLine("Executing query", sql);
+            DTDebug.WriteLine("Executing query", sql);
 
             this.NpgsqlCommand = new NpgsqlCommand(sql, NpgsqlConnection);
 
@@ -35,7 +37,7 @@ namespace DeskTiny.Database.System
                 this.NpgsqlCommand.Parameters.Add(new NpgsqlParameter(parameter.Key, parameter.Value));
             }
 
-            Debug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
+            DTDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
         }
     }
 }
