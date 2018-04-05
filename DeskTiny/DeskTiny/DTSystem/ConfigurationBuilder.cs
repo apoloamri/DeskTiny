@@ -7,11 +7,16 @@ namespace DTCore.DTSystem
 {
     public static class ConfigurationBuilder
     {
-        public static IConfigurationRoot Configuration()
+        public static IConfigurationRoot Configuration(string fileName = null)
         {
+            if (fileName.IsEmpty())
+            {
+                fileName = "appsettings.json";
+            }
+
             var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("dtconfig.1.0.0.json", optional: true, reloadOnChange: true);
+                .AddJsonFile(fileName, optional: true, reloadOnChange: true);
 
             return configurationBuilder.Build();
         }
@@ -67,13 +72,31 @@ namespace DTCore.DTSystem
 
             public static bool Migrate => Convert.ToBoolean(ConfigurationSection.GetSection("Migrate").Value);
         }
-        
+
+        public static class Encryption
+        {
+            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("Encryption");
+
+            public static bool Active => Convert.ToBoolean(ConfigurationSection.GetSection("Active").Value);
+            public static string PasswordHash => ConfigurationSection.GetSection("PasswordHash").Value;
+            public static string SaltKey => ConfigurationSection.GetSection("SaltKey").Value;
+            public static string VIKey => ConfigurationSection.GetSection("VIKey").Value;
+        }
+
         public static class Logs
         {
             private static IConfigurationSection ConfigurationSection = Configuration().GetSection("Logs");
 
             public static string Migration => ConfigurationSection.GetSection("Migration").Value;
             public static string System => ConfigurationSection.GetSection("System").Value;
+        }
+
+        public static class SystemResources
+        {
+            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("SystemResources");
+
+            public static string SystemMessages => ConfigurationSection.GetSection("SystemMessages").Value;
+            public static string FieldMessages => ConfigurationSection.GetSection("FieldMessages").Value;
         }
     }
 }

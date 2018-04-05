@@ -106,7 +106,7 @@ namespace DTCore.Mvc
                 
                 foreach (var attribute in attributes)
                 {
-                    if (attribute is JsonProperty)
+                    if (attribute is JsonPropertyAttribute)
                     {
                         var value = property.GetValue(this.ModelObject);
 

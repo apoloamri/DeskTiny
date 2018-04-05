@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web;
@@ -70,12 +69,9 @@ namespace DTCore.Mvc.System
                                 continue;
                             }
 
-                            foreach (var attribute in property.GetCustomAttributes(false))
+                            if (property.GetCustomAttribute<InputAttribute>(false) != null)
                             {
-                                if (attribute is Input)
-                                {
-                                    this.JsonDictionary.Add(propertyName, token.Value.ToObject<object>());
-                                }
+                                this.JsonDictionary.Add(propertyName, token.Value.ToObject<object>());
                             }
                         }
                     }
@@ -95,12 +91,9 @@ namespace DTCore.Mvc.System
                             continue;
                         }
 
-                        foreach (var attribute in property.GetCustomAttributes(false))
+                        if (property.GetCustomAttribute<InputAttribute>(false) != null)
                         {
-                            if (attribute is Input)
-                            {
-                                this.JsonDictionary.Add(propertyName, body[item]);
-                            }
+                            this.JsonDictionary.Add(propertyName, body[item]);
                         }
                     }
                 }
@@ -119,13 +112,10 @@ namespace DTCore.Mvc.System
                 {
                     continue;
                 }
-                
-                foreach (var attribute in property.GetCustomAttributes(false))
+
+                if (property.GetCustomAttribute<InputAttribute>(false) != null)
                 {
-                    if (attribute is Input)
-                    {
-                        this.JsonDictionary.Add(propertyName, query.Value.ToString());
-                    }
+                    this.JsonDictionary.Add(propertyName, query.Value.ToString());
                 }
             }
         }

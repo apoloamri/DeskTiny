@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DTCore.Database.Attributes;
+using DTCore.DTSystem;
 using DTCore.Tools;
 
 namespace DTCore.Database.System
@@ -22,6 +25,15 @@ namespace DTCore.Database.System
                 .Where(x => x.GetValue(entity) != null)?
                 .ToArray();
             
+            foreach (var property in properties)
+            {
+                if (property.GetCustomAttribute<EncryptAttribute>(false) != null && 
+                    property.PropertyType == typeof(string))
+                {
+                    property.SetValue(entity, Encryption.Encrypt(Convert.ToString(property.GetValue(entity)), true));
+                }
+            }
+
             this.ColumnNames = string.Join(", ", properties?.Select(x => x.Name));
             this.ColumnParameters = string.Join(", ", properties?.Select(x => $":{this.OptionalName}{x.Name}"));
             this.ColumnValues = string.Join(", ", properties?.Select(x => { return $"{x.Name} = :{this.OptionalName}{x.Name}"; }));

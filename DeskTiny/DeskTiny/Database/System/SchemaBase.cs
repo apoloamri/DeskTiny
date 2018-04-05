@@ -140,17 +140,17 @@ namespace DTCore.Database.System
 
             foreach (var attribute in attributes)
             {
-                if (attribute is Serial)
+                if (attribute is SerialAttribute)
                 {
                     hasSerial = true;
                 }
 
-                if (attribute is Text)
+                if (attribute is TextAttribute)
                 {
                     hasText = true;
                 }
 
-                if (attribute is NonTableColumn)
+                if (attribute is NonTableColumnAttribute)
                 {
                     return string.Empty;
                 }
@@ -219,21 +219,21 @@ namespace DTCore.Database.System
 
             foreach (var attribute in attributes)
             {
-                if (attribute is Length)
+                if (attribute is LengthAttribute)
                 {
-                    var attr = attribute as Length;
+                    var attr = attribute as LengthAttribute;
                     attributeString = $"({attr.LengthCount}) ";
                 }
 
-                if (attribute is NotNull)
+                if (attribute is NotNullAttribute)
                 {
-                    var attr = attribute as NotNull;
+                    var attr = attribute as NotNullAttribute;
                     attributeString += $"{ColumnAttributes.NOT_NULL.GetString()} ";
                 }
 
-                if (attribute is Default)
+                if (attribute is DefaultAttribute)
                 {
-                    var attr = attribute as Default;
+                    var attr = attribute as DefaultAttribute;
 
                     attributeString += $"DEFAULT ";
 
@@ -252,12 +252,12 @@ namespace DTCore.Database.System
                     }
                 }
 
-                if (attribute is PrimaryKey)
+                if (attribute is PrimaryKeyAttribute)
                 {
                     attributeString += $"{ColumnAttributes.PRIMARY_KEY.GetString()} ";
                 }
 
-                if (attribute is Unique)
+                if (attribute is UniqueAttribute)
                 {
                     attributeString += $"{ColumnAttributes.UNIQUE} ";
                 }
@@ -268,9 +268,9 @@ namespace DTCore.Database.System
 
         public void ClearRelation() { this.Join = new List<JoinItem>(); }
 
-        public Conditions Conditions { get; set; } = new Conditions();
+        public Conditions<T> Conditions { get; set; } = new Conditions<T>();
 
-        public void ClearConditions() { this.Conditions = new Conditions(); }
+        public void ClearConditions() { this.Conditions = new Conditions<T>(); }
 
         public T Entity { get; set; } = new T();
 

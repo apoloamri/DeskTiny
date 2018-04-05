@@ -36,16 +36,7 @@ namespace DTCore.Database.System
                     .ToDictionary(x => x.ColumnName, x => item[x]);
             })?.ToList();
         }
-
-        public List<Entity> GetListEntity<Entity>()
-        {
-            var data = this.GetListDictionary();
-
-            return data.Select(item => {
-                return DictionaryClassConverter.DictionaryToClass<Entity>(item);
-            })?.ToList();
-        }
-
+        
         public long GetScalar()
         {
             this.NpgsqlConnection.Open();

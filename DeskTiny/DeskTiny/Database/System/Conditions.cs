@@ -1,11 +1,15 @@
-﻿using DTCore.Database.Enums;
+﻿using DTCore.Database.Attributes;
+using DTCore.Database.Enums;
+using DTCore.DTSystem;
 using DTCore.Tools.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace DTCore.Database.System
 {
-    public class Conditions
+    public class Conditions<TableEntity> where TableEntity : Entity, new()
     {
         public string[] Columns { get; private set; }
 
@@ -70,7 +74,14 @@ namespace DTCore.Database.System
             {
                 this.WhereBase += $"{oper ?? Operator.AND} {statement} ";
             }
-            
+
+            var property = typeof(TableEntity).GetProperty(column.ColumnName);
+
+            if (property.GetCustomAttribute<EncryptAttribute>(false) != null)
+            {
+                value = Encryption.Encrypt(Convert.ToString(value), true);
+            }
+
             this.Parameters.Add(columnParameter, value);
             this.ColumnCount++;
         }
@@ -97,7 +108,7 @@ namespace DTCore.Database.System
 
             foreach (var column in columnOn)
             {
-                onString.Add($"{column.Column1.GetCustomName(customName)} {Conditions.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
+                onString.Add($"{column.Column1.GetCustomName(customName)} {GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
             }
             
             string statement = $"{existence} EXISTS ({Operations.SELECT} 1 FROM {schema.TableName} AS {customName} WHERE {string.Join(", ", onString)})";

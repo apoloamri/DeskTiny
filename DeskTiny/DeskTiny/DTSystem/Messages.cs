@@ -1,15 +1,15 @@
-﻿using DTCore.Tools;
-using DTCore.Tools.Extensions;
+﻿using DTCore.Tools.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DTCore.DTSystem
 {
-    public static class Messages
+    public static class Resources
     {
-        public static string Get(string message, params string[] values)
+        public static string GetMessage(string message, params string[] values)
         {
-            string defaultMessage = ConfigurationBuilder.Configuration().GetSection("DefaultMessages").GetSection(message).Value;
+            string messageFile = ConfigurationBuilder.Configuration().GetSection("SystemResources").GetSection("SystemMessages").Value;
+            string defaultMessage = ConfigurationBuilder.Configuration(messageFile).GetSection(message).Value;
 
             if (values != null && values.Count() > 0)
             {
@@ -17,7 +17,7 @@ namespace DTCore.DTSystem
 
                 foreach (var value in values)
                 {
-                    string fieldName = ConfigurationBuilder.Configuration().GetSection("FieldNames").GetSection(value).Value;
+                    string fieldName = GetField(value);
 
                     if (fieldName.IsEmpty())
                     {
@@ -34,6 +34,17 @@ namespace DTCore.DTSystem
                 defaultMessage.IsEmpty() ?
                 message :
                 defaultMessage;
+        }
+
+        public static string GetField(string fieldName)
+        {
+            string fieldFile = ConfigurationBuilder.Configuration().GetSection("SystemResources").GetSection("FieldMessages").Value;
+            string systemFieldName = ConfigurationBuilder.Configuration(fieldFile).GetSection(fieldName).Value;
+            
+            return
+                systemFieldName.IsEmpty() ?
+                fieldName :
+                systemFieldName;
         }
     }
 }

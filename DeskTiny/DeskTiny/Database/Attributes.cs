@@ -1,46 +1,47 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace DTCore.Database.Attributes
 {
-    public class Default : Attribute
+    public class DefaultAttribute : Attribute
     {
         public string DefaultObject { get; set; }
 
-        public Default(string defaultValue)
+        public DefaultAttribute(string defaultValue)
         {
             this.DefaultObject = defaultValue;
         }
 
         public Functions? DefaultFunction { get; set; }
 
-        public Default(Functions defaultValue)
+        public DefaultAttribute(Functions defaultValue)
         {
             this.DefaultFunction = defaultValue;
         }
     }
 
-    public class Length : Attribute
+    public class EncryptAttribute : Attribute { }
+
+    public class LengthAttribute : Attribute
     {
         public int LengthCount { get; set; }
 
-        public Length(int lenth)
+        public LengthAttribute(int lenth)
         {
             this.LengthCount = lenth;
         }
     }
 
-    public class PrimaryKey : Attribute { }
+    public class PrimaryKeyAttribute : Attribute { }
 
-    public class NotNull : Attribute { }
+    public class NotNullAttribute : Attribute { }
 
-    public class Serial : Attribute { }
+    public class SerialAttribute : Attribute { }
 
-    public class NonTableColumn : Attribute { }
+    public class NonTableColumnAttribute : Attribute { }
 
-    public class Unique : Attribute { }
+    public class UniqueAttribute : Attribute { }
 
-    public class Text : Attribute { }
+    public class TextAttribute : Attribute { }
 
     public enum Functions { Now }
 }

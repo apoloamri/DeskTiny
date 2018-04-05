@@ -21,21 +21,16 @@ namespace DTCore.Database
         public List<string> GetColumns()
         {
             return this
-                 .GetType()
+                .GetType()
                 .GetProperties()
                 .Where(x =>
                 {
-                    var attributes = x.GetCustomAttributes(false);
-
-                    foreach (var attribute in attributes)
+                    if (x.GetCustomAttribute<NonTableColumnAttribute>(false) == null)
                     {
-                        if (attribute is NonTableColumn)
-                        {
-                            return false;
-                        }
+                        return true;
                     }
 
-                    return true;
+                    return false;
                 })
                 .Select(x => x.Name)
                 .ToList();

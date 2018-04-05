@@ -25,7 +25,7 @@ namespace DTCore.Mvc
 
         public static ValidationResult Compose(string message, string[] values, params string[] memberNames)
         {
-            var newMessage = Messages.Get(message, values);
+            var newMessage = Resources.GetMessage(message, values);
 
             if (memberNames != null && memberNames.Count() > 0)
             {
@@ -39,7 +39,7 @@ namespace DTCore.Mvc
         {
             if (message.IsEmpty())
             {
-                message = Messages.Get("RequiredField", fieldName);
+                message = Resources.GetMessage("RequiredField", fieldName);
             }
 
             if (value == null)
