@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using DTCore.Tools;
 
 namespace DTCore.Database.System
 {
@@ -12,14 +11,14 @@ namespace DTCore.Database.System
 
         public List<DataRow> GetListDataRow()
         {
-            this.NpgsqlConnection.Open();
-            this.NpgsqlDataReader = this.NpgsqlCommand.ExecuteReader();
+            this.SqlConnection.Open();
+            this.SqlDataReader = this.SqlCommand.ExecuteReader();
 
             DataTable dataTable = new DataTable();
 
-            dataTable.Load(this.NpgsqlDataReader);
+            dataTable.Load(this.SqlDataReader);
 
-            this.NpgsqlConnection.Close();
+            this.SqlConnection.Close();
 
             return dataTable?.Select()?.ToList();
         }
@@ -39,11 +38,11 @@ namespace DTCore.Database.System
         
         public long GetScalar()
         {
-            this.NpgsqlConnection.Open();
+            this.SqlConnection.Open();
 
-            var scalar = Convert.ToInt64(this.NpgsqlCommand.ExecuteScalar());
+            var scalar = Convert.ToInt64(this.SqlCommand.ExecuteScalar());
             
-            this.NpgsqlConnection.Close();
+            this.SqlConnection.Close();
 
             return scalar;
         }

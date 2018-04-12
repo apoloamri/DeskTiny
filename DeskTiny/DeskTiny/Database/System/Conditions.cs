@@ -44,6 +44,7 @@ namespace DTCore.Database.System
         
         private int ColumnCount = 0;
         private string OptionalName = "q_";
+        private string Param = ConnectProvider.Param();
         public string Order { get; private set; }
         public string WhereBase { get; private set; } = "";
         public List<string> MultiWhere { get; private set; } = new List<string>();
@@ -75,7 +76,7 @@ namespace DTCore.Database.System
             }
             
             string columnParameter = this.OptionalName + column.Get + this.ColumnCount;
-            string statement = $"{column.Get} {GetCondition(condition)} :{columnParameter} ";
+            string statement = $"{column.Get} {GetCondition(condition)} {Param}{columnParameter} ";
 
             if (this.WhereBase.IsEmpty())
             {

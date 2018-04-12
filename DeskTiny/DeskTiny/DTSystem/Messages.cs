@@ -8,8 +8,8 @@ namespace DTCore.DTSystem
     {
         public static string GetMessage(string message, params string[] values)
         {
-            string messageFile = ConfigurationBuilder.Configuration().GetSection("SystemResources").GetSection("SystemMessages").Value;
-            string defaultMessage = ConfigurationBuilder.Configuration(messageFile).GetSection(message).Value;
+            string messageFile = Settings.Configuration().GetSection("SystemResources").GetSection("SystemMessages").Value;
+            string defaultMessage = Settings.Configuration(messageFile).GetSection(message).Value;
 
             if (values != null && values.Count() > 0)
             {
@@ -38,8 +38,8 @@ namespace DTCore.DTSystem
 
         public static string GetField(string fieldName)
         {
-            string fieldFile = ConfigurationBuilder.Configuration().GetSection("SystemResources").GetSection("FieldMessages").Value;
-            string systemFieldName = ConfigurationBuilder.Configuration(fieldFile).GetSection(fieldName).Value;
+            string fieldFile = Settings.Configuration().GetSection("SystemResources").GetSection("FieldMessages").Value;
+            string systemFieldName = Settings.Configuration(fieldFile).GetSection(fieldName).Value;
             
             return
                 systemFieldName.IsEmpty() ?

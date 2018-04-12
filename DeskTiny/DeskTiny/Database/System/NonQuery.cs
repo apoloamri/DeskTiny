@@ -22,16 +22,16 @@ namespace DTCore.Database.System
 
         public int ExecuteNonQuery(Operations operation)
         {
-            if (this.NpgsqlTransaction == null)
+            if (this.SqlTransaction == null)
             {
-                this.NpgsqlConnection.Open();
+                this.SqlConnection.Open();
             }
             
-            var executionCount = this.NpgsqlCommand.ExecuteNonQuery();
+            var executionCount = this.SqlCommand.ExecuteNonQuery();
 
-            if (this.NpgsqlTransaction == null)
+            if (this.SqlTransaction == null)
             {
-                this.NpgsqlConnection.Close();
+                this.SqlConnection.Close();
             }
 
             DTDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
@@ -43,9 +43,9 @@ namespace DTCore.Database.System
                 Operations.DROP_COLUMN }.Contains(operation))
             {
                 DTDebug.WriteLog(
-                    ConfigurationBuilder.Logs.Migration,
+                    Settings.Logs.Migration,
                     $"Migration Details - {DateTime.Now}", 
-                    CommandToSql.CommandAsSql(this.NpgsqlCommand));
+                    CommandToSql.CommandAsSql(this.SqlCommand));
             }
             
             return executionCount;
@@ -53,27 +53,27 @@ namespace DTCore.Database.System
         
         public void Begin()
         {
-            if (this.NpgsqlConnection.State == ConnectionState.Closed)
+            if (this.SqlConnection.State == ConnectionState.Closed)
             {
-                this.NpgsqlConnection.Open();
+                this.SqlConnection.Open();
             }
             
-            this.NpgsqlTransaction = this.NpgsqlConnection.BeginTransaction();
+            this.SqlTransaction = this.SqlConnection.BeginTransaction();
         }
 
         public void Commit()
         {
             try
             {
-                this.NpgsqlTransaction.Commit();
+                this.SqlTransaction.Commit();
             }
             catch (Exception ex)
             {
-                this.NpgsqlTransaction.Rollback();
+                this.SqlTransaction.Rollback();
                 DTDebug.WriteLog(ex);
             }
             
-            this.NpgsqlConnection.Close();
+            this.SqlConnection.Close();
         }
     }
 }

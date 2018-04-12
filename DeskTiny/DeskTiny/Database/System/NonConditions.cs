@@ -11,6 +11,7 @@ namespace DTCore.Database.System
     public class NonConditions
     {
         private string OptionalName = "nq_";
+        private string Param = ConnectProvider.Param();
         internal string ColumnNames { get; set; }
         internal string ColumnParameters { get; set; }
         internal string ColumnValues { get; set; }
@@ -35,8 +36,8 @@ namespace DTCore.Database.System
             }
 
             this.ColumnNames = string.Join(", ", properties?.Select(x => x.Name));
-            this.ColumnParameters = string.Join(", ", properties?.Select(x => $":{this.OptionalName}{x.Name}"));
-            this.ColumnValues = string.Join(", ", properties?.Select(x => { return $"{x.Name} = :{this.OptionalName}{x.Name}"; }));
+            this.ColumnParameters = string.Join(", ", properties?.Select(x => $"{Param}{this.OptionalName}{x.Name}"));
+            this.ColumnValues = string.Join(", ", properties?.Select(x => { return $"{x.Name} = {Param}{this.OptionalName}{x.Name}"; }));
             this.Parameters =
                 DictionaryClassConverter.ClassToDictionary(entity, this.OptionalName)
                 .Where(x => x.Value != null)

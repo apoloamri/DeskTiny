@@ -20,7 +20,7 @@ namespace DTCore.Mvc
                 app.UseDeveloperExceptionPage();
             }
 
-            foreach (var origin in ConfigurationBuilder.Web.AllowOrigins)
+            foreach (var origin in Settings.Web.AllowOrigins)
             {
                 app.UseCors(
                     options => options

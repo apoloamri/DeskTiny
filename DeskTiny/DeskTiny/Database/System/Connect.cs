@@ -1,31 +1,33 @@
-﻿using DTCore.DTSystem;
+﻿using DTCore.Database.Enums;
+using DTCore.DTSystem;
 using DTCore.DTSystem.Diagnostics;
 using DTCore.Tools.Extensions;
+using MySql.Data.MySqlClient;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace DTCore.Database.System
 {
     public class Connect
     {
-        private string ConnectionString => ConfigurationBuilder.Database.ConnectionString;
-        public NpgsqlConnection NpgsqlConnection { get; set; } = null;
-        public NpgsqlCommand NpgsqlCommand { get; set; } = null;
-        public NpgsqlDataReader NpgsqlDataReader { get; set; } = null;
-        public NpgsqlTransaction NpgsqlTransaction { get; set; } = null;
-
+        private string ConnectionString => Settings.Database.ConnectionString;
+        private Provider Provider => Settings.Database.Provider;
+        public dynamic SqlConnection { get; set; } = null;
+        public dynamic SqlCommand { get; set; } = null;
+        public dynamic SqlDataReader { get; set; } = null;
+        public dynamic SqlTransaction { get; set; } = null;
+        
         public Connect(string sql, Dictionary<string, object> parameters)
         {
-            DTDebug.WriteLine("Connecting database", ConnectionString);
-            this.NpgsqlConnection = new NpgsqlConnection(ConnectionString);
+            this.SqlConnection = ConnectProvider.SqlConnection();
             this.WriteSql(sql, parameters);
         }
 
         public Connect()
         {
-            DTDebug.WriteLine("Connecting database", ConnectionString);
-            this.NpgsqlConnection = new NpgsqlConnection(ConnectionString);
+            this.SqlConnection = ConnectProvider.SqlConnection();
         }
 
         public void WriteSql(string sql, Dictionary<string, object> parameters)
@@ -35,21 +37,57 @@ namespace DTCore.Database.System
                 throw new DTException("SQL not provided.");
             }
 
-            if (this.NpgsqlCommand == null)
+            if (this.SqlCommand == null)
             {
-                this.NpgsqlCommand = this.NpgsqlConnection.CreateCommand(); //new NpgsqlCommand(sql, this.NpgsqlConnection);
+                this.SqlCommand = this.SqlConnection.CreateCommand();
             }
 
             DTDebug.WriteLine("Executing query", sql);
             
-            this.NpgsqlCommand.CommandText = sql;
+            this.SqlCommand.CommandText = sql;
 
             foreach (var parameter in parameters)
             {
-                this.NpgsqlCommand.Parameters.Add(new NpgsqlParameter(parameter.Key, parameter.Value));
+                this.SqlCommand.Parameters.Add(new NpgsqlParameter(parameter.Key, parameter.Value));
             }
 
             DTDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
+        }
+    }
+
+    public static class ConnectProvider
+    {
+        public static string Param()
+        {
+            switch (Settings.Database.Provider)
+            {
+                case Provider.MySql:
+                case Provider.SqlServer:
+                    return "@";
+
+                case Provider.Postgres:
+                default:
+                    return ":";
+            }
+        }
+
+        public static dynamic SqlConnection()
+        {
+            string connection = Settings.Database.ConnectionString;
+
+            DTDebug.WriteLine("Connecting database", connection);
+
+            switch (Settings.Database.Provider)
+            {
+                case Provider.MySql:
+                    return new MySqlConnection(connection);
+                case Provider.Postgres:
+                    return new NpgsqlConnection(connection);
+                case Provider.SqlServer:
+                    return new SqlConnection(connection);
+                default:
+                    return new NpgsqlConnection(connection);
+            }
         }
     }
 }

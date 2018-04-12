@@ -26,7 +26,7 @@ namespace DTCore.Mvc
             session.Conditions.Where(
                 session.Column(x => x.session_time), 
                 Condition.GreaterThan, 
-                DateTime.Now.AddMinutes(-ConfigurationBuilder.Web.SessionTimeOut));
+                DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
 
             var result = session.Select.Entity;
 
@@ -80,7 +80,7 @@ namespace DTCore.Mvc
             session.Conditions.Where(
                 session.Column(x => x.session_time),
                 Condition.GreaterThan,
-                DateTime.Now.AddMinutes(-ConfigurationBuilder.Web.SessionTimeOut));
+                DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
             
             var count = session.Count();
 

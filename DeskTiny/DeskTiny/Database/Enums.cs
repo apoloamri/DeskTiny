@@ -4,4 +4,5 @@
     public enum Join { INNER, OUTER, LEFT, RIGHT }
     public enum Operator { AND, OR }
     public enum Order { ASC, DESC }
+    public enum Provider { MySql, Postgres, SqlServer }
 }

@@ -1,11 +1,12 @@
-﻿using DTCore.Tools.Extensions;
+﻿using DTCore.Database.Enums;
+using DTCore.Tools.Extensions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 
 namespace DTCore.DTSystem
 {
-    public static class ConfigurationBuilder
+    public static class Settings
     {
         public static IConfigurationRoot Configuration(string fileName = null)
         {
@@ -71,6 +72,15 @@ namespace DTCore.DTSystem
             }
 
             public static bool Migrate => Convert.ToBoolean(ConfigurationSection.GetSection("Migrate").Value);
+
+            public static Provider Provider
+            {
+                get
+                {
+                    Enum.TryParse(ConfigurationSection.GetSection("Provider").Value, out Provider provider);
+                    return provider;
+                }
+            }
         }
 
         public static class Encryption

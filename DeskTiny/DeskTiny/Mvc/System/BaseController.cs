@@ -1,4 +1,5 @@
 ﻿using DTCore.Mvc.Attributes;
+using DTCore.Mvc.Enums;
 using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,7 @@ namespace DTCore.Mvc.System
 
         protected void GetMethod()
         {
-            Enum.TryParse(this.Request.Method, out Enums.Method httpMethod);
+            Enum.TryParse(this.Request.Method, out Method httpMethod);
             this.ModelDictionary.Add("Method", httpMethod);
         }
 

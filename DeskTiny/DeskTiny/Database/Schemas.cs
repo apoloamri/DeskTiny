@@ -18,7 +18,7 @@ namespace DTCore.Database
         /// <returns></returns>
         public static Schema<T> CreateTable<T>(string tableName) where T : Entity, new()
         {
-            if (ConfigurationBuilder.Database.Migrate == false)
+            if (Settings.Database.Migrate == false)
             {
                 return new Schema<T>(tableName);
             }

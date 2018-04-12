@@ -20,7 +20,7 @@ namespace DTCore.DTSystem.Diagnostics
                 $"Message: {details.Message}";
 
             WriteLog(
-                ConfigurationBuilder.Logs.System, 
+                Settings.Logs.System, 
                 $"System Exception Details - {DateTime.Now}", 
                 errorDetails);
         }

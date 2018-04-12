@@ -31,7 +31,7 @@ namespace DTCore.Tools
                         catch
                         {
                             DTDebug.WriteLog(
-                                ConfigurationBuilder.Logs.System,
+                                Settings.Logs.System,
                                 $"Ignored Malformed Line - {DateTime.Now}",
                                 $"Name: {keyValue.Key}{Environment.NewLine}" +
                                 $"Value: {keyValue.Value}{Environment.NewLine}" +
