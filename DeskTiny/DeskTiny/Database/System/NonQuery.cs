@@ -1,6 +1,5 @@
 ﻿using DTCore.DTSystem;
 using DTCore.DTSystem.Diagnostics;
-using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
@@ -44,8 +43,8 @@ namespace DTCore.Database.System
             {
                 DTDebug.WriteLog(
                     Settings.Logs.Migration,
-                    $"Migration Details - {DateTime.Now}", 
-                    CommandToSql.CommandAsSql(this.SqlCommand));
+                    $"Migration Details - {DateTime.Now}",
+                   this.SqlCommand.CommandText);
             }
             
             return executionCount;
