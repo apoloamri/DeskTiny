@@ -1,6 +1,5 @@
 ﻿using DTCore.DTSystem;
 using DTCore.Tools.Extensions;
-using DTCore.WebApi;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -15,7 +14,7 @@ namespace DTCore.Mvc
                 return null;
             }
 
-            return DTValidationResult.Compose("SessionExpired", "SessionKey");
+            return Compose("SessionExpired", "SessionKey");
         }
 
         public static ValidationResult Compose(string message, params string[] memberNames)

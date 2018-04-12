@@ -21,9 +21,9 @@ namespace DTCore.DTSystem
             return configurationBuilder.Build();
         }
 
-        public static class API
+        public static class Web
         {
-            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("API");
+            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("Web");
 
             public static string[] AllowOrigins => ConfigurationSection.GetSection("AllowOrigins").Value.Split(',');
             public static int SessionTimeOut => Convert.ToInt32(ConfigurationSection.GetSection("SessionTimeOut").Value);

@@ -25,6 +25,11 @@ namespace DTCore.Database.System
             this.Limit = limit;
         }
         
+        /// <summary>
+        /// Adds an order to be followed when the result is read.
+        /// </summary>
+        /// <param name="column">The column where the order will depend.</param>
+        /// <param name="order">The given order. May it be ascending or descending.</param>
         public void OrderBy(TableColumn column, Order order)
         {
             if (this.Order.IsEmpty())
@@ -44,6 +49,12 @@ namespace DTCore.Database.System
         public List<string> MultiWhere { get; private set; } = new List<string>();
         public Dictionary<string, object> Parameters { get; private set; } = new Dictionary<string, object>();
 
+        /// <summary>
+        /// Sets the criteria for the result when selecting.
+        /// </summary>
+        /// <param name="column">The column where the criteria will depend.</param>
+        /// <param name="condition">The condition of the criteria.</param>
+        /// <param name="value">The value to be compared with.</param>
         public void Where(
             TableColumn column,
             Condition condition,
@@ -123,6 +134,10 @@ namespace DTCore.Database.System
             }
         }
 
+        /// <summary>
+        /// Ends the above criterias which will be set into a group, and sets a group of criterias.
+        /// </summary>
+        /// <param name="oper">The operator that'll separate the group above and below.</param>
         public void End(Operator? oper = null)
         {
             this.MultiWhere.Add($"({this.WhereBase}) {oper} ");

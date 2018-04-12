@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DTCore.WebApi
+namespace DTCore.Mvc
 {
     public class DTStartup
     {
@@ -20,7 +20,7 @@ namespace DTCore.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            foreach (var origin in ConfigurationBuilder.API.AllowOrigins)
+            foreach (var origin in ConfigurationBuilder.Web.AllowOrigins)
             {
                 app.UseCors(
                     options => options

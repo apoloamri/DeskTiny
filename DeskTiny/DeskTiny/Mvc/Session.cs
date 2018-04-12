@@ -5,7 +5,7 @@ using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using System;
 
-namespace DTCore.WebApi
+namespace DTCore.Mvc
 {
     public static class Session
     {
@@ -26,7 +26,7 @@ namespace DTCore.WebApi
             session.Conditions.Where(
                 session.Column(x => x.session_time), 
                 Condition.GreaterThan, 
-                DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
+                DateTime.Now.AddMinutes(-ConfigurationBuilder.Web.SessionTimeOut));
 
             var result = session.Select.Entity;
 
@@ -80,7 +80,7 @@ namespace DTCore.WebApi
             session.Conditions.Where(
                 session.Column(x => x.session_time),
                 Condition.GreaterThan,
-                DateTime.Now.AddMinutes(-ConfigurationBuilder.API.SessionTimeOut));
+                DateTime.Now.AddMinutes(-ConfigurationBuilder.Web.SessionTimeOut));
             
             var count = session.Count();
 

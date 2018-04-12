@@ -1,83 +1,50 @@
-﻿using System;
-using DTCore.Database;
+﻿using DTCore.Database;
 using DTCore.Database.Enums;
+using System;
 
 namespace TestDeskTiny
 {
     public static class DatabaseTest
     {
-        //public static void TestAll()
-        //{
-        //    TestInsert();
-        //    TestSelect();
-        //    TestUpdate();
-        //    TestDelete();
-        //    TestJoinSelect();
-        //}
+        public static void TestAll()
+        {
+            TestInsert();
+            TestSelect();
+            TestUpdateDelete();
+        }
+
+        private static void TestInsert()
+        {
+            var sessions = Schemas.Sessions;
+
+            sessions.Entity.session_id = "user";
+            sessions.Entity.session_key = "user";
+            sessions.Entity.session_time = DateTime.Now;
+            sessions.Insert();
+        }
+
+        private static void TestSelect()
+        {
+            var sessions = Schemas.Sessions;
+
+            sessions.Conditions.Where(sessions.Column(x => x.session_id), Condition.EqualTo, "user");
+            
+            var result = sessions.Select.Entities;
+        }
         
-        //private static void TestSelect()
-        //{
-        //    var clients = Schemas.Clients;
-            
-        //    clients.Conditions.Where(
-        //        clients.Column(x => x.username), 
-        //        Condition.EqualTo, 
-        //        "username1");
+        private static void TestUpdateDelete()
+        {
+            var sessions = Schemas.Sessions;
 
-        //    clients.Conditions.LimitBy(5);
-            
-        //    var result = clients.Select.Entities;
+            sessions.Commit(session =>
+            {
+                session.Entity.session_key = "updated";
+                session.Conditions.Where(session.Column(x => x.session_id), Condition.EqualTo, "user");
+                session.Update();
 
-        //    clients.ClearConditions();
-        //}
-
-        //private static void TestInsert()
-        //{
-        //    var clients = Schemas.Clients;
-
-        //    clients.Entity.username = "username1";
-        //    clients.Entity.password = "password1";
-        //    clients.Insert();
-        //    clients.ClearEntity();
-        //}
-
-        //private static void TestUpdate()
-        //{
-        //    var clients = Schemas.Clients;
-
-        //    clients.Entity.password = "updated";
-
-        //    clients.Conditions.Where(
-        //        clients.Column(x => x.username), 
-        //        Condition.EqualTo, 
-        //        "username1");
-
-        //    clients.Update();
-        //    clients.ClearEntity();
-        //}
-
-        //private static void TestDelete()
-        //{
-        //    var clients = Schemas.Clients;
-
-        //    clients.Conditions.Where(
-        //        clients.Column(x => x.username), 
-        //        Condition.EqualTo, 
-        //        "username1");
-
-        //    clients.Delete();
-        //    clients.ClearEntity();
-        //}
-
-        //private static void TestJoinSelect()
-        //{
-        //    var clients = Schemas.Clients;
-        //    var accesses = Schemas.Accesses;
-
-        //    clients.Relate(Join.INNER, accesses,
-        //        clients.Relation(accesses.Column(x => x.token), clients.Column(x => x.username)));
-
-        //    var dictionaries = clients.Select.Dictionaries;
-        //}
+                session.Conditions.Where(session.Column(x => x.session_id), Condition.EqualTo, "user");
+                session.Delete();
+            });
+        }
     }
 }

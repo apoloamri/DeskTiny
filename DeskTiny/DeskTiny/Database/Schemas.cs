@@ -10,6 +10,12 @@ namespace DTCore.Database
 {
     public class Schemas
     {
+        /// <summary>
+        /// Creates the schema table.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Table name for the schema to be created.</param>
+        /// <returns></returns>
         public static Schema<T> CreateTable<T>(string tableName) where T : Entity, new()
         {
             if (ConfigurationBuilder.Database.Migrate == false)

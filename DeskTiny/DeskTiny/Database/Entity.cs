@@ -15,7 +15,7 @@ namespace DTCore.Database
         public virtual long? id { get; set; }
 
         [NotNull]
-        [Default(Functions.Now)]
+        [Default("Now()")]
         public virtual DateTime? insert_time { get; set; }
 
         public List<string> GetColumns()

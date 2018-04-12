@@ -12,9 +12,11 @@ namespace DTCore.Database.System
     public class SchemaBase<T> where T : Entity, new()
     {
         public string TableName { get; set; }
-
+        
         protected SchemaBase(string tableName) { this.TableName = tableName; }
 
+        protected NonQuery NonQuery { get; set; } = null;
+        
         protected List<JoinItem> Join { get; set; } = new List<JoinItem>();
         
         protected NonConditions NonConditions { get; set; } = new NonConditions();
@@ -234,21 +236,19 @@ namespace DTCore.Database.System
                 if (attribute is DefaultAttribute)
                 {
                     var attr = attribute as DefaultAttribute;
-
-                    attributeString += $"DEFAULT ";
-
-                    if (attr.DefaultFunction.HasValue)
+                    
+                    if (!attr.DefaultObject.IsEmpty())
                     {
-                        switch (attr.DefaultFunction)
+                        attributeString += $"DEFAULT ";
+
+                        if (attr.DefaultObject.Contains("(") && attr.DefaultObject.Contains(")"))
                         {
-                            case Functions.Now:
-                                attributeString += $"Now()";
-                                break;
+                            attributeString += $"{attr.DefaultObject}";
                         }
-                    }
-                    else if (!attr.DefaultObject.IsEmpty())
-                    {
-                        attributeString += $"'{attr.DefaultObject}'";
+                        else
+                        {
+                            attributeString += $"'{attr.DefaultObject}'";
+                        }
                     }
                 }
 
@@ -266,16 +266,37 @@ namespace DTCore.Database.System
             return attributeString;
         }
 
+        /// <summary>
+        /// Clears the current relationships.
+        /// </summary>
         public void ClearRelation() { this.Join = new List<JoinItem>(); }
 
+        /// <summary>
+        /// Creates the criterias for selecting entities.
+        /// </summary>
         public Conditions<T> Conditions { get; set; } = new Conditions<T>();
 
+        /// <summary>
+        /// Clears the current criterias.
+        /// </summary>
         public void ClearConditions() { this.Conditions = new Conditions<T>(); }
 
+        /// <summary>
+        /// The entity of the schema.
+        /// </summary>
         public T Entity { get; set; } = new T();
 
+        /// <summary>
+        /// Clears the values setted on the entity.
+        /// </summary>
         public void ClearEntity() { this.Entity = new T(); }
 
+        /// <summary>
+        /// Returns the name of the particular selected column.
+        /// </summary>
+        /// <typeparam name="TProp"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns>The column name.</returns>
         public TableColumn Column<TProp>(Expression<Func<T, TProp>> expression)
         {
             var body = expression.Body as MemberExpression;

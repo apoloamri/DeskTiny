@@ -3,9 +3,9 @@ using System;
 
 namespace DTCore.DTSystem
 {
-    public class CustomException : Exception
+    public class DTException : Exception
     {
-        public CustomException(string message)
+        public DTException(string message)
         {
             DTDebug.WriteLine("System Exception:", message);
 

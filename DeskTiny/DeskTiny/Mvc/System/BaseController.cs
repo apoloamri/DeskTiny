@@ -18,7 +18,7 @@ namespace DTCore.Mvc.System
         protected dynamic ModelObject { get; set; }
         protected JsonSerializerSettings JsonSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
         protected JsonResult JsonResult { get; set; }
-        protected Dictionary<string, object> JsonDictionary { get; set; } = new Dictionary<string, object>();
+        protected Dictionary<string, object> ModelDictionary { get; set; } = new Dictionary<string, object>();
 
         protected PropertyInfo GetModelProperty(ref string name, object obj)
         {
@@ -43,7 +43,7 @@ namespace DTCore.Mvc.System
         protected void GetMethod()
         {
             Enum.TryParse(this.Request.Method, out Enums.Method httpMethod);
-            this.JsonDictionary.Add("Method", httpMethod);
+            this.ModelDictionary.Add("Method", httpMethod);
         }
 
         protected void GetBody(object obj)
@@ -64,14 +64,14 @@ namespace DTCore.Mvc.System
 
                             var property = GetModelProperty(ref propertyName, obj);
 
-                            if (property == null || this.JsonDictionary.ContainsKey(propertyName))
+                            if (property == null || this.ModelDictionary.ContainsKey(propertyName))
                             {
                                 continue;
                             }
 
                             if (property.GetCustomAttribute<InputAttribute>(false) != null)
                             {
-                                this.JsonDictionary.Add(propertyName, token.Value.ToObject<object>());
+                                this.ModelDictionary.Add(propertyName, token.Value.ToObject<object>());
                             }
                         }
                     }
@@ -86,14 +86,14 @@ namespace DTCore.Mvc.System
 
                         var property = GetModelProperty(ref propertyName, obj);
 
-                        if (property == null || this.JsonDictionary.ContainsKey(propertyName))
+                        if (property == null || this.ModelDictionary.ContainsKey(propertyName))
                         {
                             continue;
                         }
 
                         if (property.GetCustomAttribute<InputAttribute>(false) != null)
                         {
-                            this.JsonDictionary.Add(propertyName, body[item]);
+                            this.ModelDictionary.Add(propertyName, body[item]);
                         }
                     }
                 }
@@ -108,14 +108,14 @@ namespace DTCore.Mvc.System
 
                 var property = GetModelProperty(ref propertyName, obj);
 
-                if (property == null || this.JsonDictionary.ContainsKey(propertyName))
+                if (property == null || this.ModelDictionary.ContainsKey(propertyName))
                 {
                     continue;
                 }
 
                 if (property.GetCustomAttribute<InputAttribute>(false) != null)
                 {
-                    this.JsonDictionary.Add(propertyName, query.Value.ToString());
+                    this.ModelDictionary.Add(propertyName, query.Value.ToString());
                 }
             }
         }

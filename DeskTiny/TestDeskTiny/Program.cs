@@ -13,7 +13,7 @@ namespace TestDeskTiny
             {
                 Start();
 
-                //DatabaseTest.TestAll();
+                DatabaseTest.TestAll();
 
                 End();
 

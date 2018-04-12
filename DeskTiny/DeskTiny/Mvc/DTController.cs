@@ -24,7 +24,7 @@ namespace DTCore.Mvc
                 this.GetBody(obj);
                 this.GetQueries(obj);
 
-                this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.JsonDictionary);
+                this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.ModelDictionary);
 
                 if (validate)
                 {
@@ -95,7 +95,7 @@ namespace DTCore.Mvc
             }
         }
 
-        private void BuildJson()
+        private void BuildModelDictionary()
         {
             var jsonDictionary = new Dictionary<string, object>();
             var properties = this.ModelObject.GetType().GetProperties();
@@ -131,7 +131,7 @@ namespace DTCore.Mvc
                 {
                     this.ExecuteMapping();
                     this.ExecuteHandling();
-                    this.BuildJson();
+                    this.BuildModelDictionary();
                 }
             }
             catch (Exception ex) when (!MainSystem.Diagnostics.Debugger.IsAttached)
@@ -140,6 +140,11 @@ namespace DTCore.Mvc
             }
 
             return this.JsonResult;
+        }
+
+        public override ViewResult View()
+        {
+            return this.View(this.Conclude());
         }
     }
 }

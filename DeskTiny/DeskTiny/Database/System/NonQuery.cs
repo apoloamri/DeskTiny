@@ -4,6 +4,7 @@ using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace DTCore.Database.System
@@ -12,13 +13,26 @@ namespace DTCore.Database.System
     {
         public NonQuery(string sql, Dictionary<string, object> parameters) : base(sql, parameters) { }
 
+        public NonQuery() : base()
+        {
+            this.HasMultipleNonQuery = true;
+        }
+
+        private bool HasMultipleNonQuery { get; set; } = false;
+
         public int ExecuteNonQuery(Operations operation)
         {
-            this.NpgsqlConnection.Open();
+            if (this.NpgsqlTransaction == null)
+            {
+                this.NpgsqlConnection.Open();
+            }
             
             var executionCount = this.NpgsqlCommand.ExecuteNonQuery();
 
-            this.NpgsqlConnection.Close();
+            if (this.NpgsqlTransaction == null)
+            {
+                this.NpgsqlConnection.Close();
+            }
 
             DTDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
 
@@ -36,16 +50,29 @@ namespace DTCore.Database.System
             
             return executionCount;
         }
-
-        public void BeginTransaction()
+        
+        public void Begin()
         {
-            this.NpgsqlConnection.Open();
+            if (this.NpgsqlConnection.State == ConnectionState.Closed)
+            {
+                this.NpgsqlConnection.Open();
+            }
+            
             this.NpgsqlTransaction = this.NpgsqlConnection.BeginTransaction();
         }
 
         public void Commit()
         {
-            this.NpgsqlTransaction.Commit();
+            try
+            {
+                this.NpgsqlTransaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                this.NpgsqlTransaction.Rollback();
+                DTDebug.WriteLog(ex);
+            }
+            
             this.NpgsqlConnection.Close();
         }
     }

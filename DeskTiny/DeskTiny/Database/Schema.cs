@@ -21,6 +21,13 @@ namespace DTCore.Database
             };
         }
 
+        /// <summary>
+        /// Creates a relationship between two schemas.
+        /// </summary>
+        /// <typeparam name="Joined"></typeparam>
+        /// <param name="join">The type of relationship. May it be INNER, OUTER, LEFT or RIGHT.</param>
+        /// <param name="schema">The schema to be related with.</param>
+        /// <param name="columnOn">The columns will be used for relating the two schemas provided.</param>
         public void Relate<Joined>(Join join, Schema<Joined> schema, params Relation[] columnOn) where Joined : Entity, new()
         {
             var onString = new List<string>();
@@ -70,8 +77,15 @@ namespace DTCore.Database
                 );
         }
 
+        /// <summary>
+        /// Selects the condition result either by entity or dictionary.
+        /// </summary>
         public Select<T> Select { get; set; }
         
+        /// <summary>
+        /// Counts the number of result by the provided condition.
+        /// </summary>
+        /// <returns>The count result.</returns>
         public virtual long Count()
         {
             string columns =
@@ -87,6 +101,10 @@ namespace DTCore.Database
             return query.GetScalar();
         }
 
+        /// <summary>
+        /// Inserts the entity's values into the schema.
+        /// </summary>
+        /// <returns>The count of the inserted entities.</returns>
         public int Insert()
         {
             this.NonConditions.CreateColumnParameters(this.Entity);
@@ -101,14 +119,17 @@ namespace DTCore.Database
                 this.Entity.insert_time = DateTime.Now;
             }
 
-            var nonQuery = new NonQuery(
+            return this.ExecuteNonQuery(
                 $"{Operations.INSERT} INTO {this.TableName}({this.NonConditions.ColumnNames}) VALUES({this.NonConditions.ColumnParameters});",
-                this.NonConditions.Parameters
+                this.NonConditions.Parameters,
+                Operations.INSERT
                 );
-
-            return nonQuery.ExecuteNonQuery(Operations.INSERT);
         }
 
+        /// <summary>
+        /// Updates selected entities from the schema.
+        /// </summary>
+        /// <returns>The count of the updated schemas.</returns>
         public int Update()
         {
             this.NonConditions.CreateColumnParameters(this.Entity);
@@ -117,81 +138,100 @@ namespace DTCore.Database
             {
                 return 0;
             }
-            
-            var nonQuery = new NonQuery(
-                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere(this.Join)};",
-                this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value)
-                );
 
-            return nonQuery.ExecuteNonQuery(Operations.UPDATE);
+            return this.ExecuteNonQuery(
+                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere(this.Join)};",
+                this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value),
+                Operations.UPDATE
+                );
         }
 
+        /// <summary>
+        /// Deletes the selected entities from the schema.
+        /// </summary>
+        /// <returns>The count of the deleted schemas.</returns>
         public int Delete()
         {
-            var nonQuery = new NonQuery(
+            return this.ExecuteNonQuery(
                 $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(this.Join)};",
-                this.Conditions.Parameters
+                this.Conditions.Parameters,
+                Operations.DELETE
                 );
-
-            return nonQuery.ExecuteNonQuery(Operations.DELETE);
         }
-
-        public int CreateTable()
+        
+        public void CreateTable()
         {
-            var nonQuery = new NonQuery(
+            this.ExecuteNonQuery(
                 $"{Operations.CREATE_TABLE.GetString()} {this.TableName} ({this.CreateColumns()});",
-                this.NonConditions.Parameters
+                this.NonConditions.Parameters,
+                Operations.CREATE_TABLE
                 );
-            
-            return nonQuery.ExecuteNonQuery(Operations.CREATE_TABLE);
         }
 
-        public int AddTableColumns(params string[] columns)
+        public void AddTableColumns(params string[] columns)
         {
             if (columns.Count() == 0)
             {
-                return 0;
+                return;
             }
-            
-            var nonQuery = new NonQuery(
+
+            this.ExecuteNonQuery(
                 $"{Operations.ALTER_TABLE.GetString()} {this.TableName} {this.AddColumns(columns)};",
-                this.NonConditions.Parameters
+                this.NonConditions.Parameters,
+                Operations.ALTER_TABLE
                 );
-            
-            return nonQuery.ExecuteNonQuery(Operations.ALTER_TABLE); ;
         }
-
-        public void BeginTransaction()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Commit()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int DropTableColumns(params string[] columns)
+        
+        public void DropTableColumns(params string[] columns)
         {
             if (columns.Count() == 0)
             {
-                return 0;
+                return;
             }
 
-            var nonQuery = new NonQuery(
+            this.ExecuteNonQuery(
                 $"{Operations.ALTER_TABLE.GetString()} {this.TableName} {this.DropColumns(columns)};",
-                this.NonConditions.Parameters
+                this.NonConditions.Parameters,
+                Operations.ALTER_TABLE
                 );
+        }
 
-            return nonQuery.ExecuteNonQuery(Operations.ALTER_TABLE); ;
+        public void Commit(Action<Schema<T>> action)
+        {
+            this.NonQuery = new NonQuery();
+            this.NonQuery.Begin();
+            
+            action(new Schema<T>(this.TableName));
+
+            if (this.NonQuery != null)
+            {
+                this.NonQuery.Commit();
+            }
+        }
+
+        private int ExecuteNonQuery(string sql, Dictionary<string, object> parameters, Operations operations)
+        {
+            if (this.NonQuery == null)
+            {
+                var nonQuery = new NonQuery(sql, parameters);
+                return nonQuery.ExecuteNonQuery(operations);
+            }
+            else
+            {
+                this.NonQuery.WriteSql(sql, parameters);
+                return this.NonQuery.ExecuteNonQuery(operations);
+            }
         }
     }
-    
+
     public class Select<T> where T : Entity, new()
     {
         internal string TableName { get; set; }
         internal Schema<T> Schema { get; set; }
 
+        /// <summary>
+        /// Returns as dictionaries by the provied condition.
+        /// </summary>
         public List<Dictionary<string, object>> Dictionaries
         {
             get
@@ -214,8 +254,14 @@ namespace DTCore.Database
             }
         }
 
+        /// <summary>
+        /// Returns the first dictionary by the provided condition.
+        /// </summary>
         public Dictionary<string, object> Dictionary => this.Schema.SelectBase().GetListDictionary().FirstOrDefault();
 
+        /// <summary>
+        /// Returns as list of entities by the provied condition.
+        /// </summary>
         public List<T> Entities
         {
             get
@@ -226,6 +272,9 @@ namespace DTCore.Database
             }
         }
 
+        /// <summary>
+        /// Returns the first entity by the provided condition.
+        /// </summary>
         public T Entity => this.Entities.FirstOrDefault();
     }
 }
