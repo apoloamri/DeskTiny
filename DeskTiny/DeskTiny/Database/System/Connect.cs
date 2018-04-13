@@ -48,7 +48,7 @@ namespace DTCore.Database.System
 
             foreach (var parameter in parameters)
             {
-                this.SqlCommand.Parameters.Add(new NpgsqlParameter(parameter.Key, parameter.Value));
+                this.SqlCommand.Parameters.Add(ConnectProvider.SqlParameter(parameter.Key, parameter.Value));
             }
 
             DTDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
@@ -87,6 +87,21 @@ namespace DTCore.Database.System
                     return new SqlConnection(connection);
                 default:
                     return new NpgsqlConnection(connection);
+            }
+        }
+
+        public static dynamic SqlParameter(string key, object value)
+        {
+            switch (Settings.Database.Provider)
+            {
+                case Provider.MySql:
+                    return new MySqlParameter(key, value);
+                case Provider.Postgres:
+                    return new NpgsqlParameter(key, value);
+                case Provider.SqlServer:
+                    return new SqlParameter(key, value);
+                default:
+                    return new NpgsqlParameter(key, value);
             }
         }
     }

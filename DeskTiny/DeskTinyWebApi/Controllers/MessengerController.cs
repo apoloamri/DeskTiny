@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DTCore.Mvc;
 using DTMessenger.Models.Messenger;
-using DTCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DTMessenger.Controllers
@@ -16,6 +12,22 @@ namespace DTMessenger.Controllers
         public JsonResult Add()
         {
             this.Initiate<AddModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpGet]
+        [Route("group")]
+        public JsonResult GetGroups()
+        {
+            this.Initiate<GroupModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpPost]
+        [Route("group")]
+        public JsonResult SendGroups()
+        {
+            this.Initiate<GroupModel>(true);
             return this.Conclude();
         }
 

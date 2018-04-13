@@ -12,6 +12,7 @@ new Vue({
         uncontacts: [],
         information: {},
 
+        group_id: null,
         group_name: "",
         members: "",
         groups: []
@@ -28,10 +29,12 @@ new Vue({
                 if (data.is_valid) {
                     that.information = data.result;
                 }
-                else {
-                    
-                }
             });
+        },
+
+        NextMessages: function () {
+            var that = this;
+            that.count += 10;
         },
 
 //Messanging - start
@@ -47,9 +50,6 @@ new Vue({
                 if (data.is_valid) {
                     that.result = data.result;
                     that.search = "";
-                }
-                else {
-                    
                 }
             });
         },
@@ -83,14 +83,12 @@ new Vue({
                     that.uncontacts = data.unaccepted_results;
                     //setTimeout(function () { that.GetContacts() }, 2000);
                 }
-                else {
-                    
-                }
             });
         },
 
         SelectRecipient: function (username) {
             var that = this;
+            that.group_id = null;
             that.username = username;
             that.count = 10;
             that.ShowMessages();
@@ -98,6 +96,9 @@ new Vue({
 
         ShowMessages: function () {
             var that = this;
+            if (that.username == "") {
+                return;
+            }
             $.get(apiUrl + "messenger/message", {
                 "session_id": getCookie("session_id"),
                 "session_key": getCookie("session_key"),
@@ -107,19 +108,11 @@ new Vue({
             function (data) {
                 if (data.is_valid) {
                     that.messages = data.result;
-                    setTimeout(function () { that.ShowMessages(that.username) }, 1000);
-                }
-                else {
-                    
+                    //setTimeout(function () { that.ShowMessages() }, 1000);
                 }
             });
         },
 
-        NextMessages: function () {
-            var that = this;
-            that.count += 10;
-        },
-        
         SendMessage: function () {
             var that = this;
             $.post(apiUrl + "messenger/message", {
@@ -131,9 +124,6 @@ new Vue({
             function (data) {
                 if (data.is_valid) {
                     that.message = "";
-                }
-                else {
-                    
                 }
             });
         },
@@ -152,18 +142,75 @@ new Vue({
             function (data) {
                 if (data.is_valid) {
                     alert("Group created.");
-                    that.messages = [];
+                    hat.group_name = "";
+                    that.members = "";
                 }
                 else {
                     that.messages = data.messages;
                 }
             });
-        }
+        },
+
+        GetGroups: function () {
+            var that = this;
+            $.get(apiUrl + "messenger/group", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key")
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.groups = data.result;
+                }
+            });
+        },
+
+        SelectGroup: function (id) {
+            var that = this;
+            that.username = "";
+            that.group_id = id;
+            that.count = 10;
+            that.ShowGroupMessages();
+        },
+
+        ShowGroupMessages: function () {
+            var that = this;
+            if (that.group_id == null) {
+                return;
+            }
+            $.get(apiUrl + "messenger/group", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key"),
+                "group_id": that.group_id,
+                "count": that.count
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.messages = data.result;
+                    //setTimeout(function () { that.ShowGroupMessages() }, 1000);
+                }
+            });
+        },
+
+        SendGroupMessage: function () {
+            var that = this;
+            $.post(apiUrl + "messenger/group", {
+                "session_id": getCookie("session_id"),
+                "session_key": getCookie("session_key"),
+                "group_id": that.group_id,
+                "message": that.message
+            },
+            function (data) {
+                if (data.is_valid) {
+                    that.message = "";
+                }
+            });
+        },
 //Grouping - end
     },
 
     created: function () {
         this.GetContacts();
+        this.GetGroups();
         this.GetInformation();
     }
 });

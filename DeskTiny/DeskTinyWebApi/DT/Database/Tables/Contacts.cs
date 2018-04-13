@@ -7,10 +7,12 @@ namespace DTMessenger.DT.Database.Tables
     {
         [NotNull]
         [Length(50)]
+        [Encrypt]
         public string username { get; set; }
 
         [NotNull]
         [Length(50)]
+        [Encrypt]
         public string contact_username { get; set; }
     }
 }

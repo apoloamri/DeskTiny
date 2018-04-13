@@ -305,10 +305,11 @@ namespace DTCore.Database.System
             {
                 return null;
             }
-
+            
             return new TableColumn()
             {
                 ColumnName = body.Member.Name,
+                Type = this.Entity.GetType().GetProperty(body.Member.Name).PropertyType,
                 TableName = this.TableName
             };
         }
@@ -335,8 +336,9 @@ namespace DTCore.Database.System
         public string Get => $"{this.TableName}.{this.ColumnName}";
         public string GetCustomName(string customName)
         {
-            return $"{customName}.{ this.ColumnName}";
+            return $"{customName}.{this.ColumnName}";
         }
+        public Type Type { get; set; }
     }
 
     public class Relation
@@ -351,5 +353,6 @@ namespace DTCore.Database.System
         public Join? Join { get; set; }
         public string TableName { get; set; }
         public string OnString { get; set; }
+        public Type EntityType { get; set; }
     }
 }

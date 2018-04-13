@@ -37,7 +37,16 @@ namespace DTCore.Database
                 onString.Add($"{column.Column1.Get} {Conditions<Joined>.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
             }
             
-            this.Join.Add(new JoinItem() { Join = join, TableName = schema.TableName, OnString = string.Join(", ", onString) });
+            var joinItem = new JoinItem()
+            {
+                Join = join,
+                TableName = schema.TableName,
+                OnString = string.Join(", ", onString),
+                EntityType = typeof(Joined)
+            };
+
+            this.Join.Add(joinItem);
+            this.Select.Joined.Add(joinItem);
         }
 
         public Query SelectBase()
@@ -228,6 +237,7 @@ namespace DTCore.Database
     {
         internal string TableName { get; set; }
         internal Schema<T> Schema { get; set; }
+        internal List<JoinItem> Joined { get; set; } = new List<JoinItem>();
 
         /// <summary>
         /// Returns as dictionaries by the provied condition.
@@ -236,6 +246,7 @@ namespace DTCore.Database
         {
             get
             {
+                var usedKeys = new List<string>();
                 var dictionary = this.Schema.SelectBase().GetListDictionary();
 
                 foreach (var item in dictionary)
@@ -246,6 +257,23 @@ namespace DTCore.Database
                             item.ContainsKey(property.Name))
                         {
                             item[property.Name] = Encryption.Decrypt(Convert.ToString(item[property.Name]), true);
+                            usedKeys.Add(property.Name);
+                        }
+                    }
+                    
+                    foreach (var joinedItem in Joined)
+                    {
+                        foreach (var property in joinedItem.EntityType.GetProperties())
+                        {
+                            int count = usedKeys.Count(x => x == property.Name);
+                            string keyName = property.Name + (count == 0 ? null : (int?)count);
+
+                            if (property.GetCustomAttribute<EncryptAttribute>(false) != null &&
+                                item.ContainsKey(keyName))
+                            {
+                                item[keyName] = Encryption.Decrypt(Convert.ToString(item[keyName]), true);
+                                usedKeys.Add(property.Name);
+                            }
                         }
                     }
                 }
@@ -257,7 +285,7 @@ namespace DTCore.Database
         /// <summary>
         /// Returns the first dictionary by the provided condition.
         /// </summary>
-        public Dictionary<string, object> Dictionary => this.Schema.SelectBase().GetListDictionary().FirstOrDefault();
+        public Dictionary<string, object> Dictionary => this.Dictionaries.FirstOrDefault();
 
         /// <summary>
         /// Returns as list of entities by the provied condition.
@@ -266,7 +294,8 @@ namespace DTCore.Database
         {
             get
             {
-                return this.Dictionaries.Select(item => {
+                return this.Dictionaries.Select(item => 
+                {
                     return DictionaryClassConverter.DictionaryToClass<T>(item);
                 })?.ToList();
             }

@@ -15,7 +15,7 @@ namespace DTMessenger.Models.Messenger
 
         [Input]
         public List<string> Members { get; set; }
-
+        
         public override void HandleModel()
         {
             var groups = Schemas.Groups;
@@ -37,16 +37,20 @@ namespace DTMessenger.Models.Messenger
         public override IEnumerable<ValidationResult> Validate()
         {
             yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
-            yield return DTValidationResult.FieldRequired(nameof(this.GroupName), this.GroupName);
-            yield return DTValidationResult.FieldRequired(nameof(this.Members), this.Members);
 
-            if (this.Members != null && this.Members.Count > 0)
+            if (this.Handling)
             {
-                foreach (var member in this.Members)
+                yield return DTValidationResult.FieldRequired(nameof(this.GroupName), this.GroupName);
+                yield return DTValidationResult.FieldRequired(nameof(this.Members), this.Members);
+
+                if (this.Members != null && this.Members.Count > 0)
                 {
-                    if (!CheckMember.CheckUsernameExists(member))
+                    foreach (var member in this.Members)
                     {
-                        yield return DTValidationResult.Compose("UsernameNotExists", new[] { member }, nameof(this.Members));
+                        if (!CheckMember.CheckUsernameExists(member))
+                        {
+                            yield return DTValidationResult.Compose("UsernameNotExists", new[] { member }, nameof(this.Members));
+                        }
                     }
                 }
             }

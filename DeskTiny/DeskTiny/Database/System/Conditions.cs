@@ -76,8 +76,18 @@ namespace DTCore.Database.System
             }
             
             string columnParameter = this.OptionalName + column.Get + this.ColumnCount;
-            string statement = $"{column.Get} {GetCondition(condition)} {Param}{columnParameter} ";
+            string statement = string.Empty;
 
+
+            if (!column.Type.IsArray)
+            {
+                statement = $"{column.Get} {GetCondition(condition)} {Param}{columnParameter} ";
+            }
+            else
+            {
+                statement = $"{Param}{columnParameter} {GetCondition(condition)} ANY({column.Get}) ";
+            }
+            
             if (this.WhereBase.IsEmpty())
             {
                 this.WhereBase += $"{statement} ";
@@ -89,9 +99,13 @@ namespace DTCore.Database.System
 
             var property = typeof(TableEntity).GetProperty(column.ColumnName);
 
-            if (property.GetCustomAttribute<EncryptAttribute>(false) != null)
+            if (property.GetCustomAttribute<EncryptAttribute>(false) != null &&
+                property.PropertyType == typeof(string))
             {
-                value = Encryption.Encrypt(Convert.ToString(value), true);
+                if (property.GetCustomAttribute<EncryptAttribute>(false) != null)
+                {
+                    value = Encryption.Encrypt(Convert.ToString(value), true);
+                }
             }
 
             this.Parameters.Add(columnParameter, value);

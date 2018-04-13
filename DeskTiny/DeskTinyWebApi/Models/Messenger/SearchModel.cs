@@ -37,20 +37,12 @@ namespace DTMessenger.Models.Messenger
 
             if (!this.Username.IsEmpty())
             {
-                members.Conditions.Where(
-                    members.Column(x => x.username),
-                    Condition.Like,
-                    $"%{this.Username}%");
+                members.Conditions.Where(members.Column(x => x.username), Condition.EqualTo, $"{this.Username}");
             }
             
-
             if (!this.Email.IsEmpty())
             {
-                members.Conditions.Where(
-                    Operator.OR,
-                    members.Column(x => x.email),
-                    Condition.Like,
-                    $"%{this.Email}%");
+                members.Conditions.Where(Operator.OR, members.Column(x => x.email), Condition.EqualTo, $"{this.Email}");
             }
             
             this.Result = members.Select.Dictionaries
