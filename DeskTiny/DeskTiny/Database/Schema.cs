@@ -246,11 +246,12 @@ namespace DTCore.Database
         {
             get
             {
-                var usedKeys = new List<string>();
                 var dictionary = this.Schema.SelectBase().GetListDictionary();
 
                 foreach (var item in dictionary)
                 {
+                    var usedKeys = new List<string>();
+
                     foreach (var property in typeof(T).GetProperties())
                     {
                         if (property.GetCustomAttribute<EncryptAttribute>(false) != null &&

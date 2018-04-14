@@ -81,7 +81,7 @@ new Vue({
                 if (data.is_valid) {
                     that.contacts = data.result;
                     that.uncontacts = data.unaccepted_results;
-                    //setTimeout(function () { that.GetContacts() }, 2000);
+                    activeTimeout(function () { that.GetContacts() }, 2000);
                 }
             });
         },
@@ -108,7 +108,7 @@ new Vue({
             function (data) {
                 if (data.is_valid) {
                     that.messages = data.result;
-                    //setTimeout(function () { that.ShowMessages() }, 1000);
+                    activeTimeout(function () { that.ShowMessages() }, 1000);
                 }
             });
         },
@@ -186,7 +186,7 @@ new Vue({
             function (data) {
                 if (data.is_valid) {
                     that.messages = data.result;
-                    //setTimeout(function () { that.ShowGroupMessages() }, 1000);
+                    activeTimeout(function () { that.ShowGroupMessages() }, 1000);
                 }
             });
         },

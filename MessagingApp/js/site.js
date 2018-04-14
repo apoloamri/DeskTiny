@@ -1,5 +1,6 @@
 // Write your Javascript code.
-var apiUrl = "http://localhost:60400/"; //"http://192.168.10.62/api/"
+var apiUrl = "http://localhost:60400/";
+var siteActive = false;
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -50,6 +51,12 @@ function logout() {
     setCookie("username", "", 0);
     setCookie("session_key", "", 0);
     window.location = "index.html";
+}
+
+function activeTimeout(func, timeout) {
+    if (siteActive) {
+        setTimeout(func, timeout);
+    }
 }
 
 // function showLoading() {
