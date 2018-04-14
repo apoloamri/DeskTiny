@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeskTiny", "DeskTiny\DeskTi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDeskTiny", "TestDeskTiny\TestDeskTiny.csproj", "{07612105-EDE6-4080-A815-C9490BE06128}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTMessenger", "DeskTinyWebApi\DTMessenger.csproj", "{3F45C6EA-02B1-4BFF-81E0-94CF9E48D6A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTMessenger", "DTMessenger\DTMessenger.csproj", "{6981BCF5-C631-481F-AE83-76722D2F3E75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{07612105-EDE6-4080-A815-C9490BE06128}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07612105-EDE6-4080-A815-C9490BE06128}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07612105-EDE6-4080-A815-C9490BE06128}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F45C6EA-02B1-4BFF-81E0-94CF9E48D6A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F45C6EA-02B1-4BFF-81E0-94CF9E48D6A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F45C6EA-02B1-4BFF-81E0-94CF9E48D6A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F45C6EA-02B1-4BFF-81E0-94CF9E48D6A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6981BCF5-C631-481F-AE83-76722D2F3E75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6981BCF5-C631-481F-AE83-76722D2F3E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6981BCF5-C631-481F-AE83-76722D2F3E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6981BCF5-C631-481F-AE83-76722D2F3E75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

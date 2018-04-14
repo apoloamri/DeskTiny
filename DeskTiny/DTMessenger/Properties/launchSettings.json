@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "DeskTinyWebApi": {
+    "DTMessenger": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "login",
