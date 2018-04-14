@@ -15,9 +15,10 @@ namespace DTCore.DTSystem
                 fileName = "appsettings.json";
             }
 
-            var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+            var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(fileName, optional: true, reloadOnChange: true);
+                .AddJsonFile(fileName, optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
             return configurationBuilder.Build();
         }
