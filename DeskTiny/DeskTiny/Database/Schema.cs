@@ -1,6 +1,4 @@
-﻿using DTCore.Database.Attributes;
-using DTCore.Database.Enums;
-using DTCore.Database.System;
+﻿using DTCore.Database.System;
 using DTCore.DTSystem;
 using DTCore.Tools;
 using DTCore.Tools.Extensions;

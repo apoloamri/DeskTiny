@@ -1,6 +1,4 @@
-﻿using DTCore.Mvc.Attributes;
-using DTCore.Mvc.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DTCore.Mvc

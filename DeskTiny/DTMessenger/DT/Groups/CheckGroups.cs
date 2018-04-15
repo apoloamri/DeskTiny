@@ -1,9 +1,4 @@
-﻿using DTCore.Database.Enums;
-using DTMessenger.DT.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DTCore.Database;
 
 namespace DTMessenger.DT.Groups
 {
@@ -11,7 +6,7 @@ namespace DTMessenger.DT.Groups
     {
         public static bool IsGroupsExisting(string groupName)
         {
-            var groups = Schemas.Groups;
+            var groups = Database.Schemas.Groups;
 
             groups.Conditions.Where(
                 groups.Column(x => x.creator),

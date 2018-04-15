@@ -1,7 +1,5 @@
-﻿using DTMessenger.DT.Database;
-using DTCore.Database.Enums;
+﻿using DTCore.Database;
 using DTCore.Mvc;
-using DTCore.Mvc.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,7 +16,7 @@ namespace DTMessenger.Models.Member
 
         public override void MapModel()
         {
-            var member = Schemas.Members;
+            var member = DT.Database.Schemas.Members;
 
             member.Conditions.Where(
                 member.Column(x => x.username),

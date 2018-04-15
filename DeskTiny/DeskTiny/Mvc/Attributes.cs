@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DTCore.Mvc.Attributes
+namespace DTCore.Mvc
 {
     public class JsonPropertyAttribute : Attribute { }
 

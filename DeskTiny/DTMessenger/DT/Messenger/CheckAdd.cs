@@ -1,5 +1,4 @@
-﻿using DTMessenger.DT.Database;
-using DTCore.Database.Enums;
+﻿using DTCore.Database;
 using DTCore.Tools.Extensions;
 
 namespace DTMessenger.DT.Messenger
@@ -13,7 +12,7 @@ namespace DTMessenger.DT.Messenger
                 return false;
             }
 
-            var contacts = Schemas.Contacts;
+            var contacts = Database.Schemas.Contacts;
 
             contacts.Conditions.Where(
                 contacts.Column(x => x.username),

@@ -1,6 +1,5 @@
-﻿using DTCore.Database.Enums;
+﻿using DTCore.Database;
 using DTCore.Mvc;
-using DTCore.Mvc.Attributes;
 using DTMessenger.DT.Database;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +22,7 @@ namespace DTMessenger.Models.Messenger
 
         public override void HandleModel()
         {
-            var messages = Schemas.GroupMessages;
+            var messages = DT.Database.Schemas.GroupMessages;
             messages.Entity.group_id = this.GroupId;
             messages.Entity.sender = this.SessionId;
             messages.Entity.message = this.Message;
@@ -44,14 +43,14 @@ namespace DTMessenger.Models.Messenger
 
         private void GetGroups()
         {
-            var groups = Schemas.Groups;
+            var groups = DT.Database.Schemas.Groups;
             groups.Conditions.Where(groups.Column(x => x.members), Condition.EqualTo, this.SessionId);
             this.Result = groups.Select.Dictionaries;
         }
 
         private void GetGroupMessages()
         {
-            var messages = Schemas.GroupMessages;
+            var messages = DT.Database.Schemas.GroupMessages;
             messages.Conditions.Where(messages.Column(x => x.group_id), Condition.EqualTo, this.GroupId);
             messages.Conditions.OrderBy(messages.Column(x => x.id), Order.DESC);
             messages.Conditions.LimitBy(this.Count ?? 10);

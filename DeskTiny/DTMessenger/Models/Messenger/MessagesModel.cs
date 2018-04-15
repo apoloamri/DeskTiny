@@ -1,6 +1,5 @@
-﻿using DTCore.Database.Enums;
+﻿using DTCore.Database;
 using DTCore.Mvc;
-using DTCore.Mvc.Attributes;
 using DTMessenger.DT.Database;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,7 +25,7 @@ namespace DTMessenger.Models.Messenger
 
         public override void HandleModel()
         {
-            var messages = Schemas.Messages;
+            var messages = DT.Database.Schemas.Messages;
 
             messages.Entity.sender = this.SessionId;
             messages.Entity.recipient = this.Username;
@@ -45,8 +44,8 @@ namespace DTMessenger.Models.Messenger
 
         private void ReadMessages()
         {
-            var messages = Schemas.Messages;
-            var members = Schemas.Members;
+            var messages = DT.Database.Schemas.Messages;
+            var members = DT.Database.Schemas.Members;
 
             messages.Relate(Join.LEFT, members,
                 messages.Relation(messages.Column(x => x.sender), members.Column(x => x.username)));
@@ -71,8 +70,8 @@ namespace DTMessenger.Models.Messenger
 
         private void GetMessages()
         {
-            var messages = Schemas.Messages;
-            var members = Schemas.Members;
+            var messages = DT.Database.Schemas.Messages;
+            var members = DT.Database.Schemas.Members;
 
             messages.Relate(Join.LEFT, members,
                 messages.Relation(messages.Column(x => x.sender), members.Column(x => x.username)));

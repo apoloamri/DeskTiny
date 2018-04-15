@@ -1,6 +1,4 @@
-﻿using DTCore.Database.Attributes;
-using DTCore.Database.Enums;
-using DTCore.Tools.Extensions;
+﻿using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

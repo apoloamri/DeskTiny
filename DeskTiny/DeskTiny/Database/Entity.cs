@@ -1,5 +1,4 @@
-﻿using DTCore.Database.Attributes;
-using DTCore.Tools;
+﻿using DTCore.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;

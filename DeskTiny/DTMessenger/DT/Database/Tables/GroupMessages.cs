@@ -1,5 +1,4 @@
 ﻿using DTCore.Database;
-using DTCore.Database.Attributes;
 
 namespace DTMessenger.DT.Database.Tables
 {

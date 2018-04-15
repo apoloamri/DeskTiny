@@ -1,4 +1,4 @@
-﻿namespace DTCore.Database.Enums
+﻿namespace DTCore.Database
 {
     public enum Condition { EqualTo, NotEqualTo, GreaterThan, LessThan, GreaterThanEqualTo, LessThanEqualTo, Like, NotLike }
     public enum Join { INNER, OUTER, LEFT, RIGHT }

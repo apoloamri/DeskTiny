@@ -1,5 +1,4 @@
-﻿using DTCore.Database.Attributes;
-using System;
+﻿using System;
 
 namespace DTCore.Database.Tables
 {

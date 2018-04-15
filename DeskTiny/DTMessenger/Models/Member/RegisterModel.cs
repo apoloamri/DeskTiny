@@ -1,10 +1,9 @@
-﻿using DTMessenger.DT.Database;
+﻿using DTCore.Mvc;
+using DTMessenger.DT.Database;
 using DTMessenger.DT.Members;
-using DTCore.Mvc;
-using DTCore.Mvc.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System;
 
 namespace DTMessenger.Models.Member
 {

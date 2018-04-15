@@ -1,6 +1,4 @@
-﻿using DTCore.Database.Attributes;
-
-namespace DTCore.Database.Tables
+﻿namespace DTCore.Database.Tables
 {
     public class SetupChanges : Entity
     {

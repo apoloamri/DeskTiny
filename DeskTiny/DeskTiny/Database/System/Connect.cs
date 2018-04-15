@@ -1,5 +1,4 @@
-﻿using DTCore.Database.Enums;
-using DTCore.DTSystem;
+﻿using DTCore.DTSystem;
 using DTCore.DTSystem.Diagnostics;
 using DTCore.Tools.Extensions;
 using MySql.Data.MySqlClient;

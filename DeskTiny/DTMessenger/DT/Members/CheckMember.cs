@@ -1,5 +1,5 @@
-﻿using DTMessenger.DT.Database;
-using DTCore.Database.Enums;
+﻿using DTCore.Database;
+using DTMessenger.DT.Database;
 
 namespace DTMessenger.DT.Members
 {
@@ -7,7 +7,7 @@ namespace DTMessenger.DT.Members
     {
         public static bool CheckEmailExists(string email)
         {
-            var member = Schemas.Members;
+            var member = Database.Schemas.Members;
 
             member.Conditions.Where(
                 member.Column(x => x.email),
@@ -19,7 +19,7 @@ namespace DTMessenger.DT.Members
 
         public static bool CheckUsernameExists(string username)
         {
-            var member = Schemas.Members;
+            var member = Database.Schemas.Members;
 
             member.Conditions.Where(
                 member.Column(x => x.username),
@@ -31,7 +31,7 @@ namespace DTMessenger.DT.Members
 
         public static bool CheckUsernamePasswordExists(string username, string password)
         {
-            var member = Schemas.Members;
+            var member = Database.Schemas.Members;
 
             member.Conditions.Where(
                 member.Column(x => x.username),

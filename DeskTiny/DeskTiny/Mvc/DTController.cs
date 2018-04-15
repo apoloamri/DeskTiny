@@ -1,6 +1,5 @@
-﻿using DTCore.Mvc.Attributes;
+﻿using DTCore.DTSystem.Diagnostics;
 using DTCore.Mvc.System;
-using DTCore.DTSystem.Diagnostics;
 using DTCore.Tools;
 using DTCore.Tools.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -127,7 +126,8 @@ namespace DTCore.Mvc
         {
             try
             {
-                if (this.ModelState.IsValid)
+                if (this.ModelObject != null && 
+                    this.ModelState.IsValid)
                 {
                     this.ExecuteMapping();
                     this.ExecuteHandling();

@@ -1,7 +1,6 @@
-﻿using DTMessenger.DT.Database;
+﻿using DTCore.Mvc;
+using DTMessenger.DT.Database;
 using DTMessenger.DT.Messenger;
-using DTCore.Mvc;
-using DTCore.Mvc.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

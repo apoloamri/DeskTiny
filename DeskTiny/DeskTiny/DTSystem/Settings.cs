@@ -1,4 +1,4 @@
-﻿using DTCore.Database.Enums;
+﻿using DTCore.Database;
 using DTCore.Tools.Extensions;
 using Microsoft.Extensions.Configuration;
 using System;

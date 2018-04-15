@@ -1,7 +1,5 @@
-﻿using DTMessenger.DT.Database;
-using DTCore.Database.Enums;
+﻿using DTCore.Database;
 using DTCore.Mvc;
-using DTCore.Mvc.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,8 +27,8 @@ namespace DTMessenger.Models.Member
 
         private void GetRequests()
         {
-            var contacts = Schemas.Contacts;
-            var members = Schemas.Members;
+            var contacts = DT.Database.Schemas.Contacts;
+            var members = DT.Database.Schemas.Members;
 
             contacts.Relate(Join.INNER, members,
                 contacts.Relation(contacts.Column(x => x.username), members.Column(x => x.username)));
@@ -48,8 +46,8 @@ namespace DTMessenger.Models.Member
 
         private void GetContacts()
         {
-            var contacts = Schemas.Contacts;
-            var members = Schemas.Members;
+            var contacts = DT.Database.Schemas.Contacts;
+            var members = DT.Database.Schemas.Members;
 
             contacts.Relate(Join.INNER, members,
                 contacts.Relation(contacts.Column(x => x.contact_username), members.Column(x => x.username)));
@@ -63,7 +61,7 @@ namespace DTMessenger.Models.Member
 
             foreach (var contact in contacts.Select.Dictionaries)
             {
-                var messages = Schemas.Messages;
+                var messages = DT.Database.Schemas.Messages;
 
                 messages.Conditions.Where(
                     messages.Column(x => x.recipient),

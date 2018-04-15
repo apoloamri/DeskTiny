@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DTCore.Database.Attributes
+namespace DTCore.Database
 {
     /// <summary>
     /// Sets the default value of the property when written.

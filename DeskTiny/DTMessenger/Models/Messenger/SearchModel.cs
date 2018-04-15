@@ -1,7 +1,5 @@
-﻿using DTMessenger.DT.Database;
-using DTCore.Database.Enums;
+﻿using DTCore.Database;
 using DTCore.Mvc;
-using DTCore.Mvc.Attributes;
 using DTCore.Tools.Extensions;
 using System;
 using System.Collections.Generic;
@@ -33,7 +31,7 @@ namespace DTMessenger.Models.Messenger
                 return;
             }
 
-            var members = Schemas.Members;
+            var members = DT.Database.Schemas.Members;
 
             if (!this.Username.IsEmpty())
             {
