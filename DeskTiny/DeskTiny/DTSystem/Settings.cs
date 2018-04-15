@@ -12,13 +12,14 @@ namespace DTCore.DTSystem
         {
             if (fileName.IsEmpty())
             {
-                fileName = "appsettings.json";
+                string deployment = Deploy.Deployment;
+                string deploymentString = deployment.IsEmpty() ? "" : $".{deployment}";
+                fileName = $"appsettings{deploymentString}.json";
             }
 
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(fileName, optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables();
+                .AddJsonFile(fileName, optional: true, reloadOnChange: true);
 
             return configurationBuilder.Build();
         }
