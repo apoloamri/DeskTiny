@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Database
 {
@@ -37,7 +38,18 @@ namespace Tenderfoot.Database
 
         public void SetValuesFromModel(object model)
         {
-            throw new NotImplementedException();
+            var type = model.GetType();
+
+            foreach (var property in type.GetProperties())
+            {
+                var thisProperty = this.GetType().GetProperty(property.Name.ToUnderscore());
+
+                if (thisProperty != null &&
+                    thisProperty.GetCustomAttribute<NonTableColumnAttribute>(false) == null)
+                {
+                    thisProperty.SetValue(this, property.GetValue(model));
+                }
+            }
         }
 
         public void SetValuesFromDictionary(Dictionary<string, object> dictionary)
