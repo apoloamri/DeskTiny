@@ -1,5 +1,5 @@
-﻿using Tenderfoot.DTSystem;
-using Tenderfoot.DTSystem.Diagnostics;
+﻿using Tenderfoot.TfSystem;
+using Tenderfoot.TfSystem.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +24,13 @@ namespace Tenderfoot.Tools
                     {
                         try
                         {
-                            var value = DTConvert.ChangeType(keyValue.Value, property.PropertyType);
+                            var value = TfConvert.ChangeType(keyValue.Value, property.PropertyType);
 
                             type.GetProperty(keyValue.Key).SetValue(obj, value);
                         }
                         catch
                         {
-                            DTDebug.WriteLog(
+                            TfDebug.WriteLog(
                                 Settings.Logs.System,
                                 $"Ignored Malformed Line - {DateTime.Now}",
                                 $"Name: {keyValue.Key}{Environment.NewLine}" +

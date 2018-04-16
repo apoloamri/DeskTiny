@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tenderfoot.Mvc
 {
-    public abstract class DTModel
+    public abstract class TfModel
     {
         public abstract void HandleModel();
         public abstract void MapModel();

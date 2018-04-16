@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 
-namespace Tenderfoot.DTSystem
+namespace Tenderfoot.TfSystem
 {
     public static class Settings
     {

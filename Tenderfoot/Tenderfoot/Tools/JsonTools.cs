@@ -1,4 +1,4 @@
-﻿using Tenderfoot.DTSystem.Diagnostics;
+﻿using Tenderfoot.TfSystem.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,7 +15,7 @@ namespace Tenderfoot.Tools
             }
             catch (JsonReaderException ex)
             {
-                DTDebug.WriteLine(ex.Message, ex.StackTrace);
+                TfDebug.WriteLine(ex.Message, ex.StackTrace);
                 return false;
             }
         }

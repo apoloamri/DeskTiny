@@ -1,6 +1,6 @@
 ﻿using Tenderfoot.Tools;
 
-namespace Tenderfoot.DTSystem
+namespace Tenderfoot.TfSystem
 {
     public static class Encryption
     {

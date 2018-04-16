@@ -1,4 +1,4 @@
-﻿using Tenderfoot.DTSystem.Diagnostics;
+﻿using Tenderfoot.TfSystem.Diagnostics;
 using Tenderfoot.Mvc.System;
 using Tenderfoot.Tools;
 using Tenderfoot.Tools.Extensions;
@@ -11,9 +11,9 @@ using MainSystem = System;
 
 namespace Tenderfoot.Mvc
 {
-    public class DTController : BaseController
+    public class TfController : BaseController
     {
-        public void Initiate<Model>(bool validate = false) where Model : DTModel, new()
+        public void Initiate<Model>(bool validate = false) where Model : TfModel, new()
         {
             try
             {
@@ -32,7 +32,7 @@ namespace Tenderfoot.Mvc
             }
             catch (Exception ex) when (!MainSystem.Diagnostics.Debugger.IsAttached)
             {
-                DTDebug.WriteLog(ex);
+                TfDebug.WriteLog(ex);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Tenderfoot.Mvc
             }
             catch (Exception ex) when (!MainSystem.Diagnostics.Debugger.IsAttached)
             {
-                DTDebug.WriteLog(ex);
+                TfDebug.WriteLog(ex);
             }
 
             return this.JsonResult;

@@ -1,5 +1,5 @@
-﻿using Tenderfoot.DTSystem;
-using Tenderfoot.DTSystem.Diagnostics;
+﻿using Tenderfoot.TfSystem;
+using Tenderfoot.TfSystem.Diagnostics;
 using Tenderfoot.Tools.Extensions;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,7 @@ namespace Tenderfoot.Database.System
                 this.SqlConnection.Close();
             }
 
-            DTDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
+            TfDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
 
             if (new[] {
                 Operations.ADD,
@@ -41,7 +41,7 @@ namespace Tenderfoot.Database.System
                 Operations.CREATE_TABLE,
                 Operations.DROP_COLUMN }.Contains(operation))
             {
-                DTDebug.WriteLog(
+                TfDebug.WriteLog(
                     Settings.Logs.Migration,
                     $"Migration Details - {DateTime.Now}",
                    this.SqlCommand.CommandText);
@@ -69,7 +69,7 @@ namespace Tenderfoot.Database.System
             catch (Exception ex)
             {
                 this.SqlTransaction.Rollback();
-                DTDebug.WriteLog(ex);
+                TfDebug.WriteLog(ex);
             }
             
             this.SqlConnection.Close();

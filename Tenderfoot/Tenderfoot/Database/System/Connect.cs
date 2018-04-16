@@ -1,5 +1,5 @@
-﻿using Tenderfoot.DTSystem;
-using Tenderfoot.DTSystem.Diagnostics;
+﻿using Tenderfoot.TfSystem;
+using Tenderfoot.TfSystem.Diagnostics;
 using Tenderfoot.Tools.Extensions;
 using MySql.Data.MySqlClient;
 using Npgsql;
@@ -33,7 +33,7 @@ namespace Tenderfoot.Database.System
         {
             if (sql.IsEmpty())
             {
-                throw new DTException("SQL not provided.");
+                throw new TfException("SQL not provided.");
             }
 
             if (this.SqlCommand == null)
@@ -41,7 +41,7 @@ namespace Tenderfoot.Database.System
                 this.SqlCommand = this.SqlConnection.CreateCommand();
             }
 
-            DTDebug.WriteLine("Executing query", sql);
+            TfDebug.WriteLine("Executing query", sql);
             
             this.SqlCommand.CommandText = sql;
 
@@ -50,7 +50,7 @@ namespace Tenderfoot.Database.System
                 this.SqlCommand.Parameters.Add(ConnectProvider.SqlParameter(parameter.Key, parameter.Value));
             }
 
-            DTDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
+            TfDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
         }
     }
 
@@ -74,7 +74,7 @@ namespace Tenderfoot.Database.System
         {
             string connection = Settings.Database.ConnectionString;
 
-            DTDebug.WriteLine("Connecting database", connection);
+            TfDebug.WriteLine("Connecting database", connection);
 
             switch (Settings.Database.Provider)
             {

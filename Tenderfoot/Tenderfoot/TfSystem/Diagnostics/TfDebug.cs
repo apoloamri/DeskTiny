@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Tenderfoot.DTSystem.Diagnostics
+namespace Tenderfoot.TfSystem.Diagnostics
 {
-    public static class DTDebug
+    public static class TfDebug
     {
         public static void WriteLine(string title, string details)
         {

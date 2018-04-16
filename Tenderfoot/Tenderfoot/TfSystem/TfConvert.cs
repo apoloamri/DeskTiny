@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tenderfoot.DTSystem
+namespace Tenderfoot.TfSystem
 {
-    public class DTConvert
+    public class TfConvert
     {
         public static object ChangeType(object value, Type conversion)
         {

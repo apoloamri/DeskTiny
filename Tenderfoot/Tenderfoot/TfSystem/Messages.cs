@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Tenderfoot.DTSystem
+namespace Tenderfoot.TfSystem
 {
     public static class Resources
     {

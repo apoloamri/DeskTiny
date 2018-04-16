@@ -1,11 +1,11 @@
-﻿using Tenderfoot.DTSystem;
+﻿using Tenderfoot.TfSystem;
 using Tenderfoot.Tools.Extensions;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Tenderfoot.Mvc
 {
-    public static class DTValidationResult
+    public static class TfValidationResult
     {
         public static ValidationResult CheckSessionActivity(string sessionId, string sessionKey)
         {

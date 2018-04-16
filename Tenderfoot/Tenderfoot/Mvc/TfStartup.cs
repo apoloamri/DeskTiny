@@ -1,11 +1,11 @@
-﻿using Tenderfoot.DTSystem;
+﻿using Tenderfoot.TfSystem;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Tenderfoot.Mvc
 {
-    public class DTStartup
+    public class TfStartup
     {
         public void ConfigureServices(IServiceCollection services)
         {
