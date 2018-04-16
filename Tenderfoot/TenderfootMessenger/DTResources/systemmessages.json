@@ -1,0 +1,10 @@
+﻿{
+  "ConfirmPassword": "Password confirmation does not match.",
+  "ContactExists": "Contact already exists in your address book.",
+  "EmailExists": "Email already exists.",
+  "InvalidLogin": "Invalid usernamr or password.",
+  "RequiredField": "{0} is a required field.",
+  "SessionExpired": "Current session is expired.",
+  "UsernameExists": "Username already exists.",
+  "UsernameNotExists": "Username {0} does not exists."
+}
