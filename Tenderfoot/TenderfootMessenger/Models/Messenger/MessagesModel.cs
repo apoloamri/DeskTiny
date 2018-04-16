@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootMessenger.Models.Messenger
 {
-    public class MessagesModel : DTModel
+    public class MessagesModel : TfModel
     {
         [Input]
         public string Username { get; set; }
@@ -106,12 +106,12 @@ namespace TenderfootMessenger.Models.Messenger
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
-            yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
+            yield return TfValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
+            yield return TfValidationResult.FieldRequired(nameof(this.Username), this.Username);
 
             if (this.Handling)
             {
-                yield return DTValidationResult.FieldRequired(nameof(this.Message), this.Message);
+                yield return TfValidationResult.FieldRequired(nameof(this.Message), this.Message);
             }
         }
     }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace TenderfootMessenger
 {
-    public class Startup : DTStartup
+    public class Startup : TfStartup
     {
         public Startup(IConfiguration configuration)
         {

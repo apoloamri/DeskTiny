@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootMessenger.Models.Messenger
 {
-    public class CreateGroupModel : DTModel
+    public class CreateGroupModel : TfModel
     {
         [Input]
         public string GroupName { get; set; }
@@ -35,12 +35,12 @@ namespace TenderfootMessenger.Models.Messenger
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
+            yield return TfValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
 
             if (this.Handling)
             {
-                yield return DTValidationResult.FieldRequired(nameof(this.GroupName), this.GroupName);
-                yield return DTValidationResult.FieldRequired(nameof(this.Members), this.Members);
+                yield return TfValidationResult.FieldRequired(nameof(this.GroupName), this.GroupName);
+                yield return TfValidationResult.FieldRequired(nameof(this.Members), this.Members);
 
                 if (this.Members != null && this.Members.Count > 0)
                 {
@@ -48,7 +48,7 @@ namespace TenderfootMessenger.Models.Messenger
                     {
                         if (!CheckMember.CheckUsernameExists(member))
                         {
-                            yield return DTValidationResult.Compose("UsernameNotExists", new[] { member }, nameof(this.Members));
+                            yield return TfValidationResult.Compose("UsernameNotExists", new[] { member }, nameof(this.Members));
                         }
                     }
                 }

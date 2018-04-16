@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootMessenger.Models.Login
 {
-    public class LoginModel : DTModel
+    public class LoginModel : TfModel
     {
         [Input]
         public string Username { get; set; }
@@ -28,20 +28,20 @@ namespace TenderfootMessenger.Models.Login
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
+            yield return TfValidationResult.FieldRequired(nameof(this.Username), this.Username);
 
             if (this.Mapping)
             {
-                yield return DTValidationResult.FieldRequired(nameof(this.SessionKey), this.SessionKey);
+                yield return TfValidationResult.FieldRequired(nameof(this.SessionKey), this.SessionKey);
             }
             
             if (this.Handling)
             {
-                yield return DTValidationResult.FieldRequired(nameof(this.Password), this.Password);
+                yield return TfValidationResult.FieldRequired(nameof(this.Password), this.Password);
 
                 if (!CheckMember.CheckUsernamePasswordExists(this.Username, this.Password))
                 {
-                    yield return DTValidationResult.Compose("InvalidLogin", nameof(this.Username), nameof(this.Password));
+                    yield return TfValidationResult.Compose("InvalidLogin", nameof(this.Username), nameof(this.Password));
                 }
             }
         }

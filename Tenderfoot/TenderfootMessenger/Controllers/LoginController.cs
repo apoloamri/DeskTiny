@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TenderfootMessenger.Controllers
 {
     [Route("login")]
-    public class LoginController : DTController
+    public class LoginController : TfController
     {
         [HttpGet]
         public JsonResult Get()

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TenderfootMessenger.Controllers
 {
     [Route("messenger")]
-    public class MessengerController : DTController
+    public class MessengerController : TfController
     {
         [HttpPost]
         [Route("add")]

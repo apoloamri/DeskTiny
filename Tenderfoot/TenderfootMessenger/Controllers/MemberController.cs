@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TenderfootMessenger.Controllers
 {
     [Route("member")]
-    public class MemberController : DTController
+    public class MemberController : TfController
     {
         [HttpGet]
         [Route("contacts")]

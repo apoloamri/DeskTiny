@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootMessenger.Models.Messenger
 {
-    public class AddModel : DTModel
+    public class AddModel : TfModel
     {
         [Input]
         public string Username { get; set; }
@@ -27,12 +27,12 @@ namespace TenderfootMessenger.Models.Messenger
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
-            yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
+            yield return TfValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
+            yield return TfValidationResult.FieldRequired(nameof(this.Username), this.Username);
 
             if (CheckAdd.CheckContactExists(this.SessionId, this.Username))
             {
-                yield return DTValidationResult.Compose("ContactExists", nameof(this.Username));
+                yield return TfValidationResult.Compose("ContactExists", nameof(this.Username));
             }
         }
     }

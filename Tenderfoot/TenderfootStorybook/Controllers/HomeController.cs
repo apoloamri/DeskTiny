@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace TenderfootStorybook.Controllers
 {
     [Route("api/[controller]")]
-    public class HomeController : DTController
+    public class HomeController : TfController
     {
         [HttpGet]
         public JsonResult Index()

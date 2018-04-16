@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootMessenger.Models.Member
 {
-    public class ContactsModel : DTModel
+    public class ContactsModel : TfModel
     {
         [JsonProperty]
         public List<Dictionary<string, object>> Result { get; set; }
@@ -86,7 +86,7 @@ namespace TenderfootMessenger.Models.Member
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
+            yield return TfValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
         }
     }
 }

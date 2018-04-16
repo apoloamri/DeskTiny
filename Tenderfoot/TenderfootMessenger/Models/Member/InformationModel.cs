@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootMessenger.Models.Member
 {
-    public class InformationModel : DTModel
+    public class InformationModel : TfModel
     {
         [JsonProperty]
         public Dictionary<string, object> Result { get; set; }
@@ -28,7 +28,7 @@ namespace TenderfootMessenger.Models.Member
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
+            yield return TfValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
         }
     }
 }

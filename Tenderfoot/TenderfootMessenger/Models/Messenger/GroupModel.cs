@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootMessenger.Models.Messenger
 {
-    public class GroupModel : DTModel
+    public class GroupModel : TfModel
     {
         [Input]
         public int? GroupId { get; set; }
@@ -59,12 +59,12 @@ namespace TenderfootMessenger.Models.Messenger
         
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return DTValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
+            yield return TfValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
 
             if (this.Handling)
             {
-                DTValidationResult.FieldRequired(nameof(this.GroupId), this.GroupId);
-                DTValidationResult.FieldRequired(nameof(this.Message), this.Message);
+                TfValidationResult.FieldRequired(nameof(this.GroupId), this.GroupId);
+                TfValidationResult.FieldRequired(nameof(this.Message), this.Message);
             }
         }
     }

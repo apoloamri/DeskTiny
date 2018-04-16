@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace TenderfootMessenger.Models.Messenger
 {
-    public class SearchModel : DTModel
+    public class SearchModel : TfModel
     {
         [Input]
         public string Email { get; set; }

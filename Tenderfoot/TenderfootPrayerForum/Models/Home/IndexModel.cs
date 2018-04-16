@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TenderfootPrayerForum.Models.Home
 {
-    public class IndexModel : DTModel
+    public class IndexModel : TfModel
     {
         [Input]
         public string Username { get; set; }
@@ -27,7 +27,7 @@ namespace TenderfootPrayerForum.Models.Home
         {
             if (this.Mapping)
             {
-                yield return DTValidationResult.FieldRequired(nameof(this.Username), this.Username);
+                yield return TfValidationResult.FieldRequired(nameof(this.Username), this.Username);
             }
         }
     }

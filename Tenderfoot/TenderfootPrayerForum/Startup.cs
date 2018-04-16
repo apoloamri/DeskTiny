@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace TenderfootPrayerForum
 {
-    public class Startup : DTStartup
+    public class Startup : TfStartup
     {
         public Startup(IConfiguration configuration) { }
     }

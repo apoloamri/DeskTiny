@@ -5,7 +5,7 @@ using TenderfootPrayerForum.Models.Member;
 namespace TenderfootPrayerForum.Controllers
 {
     [Route("api/[controller]")]
-    public class MemberController : DTController
+    public class MemberController : TfController
     {
         [HttpPost]
         [Route("register")]

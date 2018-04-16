@@ -29,7 +29,13 @@ namespace Tenderfoot.TfSystem
             private static IConfigurationSection ConfigurationSection = Configuration().GetSection("Web");
 
             public static string[] AllowOrigins => ConfigurationSection.GetSection("AllowOrigins").Value.Split(',');
+            public static string ApiUrl => ConfigurationSection.GetSection("ApiUrl").Value;
             public static int SessionTimeOut => Convert.ToInt32(ConfigurationSection.GetSection("SessionTimeOut").Value);
+            public static string SiteUrl => ConfigurationSection.GetSection("SiteUrl").Value;
+            public static string SmtpEmail => ConfigurationSection.GetSection("SmtpEmail").Value;
+            public static string SmtpHost => ConfigurationSection.GetSection("SmtpHost").Value;
+            public static string SmtpPassword => ConfigurationSection.GetSection("SmtpPassword").Value;
+            public static int SmtpPort => Convert.ToInt32(ConfigurationSection.GetSection("SmtpPort").Value);
         }
 
         public static class Database
@@ -107,8 +113,9 @@ namespace Tenderfoot.TfSystem
         {
             private static IConfigurationSection ConfigurationSection = Configuration().GetSection("SystemResources");
 
-            public static string SystemMessages => ConfigurationSection.GetSection("SystemMessages").Value;
+            public static string EmailFiles => ConfigurationSection.GetSection("EmailFiles").Value;
             public static string FieldMessages => ConfigurationSection.GetSection("FieldMessages").Value;
+            public static string SystemMessages => ConfigurationSection.GetSection("SystemMessages").Value;
         }
     }
 }

@@ -32,5 +32,12 @@ namespace TenderfootPrayerForum.Library.Database
         [NotNull]
         [Default("0")]
         public int? gender { get; set; }
+
+        [NotNull]
+        [Default("0")]
+        public int? active { get; set; }
+
+        [NotNull]
+        public string activation_key { get; set; }
     }
 }
