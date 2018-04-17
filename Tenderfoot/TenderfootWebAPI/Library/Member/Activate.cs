@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Tenderfoot.Database;
 using Tenderfoot.Mvc;
-using TenderfootPrayerForum.Library._Database;
+using TenderfootWebAPI.Library._Database;
 
-namespace TenderfootPrayerForum.Library.Member
+namespace TenderfootWebAPI.Library.Member
 {
     public class Activate
     {

@@ -1,11 +1,11 @@
 ﻿using Tenderfoot.Database;
 using Tenderfoot.Mvc;
-using TenderfootPrayerForum.Library._Database;
+using TenderfootWebAPI.Library._Database;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace TenderfootPrayerForum.Models.Home
+namespace TenderfootWebAPI.Models.Home
 {
     public class IndexModel : TfModel
     {

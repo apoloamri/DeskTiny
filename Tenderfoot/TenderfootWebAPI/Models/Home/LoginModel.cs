@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Tenderfoot.Mvc;
-using TenderfootPrayerForum.Library.Home;
+using TenderfootWebAPI.Library.Home;
 
-namespace TenderfootPrayerForum.Models.Home
+namespace TenderfootWebAPI.Models.Home
 {
     public class LoginModel : TfModel<Login>
     {

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using Tenderfoot.Mvc;
 using Tenderfoot.Net;
 using Tenderfoot.Tools;
-using TenderfootPrayerForum.Library._Database;
-using TenderfootPrayerForum.Library.Member;
+using TenderfootWebAPI.Library._Database;
+using TenderfootWebAPI.Library.Member;
 
-namespace TenderfootPrayerForum.Models.Member
+namespace TenderfootWebAPI.Models.Member
 {
     public class RegisterModel : TfModel<Register>
     {

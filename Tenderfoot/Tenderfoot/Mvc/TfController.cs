@@ -24,6 +24,7 @@ namespace Tenderfoot.Mvc
                 this.GetQueries(obj);
 
                 this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.ModelDictionary);
+                this.ModelObject.BeforeStartUp();
 
                 if (validate)
                 {

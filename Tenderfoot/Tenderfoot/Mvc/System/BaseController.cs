@@ -21,6 +21,11 @@ namespace Tenderfoot.Mvc.System
 
         protected PropertyInfo GetModelProperty(ref string name, object obj)
         {
+            if (name == null)
+            {
+                return null;
+            }
+
             name = name.Replace("[]", "");
 
             var property = obj.GetType().GetProperty(name);

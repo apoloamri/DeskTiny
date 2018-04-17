@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Tenderfoot.Mvc;
-using TenderfootPrayerForum.Library.Member;
+using TenderfootWebAPI.Library.Member;
 
-namespace TenderfootPrayerForum.Models.Member
+namespace TenderfootWebAPI.Models.Member
 {
     public class ActivateModel : TfModel<Activate>
     {
