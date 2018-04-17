@@ -20,7 +20,7 @@ namespace TenderfootMessenger.Models.Member
 
             member.Conditions.Where(
                 member.Column(x => x.username),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.SessionId);
             
             this.Result = member.Select.Dictionary;

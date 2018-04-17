@@ -1,13 +1,13 @@
-﻿using Tenderfoot.TfSystem.Diagnostics;
-using Tenderfoot.Mvc.System;
-using Tenderfoot.Tools;
-using Tenderfoot.Tools.Extensions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
-using MainSystem = System;
+using Tenderfoot.Mvc.System;
+using Tenderfoot.TfSystem.Diagnostics;
+using Tenderfoot.Tools;
+using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Mvc
 {
@@ -29,8 +29,10 @@ namespace Tenderfoot.Mvc
                 {
                     this.ValidateModel();
                 }
+
+                this.ModelObject.OnStartUp();
             }
-            catch (Exception ex) when (!MainSystem.Diagnostics.Debugger.IsAttached)
+            catch (Exception ex) when (!Debugger.IsAttached)
             {
                 TfDebug.WriteLog(ex);
             }
@@ -40,10 +42,8 @@ namespace Tenderfoot.Mvc
         {
             var jsonDictionary = new Dictionary<string, object>();
             var validationDictionary = new Dictionary<string, object>();
-
-            var validationResults = this.ModelObject.Validate() as IEnumerable<ValidationResult>;
             
-            if (validationResults != null && validationResults.Count() > 0)
+            if (this.ModelObject.Validate() is IEnumerable<ValidationResult> validationResults)
             {
                 var validationList = new List<Dictionary<string, string>>();
 
@@ -71,9 +71,12 @@ namespace Tenderfoot.Mvc
                     }
                 }
 
-                jsonDictionary.Add("is_valid", false);
-                jsonDictionary.Add("messages", validationDictionary);
-
+                if (validationDictionary.Count() > 0)
+                {
+                    jsonDictionary.Add("is_valid", false);
+                    jsonDictionary.Add("messages", validationDictionary);
+                }
+                
                 this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
             }
         }
@@ -134,7 +137,7 @@ namespace Tenderfoot.Mvc
                     this.BuildModelDictionary();
                 }
             }
-            catch (Exception ex) when (!MainSystem.Diagnostics.Debugger.IsAttached)
+            catch (Exception ex) when (!Debugger.IsAttached)
             {
                 TfDebug.WriteLog(ex);
             }

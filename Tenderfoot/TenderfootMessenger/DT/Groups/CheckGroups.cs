@@ -10,13 +10,13 @@ namespace TenderfootMessenger.DT.Groups
 
             groups.Conditions.Where(
                 groups.Column(x => x.creator),
-                Condition.EqualTo,
+                Is.EqualTo,
                 groupName);
 
             groups.Conditions.Where(
                 Operator.OR,
                 groups.Column(x => x.creator),
-                Condition.EqualTo,
+                Is.EqualTo,
                 groupName);
 
             return groups.Count() > 0;

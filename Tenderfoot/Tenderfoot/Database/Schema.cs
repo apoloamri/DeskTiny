@@ -32,7 +32,7 @@ namespace Tenderfoot.Database
             
             foreach (var column in columnOn)
             {
-                onString.Add($"{column.Column1.Get} {Conditions<Joined>.GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
+                onString.Add($"{column.Column1.Get} {Conditions<Joined>.GetCondition(column.Condition ?? Is.EqualTo)} {column.Column2.Get}");
             }
             
             var joinItem = new JoinItem()
@@ -106,6 +106,11 @@ namespace Tenderfoot.Database
                 );
 
             return query.GetScalar();
+        }
+
+        public virtual bool HasRecords()
+        {
+            return this.Count() > 0;
         }
 
         /// <summary>

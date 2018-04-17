@@ -52,12 +52,12 @@ namespace TenderfootMessenger.Models.Messenger
 
             messages.Conditions.Where(
                 messages.Column(x => x.sender),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.Username);
 
             messages.Conditions.Where(
                 messages.Column(x => x.recipient),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.SessionId);
 
             messages.Conditions.OrderBy(messages.Column(x => x.insert_time), Order.DESC);
@@ -78,24 +78,24 @@ namespace TenderfootMessenger.Models.Messenger
 
             messages.Conditions.Where(
                 messages.Column(x => x.sender),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.SessionId);
 
             messages.Conditions.Where(
                 messages.Column(x => x.recipient),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.Username);
 
             messages.Conditions.End(Operator.OR);
 
             messages.Conditions.Where(
                 messages.Column(x => x.sender),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.Username);
 
             messages.Conditions.Where(
                 messages.Column(x => x.recipient),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.SessionId);
 
             messages.Conditions.OrderBy(messages.Column(x => x.insert_time), Order.DESC);

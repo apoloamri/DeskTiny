@@ -1,3 +1,7 @@
 ﻿{
+  "AlreadyActive": "Account already activated.",
+  "InvalidActivationKey": "Invalid activation key.",
+  "InvalidExistance": "{0} already exists.",
+  "ConfirmPassword": "Password does not match.",
   "RequiredField": "{0} is a required field."
 }

@@ -14,5 +14,13 @@ namespace TenderfootPrayerForum.Controllers
             this.Initiate<RegisterModel>(true);
             return this.Conclude();
         }
+
+        [HttpPut]
+        [Route("activate")]
+        public JsonResult Activate()
+        {
+            this.Initiate<ActivateModel>(true);
+            return this.Conclude();
+        }
     }
 }

@@ -312,7 +312,7 @@ namespace Tenderfoot.Database.System
             };
         }
 
-        public Relation Relation(TableColumn column1, TableColumn column2, Condition? condition = null)
+        public Relation Relation(TableColumn column1, TableColumn column2, Is? condition = null)
         {
             return new Relation()
             {
@@ -343,7 +343,7 @@ namespace Tenderfoot.Database.System
     {
         public TableColumn Column1 { get; set; }
         public TableColumn Column2 { get; set; }
-        public Condition? Condition { get; set; }
+        public Is? Condition { get; set; }
     }
 
     public class JoinItem

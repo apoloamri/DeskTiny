@@ -56,7 +56,7 @@ namespace Tenderfoot.Database.System
         /// <param name="value">The value to be compared with.</param>
         public void Where(
             TableColumn column,
-            Condition condition,
+            Is condition,
             object value)
         {
             this.Where(Operator.AND, column, condition, value);
@@ -65,7 +65,7 @@ namespace Tenderfoot.Database.System
         public void Where(
             Operator? oper,
             TableColumn column, 
-            Condition condition, 
+            Is condition, 
             object value)
         {
             if (value == null)
@@ -132,7 +132,7 @@ namespace Tenderfoot.Database.System
 
             foreach (var column in columnOn)
             {
-                onString.Add($"{column.Column1.GetCustomName(customName)} {GetCondition(column.Condition ?? Condition.EqualTo)} {column.Column2.Get}");
+                onString.Add($"{column.Column1.GetCustomName(customName)} {GetCondition(column.Condition ?? Is.EqualTo)} {column.Column2.Get}");
             }
             
             string statement = $"{existence} EXISTS ({Operations.SELECT} 1 FROM {schema.TableName} AS {customName} WHERE {string.Join(", ", onString)})";
@@ -157,25 +157,25 @@ namespace Tenderfoot.Database.System
             this.WhereBase = string.Empty;
         }
         
-        public static string GetCondition(Condition condition)
+        public static string GetCondition(Is condition)
         {
             switch (condition)
             {
-                case Condition.EqualTo:
+                case Is.EqualTo:
                     return "=";
-                case Condition.NotEqualTo:
+                case Is.NotEqualTo:
                     return "!=";
-                case Condition.GreaterThan:
+                case Is.GreaterThan:
                     return ">";
-                case Condition.LessThan:
+                case Is.LessThan:
                     return "<";
-                case Condition.GreaterThanEqualTo:
+                case Is.GreaterThanEqualTo:
                     return ">=";
-                case Condition.LessThanEqualTo:
+                case Is.LessThanEqualTo:
                     return "<=";
-                case Condition.Like:
+                case Is.Like:
                     return "LIKE";
-                case Condition.NotLike:
+                case Is.NotLike:
                     return "NOT LIKE";
                 default:
                     return "=";

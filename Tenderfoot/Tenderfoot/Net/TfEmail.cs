@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Net;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using Tenderfoot.Database;
 using Tenderfoot.TfSystem;
 
@@ -48,10 +49,18 @@ namespace Tenderfoot.Net
             message = message.Replace("{url}", Settings.Web.SiteUrl);
             message = message.Replace("{api_url}", Settings.Web.ApiUrl);
             message = string.Format(message, items);
-            
+
+            var match = Regex.Match(message, @"<title>\s*(.+?)\s*</title>");
+            var title = string.Empty;
+
+            if (match.Success)
+            {
+                title = match.Groups[1].Value;
+            }
+
             return new EmailContent()
             {
-                Title = fileName,
+                Title = title,
                 Message = message
             };
         }

@@ -16,12 +16,12 @@ namespace TenderfootMessenger.DT.Messenger
 
             contacts.Conditions.Where(
                 contacts.Column(x => x.username),
-                Condition.EqualTo,
+                Is.EqualTo,
                 username);
 
             contacts.Conditions.Where(
                 contacts.Column(x => x.contact_username),
-                Condition.EqualTo,
+                Is.EqualTo,
                 contactUsername);
             
             return contacts.Count() > 0;

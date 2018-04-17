@@ -3,11 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tenderfoot.Mvc
 {
+    public abstract class TfModel<T> : TfModel where T : class, new()
+    {
+        public readonly T Library = new T();
+    }
+
     public abstract class TfModel
     {
         public abstract void HandleModel();
         public abstract void MapModel();
         public abstract IEnumerable<ValidationResult> Validate();
+
         public Method Method { get; set; }
         public bool Mapping => this.Method == Method.GET;
         public bool Handling => this.Method != Method.GET;
@@ -19,5 +25,7 @@ namespace Tenderfoot.Mvc
         [Input]
         [JsonProperty]
         public virtual string SessionId { get; set; }
+
+        public virtual void OnStartUp() { }
     }
 }

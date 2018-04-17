@@ -35,7 +35,7 @@ namespace TenderfootMessenger.Models.Member
 
             contacts.Conditions.Where(
                 contacts.Column(x => x.contact_username),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.SessionId);
 
             contacts.Conditions.NotExists(Operator.AND, contacts,
@@ -54,7 +54,7 @@ namespace TenderfootMessenger.Models.Member
 
             contacts.Conditions.Where(
                 contacts.Column(x => x.username),
-                Condition.EqualTo,
+                Is.EqualTo,
                 this.SessionId);
 
             this.Result = new List<Dictionary<string, object>>();
@@ -65,17 +65,17 @@ namespace TenderfootMessenger.Models.Member
 
                 messages.Conditions.Where(
                     messages.Column(x => x.recipient),
-                    Condition.EqualTo,
+                    Is.EqualTo,
                     this.SessionId);
 
                 messages.Conditions.Where(
                     messages.Column(x => x.sender),
-                    Condition.EqualTo,
+                    Is.EqualTo,
                     contact["username1"]);
 
                 messages.Conditions.Where(
                     messages.Column(x => x.unread),
-                    Condition.EqualTo,
+                    Is.EqualTo,
                     1);
                 
                 contact["message_count"] = messages.Count();

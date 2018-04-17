@@ -1,6 +1,6 @@
 ﻿using Tenderfoot.Database;
 
-namespace TenderfootPrayerForum.Library.Database
+namespace TenderfootPrayerForum.Library._Database
 {
     public class Members : Entity
     {

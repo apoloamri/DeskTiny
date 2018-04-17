@@ -11,7 +11,7 @@ namespace TenderfootMessenger.DT.Members
 
             member.Conditions.Where(
                 member.Column(x => x.email),
-                Condition.EqualTo,
+                Is.EqualTo,
                 email);
 
             return member.Count() > 0;
@@ -23,7 +23,7 @@ namespace TenderfootMessenger.DT.Members
 
             member.Conditions.Where(
                 member.Column(x => x.username),
-                Condition.EqualTo,
+                Is.EqualTo,
                 username);
 
             return member.Count() > 0;
@@ -35,12 +35,12 @@ namespace TenderfootMessenger.DT.Members
 
             member.Conditions.Where(
                 member.Column(x => x.username),
-                Condition.EqualTo,
+                Is.EqualTo,
                 username);
 
             member.Conditions.Where(
                 member.Column(x => x.password),
-                Condition.EqualTo,
+                Is.EqualTo,
                 password);
 
             return member.Count() > 0;

@@ -1,3 +1,12 @@
 ﻿{
-  "Username": "Username"
+  "ConfirmPassword": "Confirm Password",
+  "Email": "Email",
+  "FirstName": "First Name",
+  "Gender": "Gender",
+  "Key": "Key",
+  "LastName": "Last Name",
+  "Password": "Password",
+  "Username": "Username",
+  "SessionId": "Session ID",
+  "SessionKey": "Session Key"
 }

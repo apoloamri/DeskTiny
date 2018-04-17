@@ -13,5 +13,21 @@ namespace TenderfootPrayerForum.Controllers
             this.Initiate<IndexModel>(true);
             return this.Conclude();
         }
+
+        [HttpGet]
+        [Route("login")]
+        public JsonResult GetLogin()
+        {
+            this.Initiate<LoginModel>(true);
+            return this.Conclude();
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public JsonResult PostLogin()
+        {
+            this.Initiate<LoginModel>(true);
+            return this.Conclude();
+        }
     }
 }

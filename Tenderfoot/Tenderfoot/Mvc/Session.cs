@@ -19,12 +19,12 @@ namespace Tenderfoot.Mvc
             
             session.Conditions.Where(
                 session.Column(x => x.session_id), 
-                Condition.EqualTo, 
+                Is.EqualTo, 
                 sessionId);
 
             session.Conditions.Where(
                 session.Column(x => x.session_time), 
-                Condition.GreaterThan, 
+                Is.GreaterThan, 
                 DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
 
             var result = session.Select.Entity;
@@ -40,7 +40,7 @@ namespace Tenderfoot.Mvc
             
             session.Conditions.Where(
                 session.Column(x => x.session_key), 
-                Condition.EqualTo, 
+                Is.EqualTo, 
                 sessionKey);
 
             while (session.Count() > 0)
@@ -68,17 +68,17 @@ namespace Tenderfoot.Mvc
 
             session.Conditions.Where(
                 session.Column(x => x.session_id),
-                Condition.EqualTo,
+                Is.EqualTo,
                 sessionId);
 
             session.Conditions.Where(
                 session.Column(x => x.session_key),
-                Condition.EqualTo,
+                Is.EqualTo,
                 sessionKey);
 
             session.Conditions.Where(
                 session.Column(x => x.session_time),
-                Condition.GreaterThan,
+                Is.GreaterThan,
                 DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
             
             var count = session.Count();

@@ -26,7 +26,7 @@ namespace Tenderfoot.Database
 
             table.Conditions.Where(
                 table.Column(x => x.table_name),
-                Condition.EqualTo,
+                Is.EqualTo,
                 tableName);
 
             table.Conditions.AddColumns(
@@ -44,7 +44,7 @@ namespace Tenderfoot.Database
 
                 columns.Conditions.Where(
                     columns.Column(x => x.table_name),
-                    Condition.EqualTo,
+                    Is.EqualTo,
                     tableName);
 
                 columns.Conditions.AddColumns(

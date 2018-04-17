@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using Tenderfoot.Mvc;
 using Tenderfoot.Net;
 using Tenderfoot.Tools;
-using TenderfootPrayerForum.Library.Database;
+using TenderfootPrayerForum.Library._Database;
+using TenderfootPrayerForum.Library.Member;
 
 namespace TenderfootPrayerForum.Models.Member
 {
-    public class RegisterModel : TfModel
+    public class RegisterModel : TfModel<Register>
     {
         [Input]
         public string Username { get; set; }
@@ -39,11 +40,12 @@ namespace TenderfootPrayerForum.Models.Member
             members.Entity.SetValuesFromModel(this);
             members.Entity.activation_key = activationKey;
             members.Insert();
-
+            
             TfEmail.Send(
                 this.Email,
-                "Welcome to our site!", 
+                "member_register", 
                 $"{this.LastName}, {this.FirstName}",
+                this.Username,
                 activationKey);
         }
 
@@ -63,6 +65,10 @@ namespace TenderfootPrayerForum.Models.Member
                 yield return TfValidationResult.FieldRequired(nameof(this.FirstName), this.FirstName);
                 yield return TfValidationResult.FieldRequired(nameof(this.LastName), this.LastName);
                 yield return TfValidationResult.FieldRequired(nameof(this.Gender), this.Gender);
+
+                yield return this.Library.ConfirmEmail(this.Email, nameof(this.Email));
+                yield return this.Library.ConfirmUsername(this.Username, nameof(this.Username));
+                yield return this.Library.ConfirmPassword(this.Password, this.ConfirmPassword, nameof(this.Password), nameof(this.ConfirmPassword));
             }
         }
     }

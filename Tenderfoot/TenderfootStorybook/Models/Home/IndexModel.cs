@@ -19,7 +19,7 @@ namespace TenderfootStorybook.Models.Home
         public override void MapModel()
         {
             var members = _DB.Members;
-            members.Conditions.Where(members.Column(x => x.username), Condition.EqualTo, this.Username);
+            members.Conditions.Where(members.Column(x => x.username), Is.EqualTo, this.Username);
             var result = members.Select.Entities;
         }
 

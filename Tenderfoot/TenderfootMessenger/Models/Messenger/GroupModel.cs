@@ -44,14 +44,14 @@ namespace TenderfootMessenger.Models.Messenger
         private void GetGroups()
         {
             var groups = DT.Database.Schemas.Groups;
-            groups.Conditions.Where(groups.Column(x => x.members), Condition.EqualTo, this.SessionId);
+            groups.Conditions.Where(groups.Column(x => x.members), Is.EqualTo, this.SessionId);
             this.Result = groups.Select.Dictionaries;
         }
 
         private void GetGroupMessages()
         {
             var messages = DT.Database.Schemas.GroupMessages;
-            messages.Conditions.Where(messages.Column(x => x.group_id), Condition.EqualTo, this.GroupId);
+            messages.Conditions.Where(messages.Column(x => x.group_id), Is.EqualTo, this.GroupId);
             messages.Conditions.OrderBy(messages.Column(x => x.id), Order.DESC);
             messages.Conditions.LimitBy(this.Count ?? 10);
             this.Result = messages.Select.Dictionaries;

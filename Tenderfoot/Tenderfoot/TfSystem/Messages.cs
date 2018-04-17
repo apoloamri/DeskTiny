@@ -8,6 +8,11 @@ namespace Tenderfoot.TfSystem
     {
         public static string GetMessage(string message, params string[] values)
         {
+            if (message.IsEmpty())
+            {
+                return null;
+            }
+
             string messageFile = Settings.Configuration().GetSection("SystemResources").GetSection("SystemMessages").Value;
             string defaultMessage = Settings.Configuration(messageFile).GetSection(message).Value;
 
@@ -17,6 +22,11 @@ namespace Tenderfoot.TfSystem
 
                 foreach (var value in values)
                 {
+                    if (value.IsEmpty())
+                    {
+                        continue;
+                    }
+
                     string fieldName = GetField(value);
 
                     if (fieldName.IsEmpty())
