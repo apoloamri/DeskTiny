@@ -70,9 +70,9 @@ namespace Tenderfoot.Database.System
         {
             if (value == null)
             {
-                return;
+                value = DBNull.Value;
             }
-            
+
             string columnParameter = this.OptionalName + column.Get + this.ColumnCount;
             string statement = string.Empty;
 
@@ -85,15 +85,8 @@ namespace Tenderfoot.Database.System
             {
                 statement = $"{Param}{columnParameter} {GetCondition(condition)} ANY({column.Get}) ";
             }
-            
-            if (this.WhereBase.IsEmpty())
-            {
-                this.WhereBase += $"{statement} ";
-            }
-            else
-            {
-                this.WhereBase += $"{oper ?? Operator.AND} {statement} ";
-            }
+
+            this.AddWhere(oper, statement);
 
             var property = typeof(TableEntity).GetProperty(column.ColumnName);
 
@@ -106,6 +99,26 @@ namespace Tenderfoot.Database.System
                 }
             }
 
+            this.Parameters.Add(columnParameter, value);
+            this.ColumnCount++;
+        }
+
+        public void Where(string where, object value)
+        {
+            this.Where(Operator.AND, where, value);
+        }
+
+        public void Where(Operator? oper, string where, object value)
+        {
+            if (value == null)
+            {
+                value = DBNull.Value;
+            }
+
+            var columnParameter = $"{this.OptionalName}custom{this.ColumnCount}";
+            var statement = string.Format(where, this.Param + columnParameter) + " ";
+
+            this.AddWhere(oper, statement);
             this.Parameters.Add(columnParameter, value);
             this.ColumnCount++;
         }
@@ -137,6 +150,11 @@ namespace Tenderfoot.Database.System
             
             string statement = $"{existence} EXISTS ({Operations.SELECT} 1 FROM {schema.TableName} AS {customName} WHERE {string.Join(", ", onString)})";
 
+            this.AddWhere(oper, statement);
+        }
+
+        private void AddWhere(Operator? oper, string statement)
+        {
             if (this.WhereBase.IsEmpty())
             {
                 this.WhereBase += $"{statement} ";

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using Tenderfoot.Mvc.System;
+using Tenderfoot.TfSystem;
 using Tenderfoot.TfSystem.Diagnostics;
 using Tenderfoot.Tools;
 using Tenderfoot.Tools.Extensions;
@@ -13,35 +15,51 @@ namespace Tenderfoot.Mvc
 {
     public class TfController : BaseController
     {
-        public void Initiate<Model>(bool validate = false) where Model : TfModel, new()
+        [HttpGet]
+        [Route("su")]
+        public JsonResult GetAuthorization()
+        {
+            if (Settings.System.Debug)
+            {
+                this.Initiate<AuthorizeModel>(false);
+                return this.Conclude();
+            }
+
+            this.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return null;
+        }
+
+        public void Initiate<Model>(bool authorize = true) where Model : TfModel, new()
         {
             try
             {
                 var obj = Activator.CreateInstance(typeof(Model));
 
+                if (!this.Authorize(authorize))
+                {
+                    this.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    return;
+                }
+                
                 this.GetMethod();
                 this.GetBody(obj);
                 this.GetQueries(obj);
 
                 this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.ModelDictionary);
                 this.ModelObject.BeforeStartUp();
-
-                if (validate)
-                {
-                    this.ValidateModel();
-                }
+                this.ValidateModel();
 
                 this.ModelObject.OnStartUp();
             }
-            catch (Exception ex) when (!Debugger.IsAttached)
+            catch (Exception ex) when (!Settings.System.Debug)
             {
+                this.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 TfDebug.WriteLog(ex);
             }
         }
 
         private void ValidateModel()
         {
-            var jsonDictionary = new Dictionary<string, object>();
             var validationDictionary = new Dictionary<string, object>();
             
             if (this.ModelObject.Validate() is IEnumerable<ValidationResult> validationResults)
@@ -72,10 +90,13 @@ namespace Tenderfoot.Mvc
                     }
                 }
 
+                var jsonDictionary = new Dictionary<string, object>();
+
                 if (validationDictionary.Count() > 0)
                 {
                     jsonDictionary.Add("is_valid", false);
                     jsonDictionary.Add("messages", validationDictionary);
+                    this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 }
                 
                 this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
@@ -136,13 +157,15 @@ namespace Tenderfoot.Mvc
                     this.ExecuteMapping();
                     this.ExecuteHandling();
                     this.BuildModelDictionary();
+                    this.Response.StatusCode = (int)HttpStatusCode.OK;
                 }
             }
-            catch (Exception ex) when (!Debugger.IsAttached)
+            catch (Exception ex) when (!Settings.System.Debug)
             {
+                this.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 TfDebug.WriteLog(ex);
             }
-
+            
             return this.JsonResult;
         }
 

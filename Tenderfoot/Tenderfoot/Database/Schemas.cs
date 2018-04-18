@@ -72,6 +72,7 @@ namespace Tenderfoot.Database
         
         private static Schema<InformationSchema> InformationSchemaTables => new Schema<InformationSchema>("information_schema.tables");
         private static Schema<InformationSchema> InformationSchemaColumns => new Schema<InformationSchema>("information_schema.columns");
+        public static Schema<Accesses> Accesses => CreateTable<Accesses>("accesses");
         public static Schema<Emails> Emails => CreateTable<Emails>("emails");
         public static Schema<Sessions> Sessions => CreateTable<Sessions>("sessions");
         public static Schema<SetupChanges> SetupChanges => CreateTable<SetupChanges>("setup_changes");

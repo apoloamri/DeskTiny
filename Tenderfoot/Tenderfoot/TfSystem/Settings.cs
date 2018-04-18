@@ -109,6 +109,15 @@ namespace Tenderfoot.TfSystem
             public static string System => ConfigurationSection.GetSection("System").Value;
         }
 
+        public static class System
+        {
+            private static IConfigurationSection ConfigurationSection = Configuration().GetSection("System");
+
+            public static bool Debug => Convert.ToBoolean(ConfigurationSection.GetSection("Debug").Value);
+            public static string DefaultKey => ConfigurationSection.GetSection("DefaultKey").Value;
+            public static string DefaultSecret => ConfigurationSection.GetSection("DefaultSecret").Value;
+        }
+
         public static class SystemResources
         {
             private static IConfigurationSection ConfigurationSection = Configuration().GetSection("SystemResources");

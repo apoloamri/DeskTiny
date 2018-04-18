@@ -22,10 +22,12 @@ namespace Tenderfoot.Mvc
 
         [Input]
         [JsonProperty]
+        [ValidateInput(InputType.String, 100)]
         public virtual string SessionKey { get; set; }
 
         [Input]
         [JsonProperty]
+        [ValidateInput(InputType.String, 100)]
         public virtual string SessionId { get; set; }
 
         public virtual void BeforeStartUp() { }

@@ -1,4 +1,6 @@
-﻿using Tenderfoot.Tools;
+﻿using System;
+using Tenderfoot.TfSystem.Diagnostics;
+using Tenderfoot.Tools;
 
 namespace Tenderfoot.TfSystem
 {
@@ -18,7 +20,19 @@ namespace Tenderfoot.TfSystem
                 VIKey = Settings.Encryption.VIKey
             };
 
-            return stringCipher.Encrypt(input);
+            try
+            {
+                return stringCipher.Encrypt(input);
+            }
+            catch
+            {
+                TfDebug.WriteLog(
+                    Settings.Logs.System,
+                    $"Ignored Invalid Ecryption - {DateTime.Now}",
+                    $"Value: {input}{Environment.NewLine}");
+
+                return null;
+            }
         }
 
         public static string Decrypt(string input, bool getFromConfig = false)
@@ -34,8 +48,20 @@ namespace Tenderfoot.TfSystem
                 SaltKey = Settings.Encryption.SaltKey,
                 VIKey = Settings.Encryption.VIKey
             };
+            
+            try
+            {
+                return stringCipher.Decrypt(input);
+            }
+            catch
+            {
+                TfDebug.WriteLog(
+                    Settings.Logs.System,
+                    $"Ignored Invalid Decryption - {DateTime.Now}",
+                    $"Value: {input}{Environment.NewLine}");
 
-            return stringCipher.Decrypt(input);
+                return null;
+            }
         }
     }
 }

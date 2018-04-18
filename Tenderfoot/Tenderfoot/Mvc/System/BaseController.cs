@@ -1,14 +1,17 @@
-﻿using Tenderfoot.Tools;
-using Tenderfoot.Tools.Extensions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web;
+using Tenderfoot.Database;
+using Tenderfoot.TfSystem;
+using Tenderfoot.Tools;
+using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Mvc.System
 {
@@ -42,6 +45,52 @@ namespace Tenderfoot.Mvc.System
             }
 
             return property;
+        }
+
+        protected bool Authorize(bool validate)
+        {
+            if (!validate)
+            {
+                return true;
+            }
+
+            var accesses = Schemas.Accesses;
+
+            if (Settings.System.Debug)
+            {
+                accesses.Conditions.Where(accesses.Column(x => x.key), Is.EqualTo, Settings.System.DefaultKey);
+                accesses.Conditions.Where(accesses.Column(x => x.secret), Is.EqualTo, Settings.System.DefaultSecret);
+                if (accesses.Count() == 0)
+                {
+                    accesses.Entity.key = Settings.System.DefaultKey;
+                    accesses.Entity.secret = Settings.System.DefaultSecret;
+                    accesses.Insert();
+                }
+            }
+
+            accesses.ClearConditions();
+            accesses.Conditions.Where("CONCAT(key, secret) = {0}", Encryption.Decrypt(this.Request.Headers["Authorization"].ToString()));
+            accesses.Conditions.Where(accesses.Column(x => x.active), Is.EqualTo, 1);
+
+            if (accesses.Count() == 0)
+            {
+                var validationDictionary = new Dictionary<string, object>();
+                var validationError = TfValidationResult.Compose("Unauthorized", "system");
+
+                this.ControllerContext.ModelState.AddModelError("system", validationError.ErrorMessage);
+                
+                var jsonDictionary = new Dictionary<string, object>
+                {
+                    { "is_valid", false },
+                    { "message", new Dictionary<string, object>{ { validationError.MemberNames.First(), validationError.ErrorMessage } } }
+                };
+                
+                this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
+
+                return false;
+            }
+
+            return true;
         }
 
         protected void GetMethod()

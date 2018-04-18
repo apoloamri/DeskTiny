@@ -2,6 +2,7 @@
 using Tenderfoot.Tools.Extensions;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Tenderfoot.Mvc.System;
 
 namespace Tenderfoot.Mvc
 {
@@ -54,6 +55,29 @@ namespace Tenderfoot.Mvc
             }
 
             return null;
+        }
+
+        public static ValidationResult ValidateInput(InputType inputType, object value, params string[] memberNames)
+        {
+            switch (inputType)
+            {
+                case InputType.Alphabet:
+                    return BaseValidationResult.ValidateAlphabet(value, memberNames);
+                case InputType.AlphaNumeric:
+                    return BaseValidationResult.ValidateAlphaNumeric(value, memberNames);
+                case InputType.Email:
+                    return BaseValidationResult.ValidateEmail(value, memberNames);
+                case InputType.DateTime:
+                    return BaseValidationResult.ValidateDateTime(value, memberNames);
+                case InputType.Number:
+                    return BaseValidationResult.ValidateNumber(value, memberNames);
+                case InputType.String:
+                    return BaseValidationResult.ValidateString(value, memberNames);
+                case InputType.URL:
+                    return BaseValidationResult.ValidateURL(value, memberNames);
+                default:
+                    return null;
+            }
         }
     }
 }
