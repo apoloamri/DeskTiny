@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Tenderfoot.Tools.Extensions;
@@ -16,6 +17,8 @@ namespace Tenderfoot.Mvc
         public abstract void MapModel();
         public abstract IEnumerable<ValidationResult> Validate();
 
+        public string Host { get; set; }
+        public Controller Controller { get; set; }
         public Method Method { get; set; }
         public bool Mapping => this.Method == Method.GET;
         public bool Handling => this.Method != Method.GET;

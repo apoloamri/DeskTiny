@@ -33,7 +33,7 @@ namespace Tenderfoot.Mvc
         public override void MapModel()
         {
             var entity = this.Accesses.Select.Entity;
-            this.Secret = Encryption.Encrypt(entity.key + entity.secret);
+            this.Secret = Encryption.Encrypt(entity.key + entity.secret + entity.host);
         }
 
         public override IEnumerable<ValidationResult> Validate()

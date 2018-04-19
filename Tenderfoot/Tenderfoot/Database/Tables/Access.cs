@@ -11,8 +11,11 @@ namespace Tenderfoot.Database.Tables
         public string secret { get; set; }
 
         [NotNull]
+        public string host { get; set; }
+
+        [NotNull]
         [Default("1")]
-        public int active { get; set; }
+        public int? active { get; set; }
 
         [NonTableColumn]
         public override DateTime? insert_time { get; set; }

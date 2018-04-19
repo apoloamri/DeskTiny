@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -53,7 +54,7 @@ namespace Tenderfoot.Mvc.System
             {
                 return true;
             }
-
+            
             var accesses = Schemas.Accesses;
 
             if (Settings.System.Debug)
@@ -62,17 +63,20 @@ namespace Tenderfoot.Mvc.System
                 accesses.Conditions.Where(accesses.Column(x => x.secret), Is.EqualTo, Settings.System.DefaultSecret);
                 if (accesses.Count() == 0)
                 {
+                    var uri = new Uri(Settings.Web.SiteUrl);
                     accesses.Entity.key = Settings.System.DefaultKey;
                     accesses.Entity.secret = Settings.System.DefaultSecret;
+                    accesses.Entity.host = $"{uri.Host}:{uri.Port}";
                     accesses.Insert();
                 }
             }
 
             accesses.ClearConditions();
-            accesses.Conditions.Where("CONCAT(key, secret) = {0}", Encryption.Decrypt(this.Request.Headers["Authorization"].ToString()));
+            accesses.Conditions.Where("CONCAT(key, secret, host) = {0}", Encryption.Decrypt(this.Request.Headers["Authorization"].ToString()));
+            accesses.Conditions.Where(accesses.Column(x => x.host), Is.EqualTo, this.Request.Host.ToString());
             accesses.Conditions.Where(accesses.Column(x => x.active), Is.EqualTo, 1);
 
-            if (accesses.Count() == 0)
+            if (accesses.Count() == 0 || (Settings.Web.RequireHttps && this.Request.Scheme != "https"))
             {
                 var validationDictionary = new Dictionary<string, object>();
                 var validationError = TfValidationResult.Compose("Unauthorized", "system");
@@ -93,10 +97,11 @@ namespace Tenderfoot.Mvc.System
             return true;
         }
 
-        protected void GetMethod()
+        protected void GetNecessities()
         {
             Enum.TryParse(this.Request.Method, out Method httpMethod);
-            this.ModelDictionary.Add("Method", httpMethod);
+            this.ModelObject.Method = httpMethod;
+            this.ModelObject.Controller = this;
         }
 
         protected void GetBody(object obj)
@@ -171,6 +176,27 @@ namespace Tenderfoot.Mvc.System
                     this.ModelDictionary.Add(propertyName, query.Value.ToString());
                 }
             }
+        }
+
+        protected void AddModelErrors(string name, ValidationResult result, ref Dictionary<string, object> validationDictionary)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var keyName = name.ToUnderscore();
+
+            if (validationDictionary.ContainsKey(keyName))
+            {
+                validationDictionary[keyName] += Environment.NewLine + result.ErrorMessage;
+            }
+            else
+            {
+                validationDictionary.Add(keyName, result.ErrorMessage);
+            }
+
+            this.ControllerContext.ModelState.AddModelError(name, result.ErrorMessage);
         }
     }
 }

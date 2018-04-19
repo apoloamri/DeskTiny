@@ -31,6 +31,7 @@ namespace Tenderfoot.TfSystem
             public static string[] AllowOrigins => ConfigurationSection.GetSection("AllowOrigins").Value.Split(',');
             public static string ApiUrl => ConfigurationSection.GetSection("ApiUrl").Value;
             public static int SessionTimeOut => Convert.ToInt32(ConfigurationSection.GetSection("SessionTimeOut").Value);
+            public static bool RequireHttps => Convert.ToBoolean(ConfigurationSection.GetSection("RequireHttps").Value);
             public static string SiteUrl => ConfigurationSection.GetSection("SiteUrl").Value;
             public static string SmtpEmail => ConfigurationSection.GetSection("SmtpEmail").Value;
             public static string SmtpHost => ConfigurationSection.GetSection("SmtpHost").Value;

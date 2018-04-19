@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using Tenderfoot.Mvc.System;
@@ -41,14 +41,12 @@ namespace Tenderfoot.Mvc
                     return;
                 }
                 
-                this.GetMethod();
                 this.GetBody(obj);
                 this.GetQueries(obj);
-
                 this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.ModelDictionary);
+                this.GetNecessities();
                 this.ModelObject.BeforeStartUp();
                 this.ValidateModel();
-
                 this.ModelObject.OnStartUp();
             }
             catch (Exception ex) when (!Settings.System.Debug)
@@ -62,10 +60,26 @@ namespace Tenderfoot.Mvc
         {
             var validationDictionary = new Dictionary<string, object>();
             
+            foreach (var property in this.ModelObject.GetType().GetProperties())
+            {
+                foreach (var attribute in property.GetCustomAttributes(false))
+                {
+                    if (attribute is ValidateInputAttribute)
+                    {
+                        var value = property.GetValue(this.ModelObject);
+
+                        if (value != null)
+                        {
+                            var validateInputAttribute = attribute as ValidateInputAttribute;
+                            var result = TfValidationResult.ValidateInput(validateInputAttribute.InputType, value, property.Name);
+                            this.AddModelErrors(property.Name, result, ref validationDictionary);
+                        }
+                    }
+                }
+            }
+
             if (this.ModelObject.Validate() is IEnumerable<ValidationResult> validationResults)
             {
-                var validationList = new List<Dictionary<string, string>>();
-
                 foreach (var result in validationResults)
                 {
                     if (result == null)
@@ -75,32 +89,21 @@ namespace Tenderfoot.Mvc
 
                     foreach (var name in result.MemberNames)
                     {
-                        var keyName = name.ToUnderscore();
-
-                        if (validationDictionary.ContainsKey(keyName))
-                        {
-                            validationDictionary[keyName] += Environment.NewLine + result.ErrorMessage;
-                        }
-                        else
-                        {
-                            validationDictionary.Add(keyName, result.ErrorMessage);
-                        }
-
-                        this.ControllerContext.ModelState.AddModelError(name, result.ErrorMessage);
+                        this.AddModelErrors(name, result, ref validationDictionary);
                     }
                 }
-
-                var jsonDictionary = new Dictionary<string, object>();
-
-                if (validationDictionary.Count() > 0)
-                {
-                    jsonDictionary.Add("is_valid", false);
-                    jsonDictionary.Add("messages", validationDictionary);
-                    this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                }
-                
-                this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
             }
+
+            var jsonDictionary = new Dictionary<string, object>();
+
+            if (validationDictionary.Count() > 0)
+            {
+                jsonDictionary.Add("is_valid", false);
+                jsonDictionary.Add("messages", validationDictionary);
+                this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+
+            this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
         }
 
         private void ExecuteMapping()

@@ -50,7 +50,7 @@ namespace Tenderfoot.Mvc.System
         public static ValidationResult ValidateString(object value, string[] memberNames)
         {
             return Validate(
-                @"/^\w+$/",
+                @"^\w+$",
                 value,
                 memberNames);
         }
@@ -68,7 +68,10 @@ namespace Tenderfoot.Mvc.System
             var regex = new Regex(pattern, RegexOptions.IgnoreCase);
             if (!regex.IsMatch(value?.ToString() ?? ""))
             {
-                return TfValidationResult.Compose("InvalidInput", memberNames);
+                return TfValidationResult.Compose(
+                    message: "InvalidInput",
+                    values: memberNames,
+                    memberNames: memberNames);
             }
             return null;
         }

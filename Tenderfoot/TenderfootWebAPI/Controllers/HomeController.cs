@@ -10,7 +10,7 @@ namespace TenderfootWebAPI.Controllers
         [HttpGet]
         public JsonResult Index()
         {
-            this.Initiate<IndexModel>(true);
+            this.Initiate<IndexModel>();
             return this.Conclude();
         }
 
@@ -18,7 +18,7 @@ namespace TenderfootWebAPI.Controllers
         [Route("login")]
         public JsonResult GetLogin()
         {
-            this.Initiate<LoginModel>(true);
+            this.Initiate<LoginModel>();
             return this.Conclude();
         }
 
@@ -26,7 +26,7 @@ namespace TenderfootWebAPI.Controllers
         [Route("login")]
         public JsonResult PostLogin()
         {
-            this.Initiate<LoginModel>(true);
+            this.Initiate<LoginModel>();
             return this.Conclude();
         }
     }

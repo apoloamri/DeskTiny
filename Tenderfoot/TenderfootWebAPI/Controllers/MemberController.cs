@@ -11,7 +11,7 @@ namespace TenderfootWebAPI.Controllers
         [Route("register")]
         public JsonResult Register()
         {
-            this.Initiate<RegisterModel>(true);
+            this.Initiate<RegisterModel>();
             return this.Conclude();
         }
 
@@ -19,7 +19,7 @@ namespace TenderfootWebAPI.Controllers
         [Route("activate")]
         public JsonResult Activate()
         {
-            this.Initiate<ActivateModel>(true);
+            this.Initiate<ActivateModel>();
             return this.Conclude();
         }
     }
