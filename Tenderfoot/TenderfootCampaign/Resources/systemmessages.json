@@ -1,0 +1,12 @@
+﻿{
+  "AlreadyActive": "Account already activated.",
+  "InactiveAccount": "Account not active yet. Please check your email for activation link.",
+  "InvalidActivationKey": "Invalid activation key.",
+  "InvalidExistance": "{0} already exists.",
+  "InvalidInput": "Invalid input for {0}",
+  "InvalidLogin": "Invalid username or password. Please try again.",
+  "ConfirmPassword": "Password does not match.",
+  "NotExists": "An item does not exist.",
+  "RequiredField": "{0} is a required field.",
+  "Unauthorized": "Unauthorized"
+}

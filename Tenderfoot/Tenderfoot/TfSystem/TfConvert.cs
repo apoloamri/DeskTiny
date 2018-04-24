@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Tenderfoot.Tools;
 
 namespace Tenderfoot.TfSystem
 {
@@ -9,40 +11,36 @@ namespace Tenderfoot.TfSystem
     {
         public static object ChangeType(object value, Type conversion)
         {
-            if (typeof(IEnumerable).IsAssignableFrom(conversion) &&
-                conversion != typeof(string))
+            if (!CanChangeType(value, conversion))
             {
-                var values = value.ToString().Split(",");
-
-                if (conversion == typeof(List<string>) || conversion == typeof(string[]))
-                {
-                    if (conversion.IsArray)
-                    {
-                        return values;
-                    }
-                    else
-                    {
-                        return values.ToList();
-                    }
-                }
-                else if (conversion == typeof(List<int>) || conversion == typeof(int[]))
-                {
-                    var returnList = values.Select(x => { return (int)ChangeType(x, typeof(int)); });
-                    
-                    if (conversion.IsArray)
-                    {
-                        return returnList.ToArray();
-                    }
-                    else
-                    {
-                        return returnList.ToList();
-                    }
-                }
+                return value;
             }
-            
+
             Type type = Nullable.GetUnderlyingType(conversion) ?? conversion;
 
             return (value == null) ? null : Convert.ChangeType(value, type);
+        }
+
+        public static bool CanChangeType(object value, Type conversionType)
+        {
+            if (conversionType == null)
+            {
+                return false;
+            }
+
+            if (value == null)
+            {
+                return false;
+            }
+
+            IConvertible convertible = value as IConvertible;
+
+            if (convertible == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

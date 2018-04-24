@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -43,7 +42,7 @@ namespace Tenderfoot.Mvc
                 
                 this.GetBody(obj);
                 this.GetQueries(obj);
-                this.ModelObject = DictionaryClassConverter.DictionaryToClass<Model>(this.ModelDictionary);
+                this.ModelObject = this.ModelDictionary.ToClass<Model>();
                 this.GetNecessities();
                 this.ModelObject.BeforeStartUp();
                 this.ValidateModel();
@@ -100,7 +99,6 @@ namespace Tenderfoot.Mvc
             {
                 jsonDictionary.Add("is_valid", false);
                 jsonDictionary.Add("messages", validationDictionary);
-                this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
 
             this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
@@ -146,6 +144,7 @@ namespace Tenderfoot.Mvc
             }
 
             jsonDictionary.Add("is_valid", true);
+            jsonDictionary.Add("messages", string.Empty);
 
             this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
         }
@@ -162,6 +161,10 @@ namespace Tenderfoot.Mvc
                     this.BuildModelDictionary();
                     this.Response.StatusCode = (int)HttpStatusCode.OK;
                 }
+                else
+                {
+                    this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
             }
             catch (Exception ex) when (!Settings.System.Debug)
             {
@@ -169,6 +172,16 @@ namespace Tenderfoot.Mvc
                 TfDebug.WriteLog(ex);
             }
             
+            return this.JsonResult;
+        }
+
+        public JsonResult Validate()
+        {
+            if (this.ModelState.IsValid)
+            {
+                this.BuildModelDictionary();
+            }
+            this.Response.StatusCode = (int)HttpStatusCode.OK;
             return this.JsonResult;
         }
 

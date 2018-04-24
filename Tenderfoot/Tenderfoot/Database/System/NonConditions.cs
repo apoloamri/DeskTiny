@@ -38,7 +38,7 @@ namespace Tenderfoot.Database.System
             this.ColumnParameters = string.Join(", ", properties?.Select(x => $"{Param}{this.OptionalName}{x.Name}"));
             this.ColumnValues = string.Join(", ", properties?.Select(x => { return $"{x.Name} = {Param}{this.OptionalName}{x.Name}"; }));
             this.Parameters =
-                DictionaryClassConverter.ClassToDictionary(entity, this.OptionalName)
+                entity.ToDictionary(this.OptionalName)
                 .Where(x => x.Value != null)
                 .ToDictionary(x => x.Key, x => x.Value);
         }

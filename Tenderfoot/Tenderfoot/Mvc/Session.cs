@@ -69,7 +69,7 @@ namespace Tenderfoot.Mvc
             session.Conditions.Where(
                 session.Column(x => x.session_id),
                 Is.EqualTo,
-                sessionId);
+                Encryption.Decrypt(sessionId));
 
             session.Conditions.Where(
                 session.Column(x => x.session_key),

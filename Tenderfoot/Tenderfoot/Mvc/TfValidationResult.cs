@@ -8,7 +8,7 @@ namespace Tenderfoot.Mvc
 {
     public static class TfValidationResult
     {
-        public static ValidationResult CheckSessionActivity(string sessionId, string sessionKey)
+        public static ValidationResult CheckSessionActivity(string sessionId, string sessionKey, params string[] memberNames)
         {
             if (Session.IsSessionActive(sessionId, sessionKey))
             {

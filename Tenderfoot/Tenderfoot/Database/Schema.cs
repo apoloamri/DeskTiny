@@ -300,7 +300,7 @@ namespace Tenderfoot.Database
             {
                 return this.Dictionaries.Select(item => 
                 {
-                    return DictionaryClassConverter.DictionaryToClass<T>(item);
+                    return item.ToClass<T>();
                 })?.ToList();
             }
         }

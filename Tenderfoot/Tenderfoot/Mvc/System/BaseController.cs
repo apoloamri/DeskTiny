@@ -22,32 +22,7 @@ namespace Tenderfoot.Mvc.System
         protected JsonSerializerSettings JsonSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
         protected JsonResult JsonResult { get; set; }
         protected Dictionary<string, object> ModelDictionary { get; set; } = new Dictionary<string, object>();
-
-        protected PropertyInfo GetModelProperty(ref string name, object obj)
-        {
-            if (name == null)
-            {
-                return null;
-            }
-
-            name = name.Replace("[]", "");
-
-            var property = obj.GetType().GetProperty(name);
-
-            if (property == null)
-            {
-                name = name.ToCamelCase();
-                property = obj.GetType().GetProperty(name);
-
-                if (property == null)
-                {
-                    return null;
-                }
-            }
-
-            return property;
-        }
-
+        
         protected bool Authorize(bool validate)
         {
             if (!validate)
@@ -112,48 +87,12 @@ namespace Tenderfoot.Mvc.System
                 
                 if (JsonTools.IsValidJson(request.Result))
                 {
-                    var jsonObject = (JObject)JsonConvert.DeserializeObject(request.Result);
-
-                    if (jsonObject != null)
-                    {
-                        foreach (var token in jsonObject)
-                        {
-                            string propertyName = token.Key;
-
-                            var property = GetModelProperty(ref propertyName, obj);
-
-                            if (property == null || this.ModelDictionary.ContainsKey(propertyName))
-                            {
-                                continue;
-                            }
-
-                            if (property.GetCustomAttribute<InputAttribute>(false) != null)
-                            {
-                                this.ModelDictionary.Add(propertyName, token.Value.ToObject<object>());
-                            }
-                        }
-                    }
+                    this.ModelDictionary = this.GetJson(request.Result, obj);
                 }
                 else
                 {
-                    var body = HttpUtility.ParseQueryString(request.Result);
-
-                    foreach (var item in body.AllKeys)
-                    {
-                        string propertyName = item;
-
-                        var property = GetModelProperty(ref propertyName, obj);
-
-                        if (property == null || this.ModelDictionary.ContainsKey(propertyName))
-                        {
-                            continue;
-                        }
-
-                        if (property.GetCustomAttribute<InputAttribute>(false) != null)
-                        {
-                            this.ModelDictionary.Add(propertyName, body[item]);
-                        }
-                    }
+                    var json = JsonTools.QueryStringToJson(request.Result);
+                    this.ModelDictionary = this.GetJson(json, obj);
                 }
             }
         }
@@ -197,6 +136,94 @@ namespace Tenderfoot.Mvc.System
             }
 
             this.ControllerContext.ModelState.AddModelError(name, result.ErrorMessage);
+        }
+
+        private PropertyInfo GetModelProperty(ref string name, object obj)
+        {
+            if (name == null)
+            {
+                return null;
+            }
+
+            name = name.Replace("[]", "");
+
+            var property = obj.GetType().GetProperty(name);
+
+            if (property == null)
+            {
+                name = name.ToCamelCase();
+                property = obj.GetType().GetProperty(name);
+
+                if (property == null)
+                {
+                    return null;
+                }
+            }
+
+            return property;
+        }
+
+        private Dictionary<string, object> GetJson(string result, object obj)
+        {
+            var returnDictionary = new Dictionary<string, object>();
+            var jsonObject = (JObject)JsonConvert.DeserializeObject(result);
+
+            if (jsonObject != null)
+            {
+                foreach (var token in jsonObject)
+                {
+                    string propertyName = token.Key;
+
+                    var property = GetModelProperty(ref propertyName, obj);
+                    
+                    if (property == null || this.ModelDictionary.ContainsKey(propertyName))
+                    {
+                        continue;
+                    }
+
+                    var type = property.PropertyType;
+
+                    if (property.GetCustomAttribute<InputAttribute>(false) != null)
+                    {
+                        var jsonString = token.Value.ToString();
+
+                        if (JsonTools.IsValidJson(jsonString) &&
+                            JToken.Parse(jsonString) is JArray)
+                        {
+                            var itemType = type.GetGenericArguments()[0];
+
+                            if (itemType.GetConstructor(Type.EmptyTypes) != null &&
+                                !itemType.IsAbstract)
+                            {
+                                var objectClass = Activator.CreateInstance(itemType);
+                                var list = new List<Dictionary<string, object>>();
+
+                                foreach (var item in token.Value.ToObject<List<object>>())
+                                {
+                                    if (type.IsGenericType &&
+                                        type.GetGenericTypeDefinition() == typeof(List<>))
+                                    {
+                                        list.Add(this.GetJson(item.ToString(), objectClass));
+                                    }
+                                }
+
+                                returnDictionary.Add(propertyName, list);
+                            }
+                            else
+                            {
+                                returnDictionary.Add(propertyName, token.Value.ToObject<List<dynamic>>());
+                            }
+                        }
+                        else
+                        {
+                            var tokenObject = token.Value.ToObject<object>();
+                            returnDictionary.Add(propertyName, tokenObject);
+                        }
+                    }
+                }
+            }
+
+            return returnDictionary;
         }
     }
 }

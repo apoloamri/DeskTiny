@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Mvc
@@ -23,14 +24,16 @@ namespace Tenderfoot.Mvc
         public bool Mapping => this.Method == Method.GET;
         public bool Handling => this.Method != Method.GET;
 
+        private List<string> InvalidFields { get; set; } = new List<string>();
+
         [Input]
         [JsonProperty]
-        [ValidateInput(InputType.String, 100)]
+        [ValidateInput(InputType.All, 100)]
         public virtual string SessionKey { get; set; }
 
         [Input]
         [JsonProperty]
-        [ValidateInput(InputType.String, 100)]
+        [ValidateInput(InputType.All, 100)]
         public virtual string SessionId { get; set; }
 
         public virtual void BeforeStartUp() { }
@@ -38,28 +41,76 @@ namespace Tenderfoot.Mvc
 
         public bool IsValid(params string[] fieldNames)
         {
-            var boolList = new List<bool>();
-
             foreach (var fieldName in fieldNames)
             {
                 var field = this.GetType().GetProperty(fieldName)?.GetValue(this);
-
-                if (field != null && !field.ToString().IsEmpty())
+                if (field?.ToString().IsEmpty() ?? true)
                 {
-                    boolList.Add(true);
-                }
-                else
-                {
-                    boolList.Add(false);
+                    return false;
                 }
             }
+            return true;
+        }
 
-            if (boolList.All(x => x == true))
+        public ValidationResult FieldRequired(string fieldName)
+        {
+            var validation = TfValidationResult.FieldRequired(fieldName, this.GetType().GetProperty(fieldName)?.GetValue(this));
+            if (validation != null)
             {
-                return true;
+                this.InvalidFields.Add(fieldName);
+            }
+            return validation;
+        }
+
+        public ValidationResult CheckSessionActivity()
+        {
+            var validation = TfValidationResult.CheckSessionActivity(
+                this.SessionId, 
+                this.SessionKey, 
+                nameof(this.SessionId),
+                nameof(this.SessionKey));
+
+            if (validation != null)
+            {
+                this.InvalidFields.Add(nameof(this.SessionId));
+                this.InvalidFields.Add(nameof(this.SessionKey));
             }
 
-            return false;
+            return validation;
+        }
+
+        public void SetValuesFromModel(object model)
+        {
+            var type = model.GetType();
+
+            foreach (var property in type.GetProperties())
+            {
+                var thisProperty = this.GetType().GetProperty(property.Name.ToUnderscore());
+                if (this.HasAttribute(thisProperty))
+                {
+                    thisProperty.SetValue(this, property.GetValue(model));
+                }
+            }
+        }
+
+        public void SetValuesFromDictionary(Dictionary<string, object> dictionary)
+        {
+            foreach (var item in dictionary)
+            {
+                var thisProperty = this.GetType().GetProperty(item.Key.ToUnderscore());
+                if (this.HasAttribute(thisProperty))
+                {
+                    thisProperty.SetValue(this, item.Value);
+                }
+            }
+        }
+
+        private bool HasAttribute(PropertyInfo property)
+        {
+            return
+                property != null && 
+                (property?.GetCustomAttribute<InputAttribute>(false) != null ||
+                property?.GetCustomAttribute<JsonPropertyAttribute>(false) != null);
         }
     }
 }

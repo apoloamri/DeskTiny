@@ -1,5 +1,4 @@
-﻿using Tenderfoot.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -43,9 +42,7 @@ namespace Tenderfoot.Database
             foreach (var property in type.GetProperties())
             {
                 var thisProperty = this.GetType().GetProperty(property.Name.ToUnderscore());
-
-                if (thisProperty != null &&
-                    thisProperty.GetCustomAttribute<NonTableColumnAttribute>(false) == null)
+                if (this.HasAttribute(thisProperty))
                 {
                     thisProperty.SetValue(this, property.GetValue(model));
                 }
@@ -57,9 +54,7 @@ namespace Tenderfoot.Database
             foreach (var item in dictionary)
             {
                 var thisProperty = this.GetType().GetProperty(item.Key.ToUnderscore());
-
-                if (thisProperty != null &&
-                    thisProperty.GetCustomAttribute<NonTableColumnAttribute>(false) == null)
+                if (this.HasAttribute(thisProperty))
                 {
                     thisProperty.SetValue(this, item.Value);
                 }
@@ -68,7 +63,14 @@ namespace Tenderfoot.Database
 
         public Dictionary<string, object> ToDictionary()
         {
-            return DictionaryClassConverter.ClassToDictionary(this);
+            return this.ToDictionary();
+        }
+
+        private bool HasAttribute(PropertyInfo property)
+        {
+            return
+                property != null &&
+                property?.GetCustomAttribute<NonTableColumnAttribute>(false) == null;
         }
     }
 }
