@@ -11,7 +11,7 @@ namespace TenderfootCampaign.Library.Shop
         {
             var items = _DB.Items;
             items.Case.Where(items._("item_code"), Is.EqualTo, itemCode);
-            if (!items.HasRecords)
+            if (!items.HasRecord)
             {
                 return TfValidationResult.Compose("NotExists", memberNames);
             }

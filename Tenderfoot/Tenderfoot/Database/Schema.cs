@@ -122,6 +122,7 @@ namespace Tenderfoot.Database
         }
 
         public virtual bool HasRecords => this.Count > 0;
+        public virtual bool HasRecord => this.Count == 1;
 
         /// <summary>
         /// Inserts the entity's values into the schema.

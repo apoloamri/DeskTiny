@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Web;
 using Tenderfoot.Database;
 using Tenderfoot.TfSystem;
 using Tenderfoot.Tools;
@@ -22,7 +21,15 @@ namespace Tenderfoot.Mvc.System
         protected JsonSerializerSettings JsonSettings = new JsonSerializerSettings { Formatting = Formatting.Indented };
         protected JsonResult JsonResult { get; set; }
         protected Dictionary<string, object> ModelDictionary { get; set; } = new Dictionary<string, object>();
-        
+        protected Dictionary<string, object> Messages
+        {
+            get
+            {
+                var dictionary = JsonResult.Value as Dictionary<string, object>;
+                return dictionary?["messages"] as Dictionary<string, object>;
+            }
+        }
+
         protected bool Authorize(bool validate)
         {
             if (!validate)

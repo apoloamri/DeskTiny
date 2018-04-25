@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Tenderfoot.Database;
 using Tenderfoot.Mvc;
 using TenderfootCampaign.Library._Database;
@@ -16,7 +18,10 @@ namespace TenderfootCampaign.Models.Shop
         public int? Amount { get; set; }
 
         [JsonProperty]
-        public List<Dictionary<string, object>> Result { get; set; }
+        public List<Dictionary<string, object>> CartItems { get; set; }
+
+        [JsonProperty]
+        public int CartTotal { get; set; }
 
         public override void HandleModel()
         {
@@ -31,6 +36,7 @@ namespace TenderfootCampaign.Models.Shop
             }
             else
             {
+                carts.Entity.amount = this.Amount;
                 carts.Insert();
             }
         }
@@ -44,8 +50,9 @@ namespace TenderfootCampaign.Models.Shop
                 carts.Relation(carts._("item_code"), items._("item_code")));
 
             carts.Case.Where(carts._("session_key"), Is.EqualTo, this.SessionKey);
-            
-            this.Result = carts.Select.Dictionaries;
+
+            this.CartItems = carts.Select.Dictionaries;
+            this.CartTotal = this.CartItems.Sum(x => Convert.ToInt32(x["price"]) * Convert.ToInt32(x["amount"]));
         }
 
         public override IEnumerable<ValidationResult> Validate()

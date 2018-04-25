@@ -14,15 +14,7 @@ namespace TenderfootCampaign.Controllers
             this.Initiate<ItemsModel>();
             return this.Conclude();
         }
-
-        [HttpGet]
-        [Route("order")]
-        public JsonResult GetOrder()
-        {
-            this.Initiate<OrderModel>();
-            return this.Conclude();
-        }
-
+        
         [HttpPost]
         [Route("order")]
         public JsonResult PostOrder()
@@ -44,6 +36,14 @@ namespace TenderfootCampaign.Controllers
         public JsonResult GetCart()
         {
             this.Initiate<AddCartModel>();
+            return this.Conclude();
+        }
+
+        [HttpDelete]
+        [Route("cart")]
+        public JsonResult DeleteCart()
+        {
+            this.Initiate<DeleteCartModel>();
             return this.Conclude();
         }
     }
