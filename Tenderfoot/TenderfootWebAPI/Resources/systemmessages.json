@@ -1,0 +1,13 @@
+﻿{
+  "AlreadyActive": "Account already activated.",
+  "ConfirmPassword": "Password does not match.",
+  "EmptyCart": "Cart is empty.",
+  "InactiveAccount": "Account not active yet. Please check your email for activation link.",
+  "InvalidActivationKey": "Invalid activation key.",
+  "InvalidExistance": "{0} already exists.",
+  "InvalidInput": "Invalid input for {0}",
+  "InvalidLogin": "Invalid username or password. Please try again.",
+  "NotExists": "An item does not exist.",
+  "RequiredField": "{0} is a required field.",
+  "Unauthorized": "Unauthorized"
+}

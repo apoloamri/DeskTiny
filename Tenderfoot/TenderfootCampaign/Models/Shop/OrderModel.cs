@@ -15,12 +15,12 @@ namespace TenderfootCampaign.Models.Shop
 
         public override void HandleModel()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override void MapModel()
         {
-            this.SetValuesFromModel(this.Library);
+            throw new NotImplementedException();
         }
 
         public override IEnumerable<ValidationResult> Validate()

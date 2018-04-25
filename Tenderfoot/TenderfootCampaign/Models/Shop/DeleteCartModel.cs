@@ -42,7 +42,7 @@ namespace TenderfootCampaign.Models.Shop
 
                 if (isValid)
                 {
-                    this.Library.ValidateItem(this.ItemCode, nameof(ItemCode));
+                    yield return AddCart.ValidateItem(this.ItemCode, nameof(ItemCode));
                 }
             }
         }

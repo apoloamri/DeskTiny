@@ -8,5 +8,21 @@ namespace TenderfootCampaign.Library._Database
 {
     public class Orders : Entity
     {
+        [NotNull]
+        public int? member_id { get; set; }
+
+        [NotNull]
+        public string item_code { get; set; }
+
+        [NotNull]
+        public string amount { get; set; }
+
+        [NotNull]
+        [Default("0")]
+        public int? total_price { get; set; }
+
+        [NotNull]
+        [Default("0")]
+        public int? point_earned { get; set; }
     }
 }
