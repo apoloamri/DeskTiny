@@ -41,6 +41,15 @@ namespace Tenderfoot.Database.System
                 entity.ToDictionary(this.OptionalName)
                 .Where(x => x.Value != null)
                 .ToDictionary(x => x.Key, x => x.Value);
+
+            foreach (var property in this.Parameters)
+            {
+                if (property.Value is bool || property.Value is bool?)
+                {
+                    var value = property.Value as bool?;
+                    this.Parameters[property.Key] = (value ?? false) ? 1 : 0;
+                }
+            }
         }
     }
 }
