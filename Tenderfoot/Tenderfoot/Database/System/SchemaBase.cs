@@ -229,7 +229,13 @@ namespace Tenderfoot.Database.System
             }
             else if (
                 type == typeof(byte) ||
-                type == typeof(byte?))
+                type == typeof(byte?) ||
+                type == typeof(Byte) ||
+                type == typeof(Byte?) ||
+                type == typeof(byte[]) ||
+                type == typeof(byte?[]) ||
+                type == typeof(Byte[]) ||
+                type == typeof(Byte?[]))
             {
                 return DataType.BYTEA.GetString();
             }
