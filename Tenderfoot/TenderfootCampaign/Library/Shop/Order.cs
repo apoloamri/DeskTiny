@@ -11,45 +11,23 @@ namespace TenderfootCampaign.Library.Shop
 {
     public class Order
     {
-        public Schema<Items> Items { get; set; } = _DB.Items;
-        public List<Items> itemList { get; set; }
-        public int TotalPrice { get; set; }
-        public int TotalItems { get; set; }
+        public Schema<Carts> Carts { get; set; } = _DB.Carts;
 
-        public void PopulateItems(List<OrderItems> items)
+        public ValidationResult ValidateCart(params string[] memberNames)
         {
-            if (items != null)
+            if (!this.Carts.HasRecords)
             {
-                foreach (var item in items)
+                return TfValidationResult.Compose("EmptyCart", memberNames);
+            }
+            else
+            {
+                foreach (var cart in this.Carts.Select.Entities)
                 {
-                    this.Items.Case.Where(Operator.OR, Items._("item_code"), Is.EqualTo, item.ItemCode);
+                    return AddCart.ValidateItem(cart.item_code, memberNames);
                 }
-                this.itemList = this.Items.Select.Entities;
             }
-        }
 
-        public ValidationResult ValidateItems(List<OrderItems> items, params string[] memberNames)
-        {
-            if (this.itemList.Count() != items.Count())
-            {
-                return TfValidationResult.Compose("NotExists", memberNames);
-            }
             return null;
         }
-
-        public void GeneratePrice()
-        {
-            this.TotalPrice = this.itemList.Sum(x => x.price) ?? 0;
-            this.TotalItems = this.itemList.Count();
-        }
-    }
-    
-    public class OrderItems
-    {
-        [Input]
-        public string ItemCode { get; set; }
-
-        [Input]
-        public int? ItemCount { get; set; }
     }
 }

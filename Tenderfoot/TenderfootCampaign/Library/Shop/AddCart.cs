@@ -7,7 +7,7 @@ namespace TenderfootCampaign.Library.Shop
 {
     public class AddCart
     {
-        public ValidationResult ValidateItem(string itemCode, params string[] memberNames)
+        public static ValidationResult ValidateItem(string itemCode, params string[] memberNames)
         {
             var items = _DB.Items;
             items.Case.Where(items._("item_code"), Is.EqualTo, itemCode);

@@ -10,17 +10,8 @@ namespace TenderfootCampaign.Models.Shop
     {
         public override void BeforeStartUp()
         {
-            this.Library.PopulateItems(this.Items);
+            this.Library.Carts.Entity.SetValuesFromModel(this);
         }
-
-        [Input]
-        public List<OrderItems> Items { get; set; }
-        
-        [JsonProperty]
-        public int TotalPrice { get; set; }
-
-        [JsonProperty]
-        public int TotalItems { get; set; }
 
         public override void HandleModel()
         {
@@ -29,16 +20,13 @@ namespace TenderfootCampaign.Models.Shop
 
         public override void MapModel()
         {
-            this.Library.GeneratePrice();
             this.SetValuesFromModel(this.Library);
         }
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            if (this.IsValid(nameof(this.Items)))
-            {
-                yield return this.Library.ValidateItems(this.Items, nameof(this.Items));
-            }
+            yield return this.CheckSessionActivity();
+            yield return this.Library.ValidateCart(nameof(this.SessionKey));
         }
     }
 }

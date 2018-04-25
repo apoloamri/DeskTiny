@@ -14,7 +14,15 @@ namespace TenderfootCampaign.Controllers
             this.Initiate<ItemsModel>();
             return this.Conclude();
         }
-        
+
+        [HttpPost]
+        [Route("order/validate")]
+        public JsonResult PostOrderValidate()
+        {
+            this.Initiate<OrderModel>();
+            return this.Validate();
+        }
+
         [HttpPost]
         [Route("order")]
         public JsonResult PostOrder()
