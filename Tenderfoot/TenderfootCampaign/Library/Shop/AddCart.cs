@@ -10,7 +10,7 @@ namespace TenderfootCampaign.Library.Shop
         public static ValidationResult ValidateItem(string itemCode, params string[] memberNames)
         {
             var items = _DB.Items;
-            items.Case.Where(items._("item_code"), Is.EqualTo, itemCode);
+            items.Entity.item_code = itemCode;
             if (!items.HasRecord)
             {
                 return TfValidationResult.Compose("NotExists", memberNames);

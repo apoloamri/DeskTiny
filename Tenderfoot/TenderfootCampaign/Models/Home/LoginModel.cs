@@ -8,9 +8,9 @@ namespace TenderfootCampaign.Models.Home
 {
     public class LoginModel : TfModel<Login>
     {
-        public override void BeforeStartUp()
+        public override void OnStartUp()
         {
-            this.Library.PopulateMembers(this.Username, this.Password);
+            this.Library.Members.Entity.SetValuesFromModel(this);
         }
 
         [Input]

@@ -37,6 +37,11 @@ namespace Tenderfoot.Database
 
             foreach (var column in columnOn)
             {
+                if (column == null)
+                {
+                    continue;
+                }
+
                 onString.Add($"{column.Column1.Get} {Conditions<Joined>.GetCondition(column.Condition ?? Is.EqualTo)} {column.Column2.Get}");
             }
             
@@ -301,6 +306,19 @@ namespace Tenderfoot.Database
         /// Returns the first dictionary by the provided condition.
         /// </summary>
         public Dictionary<string, object> Dictionary => this.Dictionaries.FirstOrDefault();
+
+        public List<dynamic> Result
+        {
+            get
+            {
+                return this.Dictionaries.Select(item =>
+                {
+                    return item.ToDynamic();
+                })?.ToList();
+            }
+        }
+
+        public dynamic First => this.Result.FirstOrDefault();
 
         /// <summary>
         /// Returns as list of entities by the provied condition.

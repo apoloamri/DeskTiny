@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using Tenderfoot.Database;
 using Tenderfoot.Mvc;
 using TenderfootCampaign.Library._Database;
@@ -12,6 +9,25 @@ namespace TenderfootCampaign.Library.Shop
     public class Order
     {
         public Schema<Carts> Carts { get; set; } = _DB.Carts;
+        public List<dynamic> CartItems { get; set; }
+
+        public void GetCartItems()
+        {
+            var items = _DB.Items;
+            var sessions = _DB.Sessions;
+            var members = _DB.Members;
+
+            this.Carts.Relate(Join.INNER, items,
+                items.Relation(items._("item_code"), this.Carts._("item_code")));
+
+            this.Carts.Relate(Join.INNER, sessions,
+                sessions.Relation(sessions._("session_key"), this.Carts._("session_key")));
+
+            this.Carts.Relate(Join.INNER, members,
+                members.Relation(members._("username"), sessions._("session_id")));
+            
+            this.CartItems = this.Carts.Select.Result;
+        }
 
         public ValidationResult ValidateCart(params string[] memberNames)
         {
@@ -19,14 +35,6 @@ namespace TenderfootCampaign.Library.Shop
             {
                 return TfValidationResult.Compose("EmptyCart", memberNames);
             }
-            else
-            {
-                foreach (var cart in this.Carts.Select.Entities)
-                {
-                    return AddCart.ValidateItem(cart.item_code, memberNames);
-                }
-            }
-
             return null;
         }
     }

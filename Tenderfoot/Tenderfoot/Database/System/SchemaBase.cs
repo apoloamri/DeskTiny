@@ -119,7 +119,7 @@ namespace Tenderfoot.Database.System
                 {
                     continue;
                 }
-                this.Case.Where(" " + property.Name + " = {0}", value);
+                this.Case.Where(this._(property.Name), Is.EqualTo, value);
             }
         }
         
@@ -148,7 +148,7 @@ namespace Tenderfoot.Database.System
 
             string array = property.PropertyType.IsArray ? "[]" : string.Empty;
 
-            return $"{column} {dataType} {attributes} {array}";
+            return $"{column} {dataType}{array} {attributes}";
         }
 
         private string GetColumnDataType(Type type, object[] attributes)

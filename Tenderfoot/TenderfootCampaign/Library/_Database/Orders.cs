@@ -15,7 +15,7 @@ namespace TenderfootCampaign.Library._Database
         public string item_code { get; set; }
 
         [NotNull]
-        public string amount { get; set; }
+        public int? amount { get; set; }
 
         [NotNull]
         [Default("0")]
@@ -23,6 +23,6 @@ namespace TenderfootCampaign.Library._Database
 
         [NotNull]
         [Default("0")]
-        public int? point_earned { get; set; }
+        public int? points_earned { get; set; }
     }
 }

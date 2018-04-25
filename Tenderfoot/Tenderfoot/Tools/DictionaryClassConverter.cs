@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using Tenderfoot.TfSystem;
@@ -80,6 +81,16 @@ namespace Tenderfoot.Tools
             return obj.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .ToDictionary(prop => $"{optionalName}{prop.Name}", prop => prop.GetValue(obj, null));
+        }
+
+        public static dynamic ToDynamic(this Dictionary<string, object> dict)
+        {
+            var collection = (ICollection<KeyValuePair<string, object>>)new ExpandoObject();
+            foreach (var keyValue in dict)
+            {
+                collection.Add(keyValue);
+            }
+            return collection;
         }
     }
 }
