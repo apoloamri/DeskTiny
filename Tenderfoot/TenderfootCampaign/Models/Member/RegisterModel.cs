@@ -50,13 +50,13 @@ namespace TenderfootCampaign.Models.Member
         {
             if (this.Handling)
             {
-                yield return TfValidationResult.FieldRequired(nameof(this.Username), this.Username);
-                yield return TfValidationResult.FieldRequired(nameof(this.Password), this.Password);
-                yield return TfValidationResult.FieldRequired(nameof(this.ConfirmPassword), this.ConfirmPassword);
-                yield return TfValidationResult.FieldRequired(nameof(this.Email), this.Email);
-                yield return TfValidationResult.FieldRequired(nameof(this.FirstName), this.FirstName);
-                yield return TfValidationResult.FieldRequired(nameof(this.LastName), this.LastName);
-                yield return TfValidationResult.FieldRequired(nameof(this.Gender), this.Gender);
+                yield return this.FieldRequired(nameof(this.Username));
+                yield return this.FieldRequired(nameof(this.Password));
+                yield return this.FieldRequired(nameof(this.ConfirmPassword));
+                yield return this.FieldRequired(nameof(this.Email));
+                yield return this.FieldRequired(nameof(this.FirstName));
+                yield return this.FieldRequired(nameof(this.LastName));
+                yield return this.FieldRequired(nameof(this.Gender));
                 if (this.IsValid(nameof(this.Email)))
                 {
                     yield return this.Library.ConfirmEmail(this.Email, nameof(this.Email));

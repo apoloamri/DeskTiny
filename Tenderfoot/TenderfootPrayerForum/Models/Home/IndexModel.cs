@@ -23,7 +23,7 @@ namespace TenderfootPrayerForum.Models.Home
         public override void MapModel()
         {
             var members = _DB.Members;
-            members.Conditions.Where(members.Column(x => x.username), Is.EqualTo, this.Username);
+            members.Conditions.Where(members._(x => x.username), Is.EqualTo, this.Username);
             this.Result = members.Select.Dictionary;
         }
 

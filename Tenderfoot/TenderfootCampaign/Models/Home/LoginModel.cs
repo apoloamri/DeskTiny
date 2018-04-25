@@ -37,18 +37,18 @@ namespace TenderfootCampaign.Models.Home
         {
             if (this.Mapping)
             {
-                yield return TfValidationResult.FieldRequired(nameof(this.SessionId), this.SessionId);
-                yield return TfValidationResult.FieldRequired(nameof(this.SessionKey), this.SessionKey);
+                yield return this.FieldRequired(nameof(this.SessionId));
+                yield return this.FieldRequired(nameof(this.SessionKey));
                 if (this.IsValid(nameof(this.SessionId), nameof(this.SessionKey)))
                 {
-                    yield return TfValidationResult.CheckSessionActivity(this.SessionId, this.SessionKey);
+                    yield return this.CheckSessionActivity();
                 }
             }
 
             if (this.Handling)
             {
-                yield return TfValidationResult.FieldRequired(nameof(this.Username), this.Username);
-                yield return TfValidationResult.FieldRequired(nameof(this.Password), this.Password);
+                yield return this.FieldRequired(nameof(this.Username));
+                yield return this.FieldRequired(nameof(this.Password));
                 if (this.IsValid(nameof(this.Username), nameof(this.Password)))
                 {
                     yield return this.Library.CheckUsernamePassword(nameof(this.Username), nameof(this.Password));

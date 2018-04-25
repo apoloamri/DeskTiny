@@ -11,13 +11,13 @@ namespace TenderfootPrayerForum.Library.Member
 
         public void PopulateMembers(string username, string key)
         {
-            this.Members.Conditions.Where(this.Members.Column(x => x.username), Is.EqualTo, username);
-            this.Members.Conditions.Where(this.Members.Column(x => x.activation_key), Is.EqualTo, key);
+            this.Members.Conditions.Where(this.Members._(x => x.username), Is.EqualTo, username);
+            this.Members.Conditions.Where(this.Members._(x => x.activation_key), Is.EqualTo, key);
         }
 
         public ValidationResult CheckKey(params string[] memberNames)
         {
-            if (!this.Members.HasRecords())
+            if (!this.Members.HasRecords)
             {
                 return TfValidationResult.Compose("InvalidActivationKey", memberNames);
             }
@@ -28,7 +28,7 @@ namespace TenderfootPrayerForum.Library.Member
         public ValidationResult CheckActivity(params string[] memberNames)
         {
             return
-                !this.Members.HasRecords() ?
+                !this.Members.HasRecords ?
                 TfValidationResult.Compose("AlreadyActive", memberNames) :
                 null;
         }

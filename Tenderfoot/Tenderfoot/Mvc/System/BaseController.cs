@@ -34,9 +34,9 @@ namespace Tenderfoot.Mvc.System
 
             if (Settings.System.Debug)
             {
-                accesses.Conditions.Where(accesses.Column(x => x.key), Is.EqualTo, Settings.System.DefaultKey);
-                accesses.Conditions.Where(accesses.Column(x => x.secret), Is.EqualTo, Settings.System.DefaultSecret);
-                if (accesses.Count() == 0)
+                accesses.Case.Where(accesses._("key"), Is.EqualTo, Settings.System.DefaultKey);
+                accesses.Case.Where(accesses._("secret"), Is.EqualTo, Settings.System.DefaultSecret);
+                if (accesses.Count == 0)
                 {
                     var uri = new Uri(Settings.Web.SiteUrl);
                     accesses.Entity.key = Settings.System.DefaultKey;
@@ -46,12 +46,12 @@ namespace Tenderfoot.Mvc.System
                 }
             }
 
-            accesses.ClearConditions();
-            accesses.Conditions.Where("CONCAT(key, secret, host) = {0}", Encryption.Decrypt(this.Request.Headers["Authorization"].ToString()));
-            accesses.Conditions.Where(accesses.Column(x => x.host), Is.EqualTo, this.Request.Host.ToString());
-            accesses.Conditions.Where(accesses.Column(x => x.active), Is.EqualTo, 1);
+            accesses.ClearCase();
+            accesses.Case.Where("CONCAT(key, secret, host) = {0}", Encryption.Decrypt(this.Request.Headers["Authorization"].ToString()));
+            accesses.Case.Where(accesses._("host"), Is.EqualTo, this.Request.Host.ToString());
+            accesses.Case.Where(accesses._("active"), Is.EqualTo, 1);
 
-            if (accesses.Count() == 0 || (Settings.Web.RequireHttps && this.Request.Scheme != "https"))
+            if (accesses.Count == 0 || (Settings.Web.RequireHttps && this.Request.Scheme != "https"))
             {
                 var validationDictionary = new Dictionary<string, object>();
                 var validationError = TfValidationResult.Compose("Unauthorized", "system");

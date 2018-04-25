@@ -23,13 +23,13 @@ namespace TenderfootCampaign.Models.Home
         public override void MapModel()
         {
             var members = _DB.Members;
-            members.Conditions.Where(members.Column(x => x.username), Is.EqualTo, this.Username);
+            members.Case.Where(members._("username"), Is.EqualTo, this.Username);
             this.Result = members.Select.Dictionary;
         }
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return TfValidationResult.FieldRequired(nameof(this.Username), this.Username);
+            yield return this.FieldRequired(nameof(this.Username));
         }
     }
 }

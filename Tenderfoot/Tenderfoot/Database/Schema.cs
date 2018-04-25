@@ -30,6 +30,11 @@ namespace Tenderfoot.Database
         {
             var onString = new List<string>();
             
+            if (columnOn == null)
+            {
+                return;
+            }
+
             foreach (var column in columnOn)
             {
                 onString.Add($"{column.Column1.Get} {Conditions<Joined>.GetCondition(column.Condition ?? Is.EqualTo)} {column.Column2.Get}");
@@ -50,8 +55,8 @@ namespace Tenderfoot.Database
         public Query SelectBase()
         {
             string columns =
-                this.Conditions.Columns?.Count() > 0 ?
-                string.Join(", ", this.Conditions.Columns) :
+                this.Case.Columns?.Count() > 0 ?
+                string.Join(", ", this.Case.Columns) :
                 "*";
 
             string join =
@@ -60,27 +65,27 @@ namespace Tenderfoot.Database
                 string.Empty;
 
             string order =
-                !this.Conditions.Order.IsEmpty() ?
-                $"ORDER BY {this.Conditions.Order}" :
+                !this.Case.Order.IsEmpty() ?
+                $"ORDER BY {this.Case.Order}" :
                 string.Empty;
 
             string limit =
-                this.Conditions.Limit.HasValue ?
-                $"LIMIT {this.Conditions.Limit}" :
+                this.Case.Limit.HasValue ?
+                $"LIMIT {this.Case.Limit}" :
                 string.Empty;
 
             foreach (var property in typeof(T).GetProperties())
             {
                 if (property.GetCustomAttribute<EncryptAttribute>(false) != null &&
-                    this.Conditions.Parameters.ContainsKey(property.Name))
+                    this.Case.Parameters.ContainsKey(property.Name))
                 {
-                    this.Conditions.Parameters[property.Name] = Encryption.Decrypt(Convert.ToString(this.Conditions.Parameters[property.Name]), true);
+                    this.Case.Parameters[property.Name] = Encryption.Decrypt(Convert.ToString(this.Case.Parameters[property.Name]), true);
                 }
             }
 
             return new Query(
                 $"{Operations.SELECT} {columns} FROM {TableName} {join} {this.GetWhere()} {order} {limit};",
-                this.Conditions.Parameters
+                this.Case.Parameters
                 );
         }
 
@@ -88,30 +93,35 @@ namespace Tenderfoot.Database
         /// Selects the condition result either by entity or dictionary.
         /// </summary>
         public Select<T> Select { get; set; }
+
+        public void SelectToEntity()
+        {
+            this.Entity.SetValuesFromModel(this.Select.Entity);
+        }
         
         /// <summary>
         /// Counts the number of result by the provided condition.
         /// </summary>
         /// <returns>The count result.</returns>
-        public virtual long Count()
+        public virtual long Count
         {
-            string columns =
-                this.Conditions.Columns?.Count() > 0 ?
-                string.Join(", ", this.Conditions.Columns) :
-                "*";
-            
-            var query = new Query(
-                $"{Operations.SELECT} COUNT({columns}) FROM {TableName} {this.GetWhere()};",
-                this.Conditions.Parameters
-                );
+            get
+            {
+                string columns =
+                    this.Case.Columns?.Count() > 0 ?
+                    string.Join(", ", this.Case.Columns) :
+                    "*";
 
-            return query.GetScalar();
+                var query = new Query(
+                    $"{Operations.SELECT} COUNT({columns}) FROM {TableName} {this.GetWhere()};",
+                    this.Case.Parameters
+                    );
+
+                return query.GetScalar();
+            }
         }
 
-        public virtual bool HasRecords()
-        {
-            return this.Count() > 0;
-        }
+        public virtual bool HasRecords => this.Count > 0;
 
         /// <summary>
         /// Inserts the entity's values into the schema.
@@ -152,8 +162,8 @@ namespace Tenderfoot.Database
             }
 
             return this.ExecuteNonQuery(
-                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere(this.Join)};",
-                this.NonConditions.Parameters.Union(this.Conditions.Parameters).ToDictionary(x => x.Key, x => x.Value),
+                $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere(this.Join, true)};",
+                this.NonConditions.Parameters.Union(this.Case.Parameters).ToDictionary(x => x.Key, x => x.Value),
                 Operations.UPDATE
                 );
         }
@@ -165,8 +175,8 @@ namespace Tenderfoot.Database
         public int Delete()
         {
             return this.ExecuteNonQuery(
-                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(this.Join)};",
-                this.Conditions.Parameters,
+                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(this.Join, true)};",
+                this.Case.Parameters,
                 Operations.DELETE
                 );
         }

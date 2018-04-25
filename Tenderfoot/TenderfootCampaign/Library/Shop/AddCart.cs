@@ -7,16 +7,11 @@ namespace TenderfootCampaign.Library.Shop
 {
     public class AddCart
     {
-        public Schema<Items> Items { get; set; } = _DB.Items;
-
-        public void PopulateItems(string itemCode)
-        {
-            this.Items.Conditions.Where(Operator.OR, this.Items.Column(x => x.item_code), Is.EqualTo, itemCode);
-        }
-
         public ValidationResult ValidateItem(string itemCode, params string[] memberNames)
         {
-            if (!this.Items.HasRecords())
+            var items = _DB.Items;
+            items.Case.Where(items._("item_code"), Is.EqualTo, itemCode);
+            if (!items.HasRecords)
             {
                 return TfValidationResult.Compose("NotExists", memberNames);
             }

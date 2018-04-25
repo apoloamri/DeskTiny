@@ -21,7 +21,7 @@ namespace Tenderfoot.Database.System
 
         protected void ClearNonConditions() { this.NonConditions = new NonConditions(); }
 
-        protected string GetWhere(List<JoinItem> join = null)
+        protected string GetWhere(List<JoinItem> join = null, bool skipEntity = false)
         {
             string where = string.Empty;
             string joinedTables = string.Empty;
@@ -35,14 +35,19 @@ namespace Tenderfoot.Database.System
                 }
             }
 
-            if (this.Conditions.MultiWhere?.Count() > 0)
+            if (this.Case.MultiWhere?.Count() > 0)
             {
-                where += string.Join(" ", this.Conditions.MultiWhere);
+                where += string.Join(" ", this.Case.MultiWhere);
+            }
+
+            if (this.Case.WhereBase.IsEmpty() && !skipEntity)
+            {
+                this.GetWhereFromEntity();
             }
 
             where +=
-                !this.Conditions.WhereBase.IsEmpty() ?
-                this.Conditions.WhereBase :
+                !this.Case.WhereBase.IsEmpty() ?
+                this.Case.WhereBase :
                 string.Empty;
 
             return 
@@ -103,6 +108,19 @@ namespace Tenderfoot.Database.System
             }
 
             return string.Join(",", columnList); ;
+        }
+
+        private void GetWhereFromEntity()
+        {
+            foreach (var property in this.Entity.GetType().GetProperties())
+            {
+                var value = property.GetValue(this.Entity);
+                if (value?.ToString().IsEmpty() ?? true)
+                {
+                    continue;
+                }
+                this.Case.Where(" " + property.Name + " = {0}", value);
+            }
         }
         
         private string CreateColumn(PropertyInfo property)
@@ -272,12 +290,12 @@ namespace Tenderfoot.Database.System
         /// <summary>
         /// Creates the criterias for selecting entities.
         /// </summary>
-        public Conditions<T> Conditions { get; set; } = new Conditions<T>();
+        public Conditions<T> Case { get; set; } = new Conditions<T>();
 
         /// <summary>
         /// Clears the current criterias.
         /// </summary>
-        public void ClearConditions() { this.Conditions = new Conditions<T>(); }
+        public void ClearCase() { this.Case = new Conditions<T>(); }
 
         /// <summary>
         /// The entity of the schema.
@@ -295,25 +313,35 @@ namespace Tenderfoot.Database.System
         /// <typeparam name="TProp"></typeparam>
         /// <param name="expression"></param>
         /// <returns>The column name.</returns>
-        public TableColumn Column<TProp>(Expression<Func<T, TProp>> expression)
+        public TableColumn _(string column)
         {
-            var body = expression.Body as MemberExpression;
+            if (column.IsEmpty())
+            {
+                return null;
+            }
 
-            if (body == null)
+            var property = this.Entity.GetType().GetProperty(column);
+
+            if (property == null)
             {
                 return null;
             }
             
             return new TableColumn()
             {
-                ColumnName = body.Member.Name,
-                Type = this.Entity.GetType().GetProperty(body.Member.Name).PropertyType,
+                ColumnName = column,
+                Type = property.PropertyType,
                 TableName = this.TableName
             };
         }
 
         public Relation Relation(TableColumn column1, TableColumn column2, Is? condition = null)
         {
+            if (column1 == null || column2 == null)
+            {
+                return null;
+            }
+
             return new Relation()
             {
                 Column1 = column1,

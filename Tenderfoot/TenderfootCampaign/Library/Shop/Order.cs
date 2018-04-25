@@ -22,7 +22,7 @@ namespace TenderfootCampaign.Library.Shop
             {
                 foreach (var item in items)
                 {
-                    this.Items.Conditions.Where(Operator.OR, Items.Column(x => x.item_code), Is.EqualTo, item.ItemCode);
+                    this.Items.Case.Where(Operator.OR, Items._("item_code"), Is.EqualTo, item.ItemCode);
                 }
                 this.itemList = this.Items.Select.Entities;
             }

@@ -11,13 +11,13 @@ namespace TenderfootCampaign.Library.Home
 
         public void PopulateMembers(string username, string password)
         {
-            this.Members.Conditions.Where(this.Members.Column(x => x.username), Is.EqualTo, username);
-            this.Members.Conditions.Where(this.Members.Column(x => x.password), Is.EqualTo, password);
+            this.Members.Case.Where(this.Members._("username"), Is.EqualTo, username);
+            this.Members.Case.Where(this.Members._("password"), Is.EqualTo, password);
         }
 
         public ValidationResult CheckUsernamePassword(params string[] memberNames)
         {
-            if (this.Members.Count() == 0)
+            if (this.Members.Count == 0)
             {
                 return TfValidationResult.Compose("InvalidLogin", memberNames);
             }
@@ -27,9 +27,9 @@ namespace TenderfootCampaign.Library.Home
 
         public ValidationResult CheckActivity(params string[] memberNames)
         {
-            this.Members.Conditions.Where(this.Members.Column(x => x.active), Is.EqualTo, 1);
+            this.Members.Case.Where(this.Members._("active"), Is.EqualTo, 1);
             return
-                this.Members.Count() == 0 ?
+                this.Members.Count == 0 ?
                 TfValidationResult.Compose("InactiveAccount", memberNames) :
                 null;
         }

@@ -13,9 +13,9 @@ namespace Tenderfoot.Mvc
 
         public override void BeforeStartUp()
         {
-            this.Accesses.Conditions.Where(this.Accesses.Column(x => x.key), Is.EqualTo, this.Key);
-            this.Accesses.Conditions.Where(this.Accesses.Column(x => x.active), Is.EqualTo, 1);
-            this.Accesses.Conditions.LimitBy(1);
+            this.Accesses.Case.Where(this.Accesses._("key"), Is.EqualTo, this.Key);
+            this.Accesses.Case.Where(this.Accesses._("active"), Is.EqualTo, 1);
+            this.Accesses.Case.LimitBy(1);
         }
 
         [Input]
@@ -39,7 +39,7 @@ namespace Tenderfoot.Mvc
         public override IEnumerable<ValidationResult> Validate()
         {
             yield return TfValidationResult.FieldRequired(nameof(this.Key), this.Key);
-            if (this.Accesses.Count() == 0)
+            if (this.Accesses.Count == 0)
             {
                 yield return TfValidationResult.Compose("Unauthorized");
             }

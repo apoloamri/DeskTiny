@@ -16,16 +16,8 @@ namespace Tenderfoot.Mvc
             }
 
             var session = Schemas.Sessions;
-            
-            session.Conditions.Where(
-                session.Column(x => x.session_id), 
-                Is.EqualTo, 
-                sessionId);
-
-            session.Conditions.Where(
-                session.Column(x => x.session_time), 
-                Is.GreaterThan, 
-                DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
+            session.Case.Where(session._("session_id"), Is.EqualTo, sessionId);
+            session.Case.Where(session._("session_time"), Is.GreaterThan, DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
 
             var result = session.Select.Entity;
 
@@ -34,16 +26,12 @@ namespace Tenderfoot.Mvc
                 return result.session_key;
             }
 
-            session.ClearConditions();
+            session.ClearCase();
 
             var sessionKey = KeyGenerator.GetUniqueKey(64);
-            
-            session.Conditions.Where(
-                session.Column(x => x.session_key), 
-                Is.EqualTo, 
-                sessionKey);
+            session.Case.Where(session._("session_key"), Is.EqualTo, sessionKey);
 
-            while (session.Count() > 0)
+            while (session.Count > 0)
             {
                 sessionKey = KeyGenerator.GetUniqueKey(64);
             }
@@ -51,7 +39,6 @@ namespace Tenderfoot.Mvc
             session.Entity.session_id = sessionId;
             session.Entity.session_key = sessionKey;
             session.Entity.session_time = DateTime.Now;
-
             session.Insert();
 
             return sessionKey;
@@ -65,29 +52,15 @@ namespace Tenderfoot.Mvc
             }
 
             var session = Schemas.Sessions;
-
-            session.Conditions.Where(
-                session.Column(x => x.session_id),
-                Is.EqualTo,
-                Encryption.Decrypt(sessionId));
-
-            session.Conditions.Where(
-                session.Column(x => x.session_key),
-                Is.EqualTo,
-                sessionKey);
-
-            session.Conditions.Where(
-                session.Column(x => x.session_time),
-                Is.GreaterThan,
-                DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
+            session.Case.Where(session._("session_id"), Is.EqualTo, Encryption.Decrypt(sessionId));
+            session.Case.Where(session._("session_key"), Is.EqualTo, sessionKey);
+            session.Case.Where(session._("session_time"), Is.GreaterThan, DateTime.Now.AddMinutes(-Settings.Web.SessionTimeOut));
             
-            var count = session.Count();
-
+            var count = session.Count;
             if (count > 0)
             {
                 session.Entity.session_time = DateTime.Now;
                 session.Update();
-
                 return true;
             }
 

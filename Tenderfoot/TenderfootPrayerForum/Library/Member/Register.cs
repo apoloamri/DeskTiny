@@ -10,9 +10,9 @@ namespace TenderfootPrayerForum.Library.Member
         public ValidationResult ConfirmEmail(string email, string memberName)
         {
             var members = _DB.Members;
-            members.Conditions.Where(members.Column(x => x.email), Is.EqualTo, email);
+            members.Conditions.Where(members._(x => x.email), Is.EqualTo, email);
             return
-                members.HasRecords() ?
+                members.HasRecords ?
                 TfValidationResult.Compose("InvalidExistance", new[] { email }, memberName) :
                 null;
         }
@@ -28,9 +28,9 @@ namespace TenderfootPrayerForum.Library.Member
         public ValidationResult ConfirmUsername(string username, string memberName)
         {
             var members = _DB.Members;
-            members.Conditions.Where(members.Column(x => x.username), Is.EqualTo, username);
+            members.Conditions.Where(members._(x => x.username), Is.EqualTo, username);
             return
-                members.HasRecords() ?
+                members.HasRecords ?
                 TfValidationResult.Compose("InvalidExistance", new[] { username }, memberName) :
                 null;
         }

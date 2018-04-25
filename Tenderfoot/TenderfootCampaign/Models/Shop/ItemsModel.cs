@@ -30,11 +30,11 @@ namespace TenderfootCampaign.Models.Shop
             var items = _DB.Items;
             if (this.IsValid(nameof(this.ProductName)))
             {
-                items.Conditions.Where(items.Column(x => x.name), Is.Like, $"%{this.ProductName}%");
+                items.Case.Where(items._("name"), Is.Like, $" %{this.ProductName}%");
             }
             if (this.IsValid(nameof(this.ProductType)))
             {
-                items.Conditions.Where(items.Column(x => x.product_type), Is.EqualTo, this.ProductType);
+                items.Case.Where(items._("product_type"), Is.EqualTo, this.ProductType);
             }
             this.Result = items.Select.Dictionaries;
         }

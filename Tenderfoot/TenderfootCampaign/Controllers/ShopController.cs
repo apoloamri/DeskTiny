@@ -38,5 +38,13 @@ namespace TenderfootCampaign.Controllers
             this.Initiate<AddCartModel>();
             return this.Conclude();
         }
+
+        [HttpGet]
+        [Route("cart")]
+        public JsonResult GetCart()
+        {
+            this.Initiate<AddCartModel>();
+            return this.Conclude();
+        }
     }
 }

@@ -23,18 +23,12 @@ namespace Tenderfoot.Database
             }
 
             var table = InformationSchemaTables;
-
-            table.Conditions.Where(
-                table.Column(x => x.table_name),
-                Is.EqualTo,
-                tableName);
-
-            table.Conditions.AddColumns(
-                table.Column(x => x.table_name));
+            table.Case.Where(table._("table_name"), Is.EqualTo, tableName);
+            table.Case.AddColumns(table._("table_name"));
 
             var newSchema = new Schema<T>(tableName);
 
-            if (table.Count() == 0)
+            if (table.Count == 0)
             {
                 newSchema.CreateTable();
             }
@@ -42,13 +36,8 @@ namespace Tenderfoot.Database
             {
                 var columns = InformationSchemaColumns;
 
-                columns.Conditions.Where(
-                    columns.Column(x => x.table_name),
-                    Is.EqualTo,
-                    tableName);
-
-                columns.Conditions.AddColumns(
-                    columns.Column(x => x.column_name));
+                columns.Case.Where(columns._("table_name"), Is.EqualTo, tableName);
+                columns.Case.AddColumns(columns._("column_name"));
 
                 var currentColumns = columns.Select.Entities?.Select(x => x.column_name)?.ToList();
                 var entityColumns = newSchema.Entity.GetColumns();

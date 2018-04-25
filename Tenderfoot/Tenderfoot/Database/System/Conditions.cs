@@ -13,6 +13,11 @@ namespace Tenderfoot.Database.System
 
         public void AddColumns(params TableColumn[] columns)
         {
+            if (columns == null)
+            {
+                return;
+            }
+
             this.Columns = columns.Select(x => x.Get)?.ToArray();
         }
 
@@ -30,13 +35,18 @@ namespace Tenderfoot.Database.System
         /// <param name="order">The given order. May it be ascending or descending.</param>
         public void OrderBy(TableColumn column, Order order)
         {
+            if (column == null)
+            {
+                return;
+            }
+
             if (this.Order.IsEmpty())
             {
                 this.Order = $"{column.Get} {order.GetString()}";
             }
             else
             {
-                this.Order = $", {column.Get} {order.GetString()}";
+                this.Order += $", {column.Get} {order.GetString()}";
             }
         }
         
@@ -68,6 +78,11 @@ namespace Tenderfoot.Database.System
             Is condition, 
             object value)
         {
+            if (column == null)
+            {
+                return;
+            }
+
             if (value == null)
             {
                 value = DBNull.Value;
