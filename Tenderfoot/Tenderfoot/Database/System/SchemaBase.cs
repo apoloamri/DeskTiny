@@ -227,6 +227,12 @@ namespace Tenderfoot.Database.System
             {
                 return DataType.TIMESTAMP_WITHOUT_TIME_ZONE.GetString();
             }
+            else if (
+                type == typeof(byte) ||
+                type == typeof(byte?))
+            {
+                return DataType.BYTEA.GetString();
+            }
 
             return DataType.CHARACTER_VARYING.GetString();
         }
@@ -351,7 +357,7 @@ namespace Tenderfoot.Database.System
         }
     }
 
-    public enum DataType { BIGINT, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE, TEXT }
+    public enum DataType { BIGINT, BYTEA, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE, TEXT }
     public enum Operations { SELECT, INSERT, UPDATE, DELETE, CREATE_TABLE, ALTER_TABLE, ADD, DROP_COLUMN }
     public enum ColumnAttributes { NOT_NULL, PRIMARY_KEY, UNIQUE }
 
