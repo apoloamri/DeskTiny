@@ -9,8 +9,8 @@ namespace TenderfootCampaign.Library._Database
     public class Orders : Entity
     {
         [NotNull]
-        public int? member_id { get; set; }
-
+        public long? header_id { get; set; }
+        
         [NotNull]
         public string item_code { get; set; }
 

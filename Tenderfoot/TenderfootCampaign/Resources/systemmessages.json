@@ -9,5 +9,6 @@
   "InvalidLogin": "Invalid username or password. Please try again.",
   "NotExists": "An item does not exist.",
   "RequiredField": "{0} is a required field.",
+  "SessionExpired": "Not logged in.",
   "Unauthorized": "Unauthorized"
 }

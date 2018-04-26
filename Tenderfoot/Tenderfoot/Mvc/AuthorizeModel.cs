@@ -13,8 +13,8 @@ namespace Tenderfoot.Mvc
 
         public override void BeforeStartUp()
         {
-            this.Accesses.Case.Where(this.Accesses._("key"), Is.EqualTo, this.Key);
-            this.Accesses.Case.Where(this.Accesses._("active"), Is.EqualTo, 1);
+            this.Accesses.Case.Where(this.Accesses._(x => x.key), Is.EqualTo, this.Key);
+            this.Accesses.Case.Where(this.Accesses._(x => x.active), Is.EqualTo, 1);
             this.Accesses.Case.LimitBy(1);
         }
 

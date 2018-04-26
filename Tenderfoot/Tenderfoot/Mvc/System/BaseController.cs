@@ -39,15 +39,15 @@ namespace Tenderfoot.Mvc.System
             
             var accesses = Schemas.Accesses;
 
-            if (Settings.System.Debug)
+            if (TfSettings.System.Debug)
             {
-                accesses.Case.Where(accesses._("key"), Is.EqualTo, Settings.System.DefaultKey);
-                accesses.Case.Where(accesses._("secret"), Is.EqualTo, Settings.System.DefaultSecret);
+                accesses.Case.Where(accesses._(x => x.key), Is.EqualTo, TfSettings.System.DefaultKey);
+                accesses.Case.Where(accesses._(x => x.secret), Is.EqualTo, TfSettings.System.DefaultSecret);
                 if (accesses.Count == 0)
                 {
-                    var uri = new Uri(Settings.Web.SiteUrl);
-                    accesses.Entity.key = Settings.System.DefaultKey;
-                    accesses.Entity.secret = Settings.System.DefaultSecret;
+                    var uri = new Uri(TfSettings.Web.SiteUrl);
+                    accesses.Entity.key = TfSettings.System.DefaultKey;
+                    accesses.Entity.secret = TfSettings.System.DefaultSecret;
                     accesses.Entity.host = $"{uri.Host}:{uri.Port}";
                     accesses.Insert();
                 }
@@ -55,10 +55,10 @@ namespace Tenderfoot.Mvc.System
 
             accesses.ClearCase();
             accesses.Case.Where("CONCAT(key, secret, host) = {0}", Encryption.Decrypt(this.Request.Headers["Authorization"].ToString()));
-            accesses.Case.Where(accesses._("host"), Is.EqualTo, this.Request.Host.ToString());
-            accesses.Case.Where(accesses._("active"), Is.EqualTo, 1);
+            accesses.Case.Where(accesses._(x => x.host), Is.EqualTo, this.Request.Host.ToString());
+            accesses.Case.Where(accesses._(x => x.active), Is.EqualTo, 1);
 
-            if (accesses.Count == 0 || (Settings.Web.RequireHttps && this.Request.Scheme != "https"))
+            if (accesses.Count == 0 || (TfSettings.Web.RequireHttps && this.Request.Scheme != "https"))
             {
                 var validationDictionary = new Dictionary<string, object>();
                 var validationError = TfValidationResult.Compose("Unauthorized", "system");

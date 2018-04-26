@@ -17,14 +17,14 @@ namespace Tenderfoot.Database
         /// <returns></returns>
         public static Schema<T> CreateTable<T>(string tableName) where T : Entity, new()
         {
-            if (Settings.Database.Migrate == false)
+            if (TfSettings.Database.Migrate == false)
             {
                 return new Schema<T>(tableName);
             }
 
             var table = InformationSchemaTables;
-            table.Case.Where(table._("table_name"), Is.EqualTo, tableName);
-            table.Case.AddColumns(table._("table_name"));
+            table.Case.Where(table._(x => x.table_name), Is.EqualTo, tableName);
+            table.Case.AddColumns(table._(x => x.table_name));
 
             var newSchema = new Schema<T>(tableName);
 
@@ -36,8 +36,8 @@ namespace Tenderfoot.Database
             {
                 var columns = InformationSchemaColumns;
 
-                columns.Case.Where(columns._("table_name"), Is.EqualTo, tableName);
-                columns.Case.AddColumns(columns._("column_name"));
+                columns.Case.Where(columns._(x => x.table_name), Is.EqualTo, tableName);
+                columns.Case.AddColumns(columns._(x => x.column_name));
 
                 var currentColumns = columns.Select.Entities?.Select(x => x.column_name)?.ToList();
                 var entityColumns = newSchema.Entity.GetColumns();

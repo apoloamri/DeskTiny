@@ -31,21 +31,6 @@ namespace TenderfootCampaign.Models.Member
         [Input]
         public int? Gender { get; set; }
 
-        public override void HandleModel()
-        {
-            var activationKey = KeyGenerator.GetUniqueKey(10);
-            var members = _DB.Members;
-
-            members.Entity.SetValuesFromModel(this);
-            members.Entity.active = 1;
-            members.Insert();
-        }
-
-        public override void MapModel()
-        {
-            throw new NotImplementedException();
-        }
-
         public override IEnumerable<ValidationResult> Validate()
         {
             if (this.Handling)
@@ -68,8 +53,17 @@ namespace TenderfootCampaign.Models.Member
                 if (this.IsValid(nameof(this.Password), nameof(this.ConfirmPassword)))
                 {
                     yield return this.Library.ConfirmPassword(this.Password, this.ConfirmPassword, nameof(this.Password), nameof(this.ConfirmPassword));
-                }   
+                }
             }
+        }
+
+        public override void HandleModel()
+        {
+            var activationKey = KeyGenerator.GetUniqueKey(10);
+            var members = _DB.Members;
+            members.Entity.SetValuesFromModel(this);
+            members.Entity.active = 1;
+            members.Insert();
         }
     }
 }

@@ -18,10 +18,13 @@ namespace TenderfootCampaign.Models.Shop
         public int? Amount { get; set; }
 
         [JsonProperty]
-        public List<Dictionary<string, object>> CartItems { get; set; }
+        public List<dynamic> CartItems { get; set; }
 
         [JsonProperty]
         public int CartTotal { get; set; }
+
+        [JsonProperty]
+        public int CartTotalPrice { get; set; }
 
         public override void HandleModel()
         {
@@ -47,12 +50,13 @@ namespace TenderfootCampaign.Models.Shop
             var items = _DB.Items;
 
             carts.Relate(Join.INNER, items, 
-                carts.Relation(carts._("item_code"), items._("item_code")));
+                carts.Relation(carts._(x => x.item_code), items._(x => x.item_code)));
 
-            carts.Case.Where(carts._("session_key"), Is.EqualTo, this.SessionKey);
+            carts.Case.Where(carts._(x => x.session_key), Is.EqualTo, this.SessionKey);
 
-            this.CartItems = carts.Select.Dictionaries;
-            this.CartTotal = this.CartItems.Sum(x => Convert.ToInt32(x["price"]) * Convert.ToInt32(x["amount"]));
+            this.CartItems = carts.Select.Result;
+            this.CartTotal = this.CartItems.Sum(x => Convert.ToInt32(x.amount));
+            this.CartTotalPrice = this.CartItems.Sum(x => Convert.ToInt32(x.price) * Convert.ToInt32(x.amount));
         }
 
         public override IEnumerable<ValidationResult> Validate()

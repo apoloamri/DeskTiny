@@ -11,7 +11,7 @@ namespace Tenderfoot.Database
         [Serial]
         [PrimaryKey]
         [NotNull]
-        public virtual long? id { get; set; }
+        public int? id { get; set; }
 
         [NotNull]
         [Default("Now()")]

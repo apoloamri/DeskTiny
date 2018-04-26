@@ -8,16 +8,16 @@ namespace Tenderfoot.TfSystem
     {
         public static string Encrypt(string input, bool getFromConfig = false)
         {
-            if (getFromConfig && Settings.Encryption.Active == false)
+            if (getFromConfig && TfSettings.Encryption.Active == false)
             {
                 return input;
             }
 
             StringCipher stringCipher = new StringCipher
             {
-                PasswordHash = Settings.Encryption.PasswordHash,
-                SaltKey = Settings.Encryption.SaltKey,
-                VIKey = Settings.Encryption.VIKey
+                PasswordHash = TfSettings.Encryption.PasswordHash,
+                SaltKey = TfSettings.Encryption.SaltKey,
+                VIKey = TfSettings.Encryption.VIKey
             };
 
             try
@@ -27,7 +27,7 @@ namespace Tenderfoot.TfSystem
             catch
             {
                 TfDebug.WriteLog(
-                    Settings.Logs.System,
+                    TfSettings.Logs.System,
                     $"Ignored Invalid Ecryption - {DateTime.Now}",
                     $"Value: {input}{Environment.NewLine}");
 
@@ -37,16 +37,16 @@ namespace Tenderfoot.TfSystem
 
         public static string Decrypt(string input, bool getFromConfig = false)
         {
-            if (getFromConfig && Settings.Encryption.Active == false)
+            if (getFromConfig && TfSettings.Encryption.Active == false)
             {
                 return input;
             }
 
             StringCipher stringCipher = new StringCipher
             {
-                PasswordHash = Settings.Encryption.PasswordHash,
-                SaltKey = Settings.Encryption.SaltKey,
-                VIKey = Settings.Encryption.VIKey
+                PasswordHash = TfSettings.Encryption.PasswordHash,
+                SaltKey = TfSettings.Encryption.SaltKey,
+                VIKey = TfSettings.Encryption.VIKey
             };
             
             try
@@ -56,7 +56,7 @@ namespace Tenderfoot.TfSystem
             catch
             {
                 TfDebug.WriteLog(
-                    Settings.Logs.System,
+                    TfSettings.Logs.System,
                     $"Ignored Invalid Decryption - {DateTime.Now}",
                     $"Value: {input}{Environment.NewLine}");
 

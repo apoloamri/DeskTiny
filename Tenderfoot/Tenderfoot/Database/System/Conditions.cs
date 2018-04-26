@@ -90,9 +90,8 @@ namespace Tenderfoot.Database.System
 
             string columnParameter = this.OptionalName + column.Get + this.ColumnCount;
             string statement = string.Empty;
-
-
-            if (!column.Type.IsArray)
+            
+            if (!column.Property.PropertyType.IsArray)
             {
                 statement = $"{column.Get} {GetCondition(condition)} {Param}{columnParameter} ";
             }
@@ -104,14 +103,11 @@ namespace Tenderfoot.Database.System
             this.AddWhere(oper, statement);
 
             var property = typeof(TableEntity).GetProperty(column.ColumnName);
-
-            if (property.GetCustomAttribute<EncryptAttribute>(false) != null &&
-                property.PropertyType == typeof(string))
+            
+            if (column.Property.GetCustomAttribute<EncryptAttribute>() != null &&
+                column.Property.PropertyType == typeof(string))
             {
-                if (property.GetCustomAttribute<EncryptAttribute>(false) != null)
-                {
-                    value = Encryption.Encrypt(Convert.ToString(value), true);
-                }
+                value = Encryption.Encrypt(Convert.ToString(value), true);
             }
 
             this.Parameters.Add(columnParameter, value);

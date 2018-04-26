@@ -10,6 +10,8 @@ namespace Tenderfoot.Database.System
 {
     public class NonQuery : Connect
     {
+        public string TableName { get; set; }
+
         public NonQuery(string sql, Dictionary<string, object> parameters) : base(sql, parameters) { }
 
         public NonQuery() : base()
@@ -25,9 +27,17 @@ namespace Tenderfoot.Database.System
             {
                 this.SqlConnection.Open();
             }
-            
-            var executionCount = this.SqlCommand.ExecuteNonQuery();
 
+            long executionCount = 0;
+            
+            executionCount = this.SqlCommand.ExecuteNonQuery();
+
+            if (operation == Operations.INSERT)
+            {
+                this.WriteSql($"{Operations.SELECT} currval('{this.TableName}_id_seq');", null);
+                executionCount = this.SqlCommand.ExecuteScalar();
+            }
+            
             if (this.SqlTransaction == null)
             {
                 this.SqlConnection.Close();
@@ -42,12 +52,12 @@ namespace Tenderfoot.Database.System
                 Operations.DROP_COLUMN }.Contains(operation))
             {
                 TfDebug.WriteLog(
-                    Settings.Logs.Migration,
+                    TfSettings.Logs.Migration,
                     $"Migration Details - {DateTime.Now}",
                    this.SqlCommand.CommandText);
             }
             
-            return executionCount;
+            return (int)executionCount;
         }
         
         public void Begin()

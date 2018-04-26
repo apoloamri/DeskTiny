@@ -10,7 +10,7 @@ namespace TenderfootCampaign.Library.Member
         public ValidationResult ConfirmEmail(string email, string memberName)
         {
             var members = _DB.Members;
-            members.Case.Where(members._("email"), Is.EqualTo, email);
+            members.Case.Where(members._(x => x.gender), Is.EqualTo, email);
             return
                 members.HasRecords ?
                 TfValidationResult.Compose("InvalidExistance", new[] { email }, memberName) :
@@ -28,7 +28,7 @@ namespace TenderfootCampaign.Library.Member
         public ValidationResult ConfirmUsername(string username, string memberName)
         {
             var members = _DB.Members;
-            members.Case.Where(members._("username"), Is.EqualTo, username);
+            members.Case.Where(members._(x => x.username), Is.EqualTo, username);
             return
                 members.HasRecords ?
                 TfValidationResult.Compose("InvalidExistance", new[] { username }, memberName) :

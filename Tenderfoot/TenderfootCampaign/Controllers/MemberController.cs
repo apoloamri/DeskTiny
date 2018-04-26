@@ -22,5 +22,13 @@ namespace TenderfootCampaign.Controllers
             this.Initiate<RegisterModel>();
             return this.Conclude();
         }
+
+        [HttpGet]
+        [Route("points")]
+        public JsonResult GetPoints()
+        {
+            this.Initiate<PointsModel>();
+            return this.Conclude();
+        }
     }
 }

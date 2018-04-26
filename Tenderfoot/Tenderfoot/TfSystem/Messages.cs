@@ -13,8 +13,8 @@ namespace Tenderfoot.TfSystem
                 return null;
             }
 
-            string messageFile = Settings.Configuration().GetSection("SystemResources").GetSection("SystemMessages").Value;
-            string defaultMessage = Settings.Configuration(messageFile).GetSection(message).Value;
+            string messageFile = TfSettings.Configuration().GetSection("SystemResources").GetSection("SystemMessages").Value;
+            string defaultMessage = TfSettings.Configuration(messageFile).GetSection(message).Value;
 
             if (values != null && values.Count() > 0)
             {
@@ -48,8 +48,8 @@ namespace Tenderfoot.TfSystem
 
         public static string GetField(string fieldName)
         {
-            string fieldFile = Settings.Configuration().GetSection("SystemResources").GetSection("FieldMessages").Value;
-            string systemFieldName = Settings.Configuration(fieldFile).GetSection(fieldName).Value;
+            string fieldFile = TfSettings.Configuration().GetSection("SystemResources").GetSection("FieldMessages").Value;
+            string systemFieldName = TfSettings.Configuration(fieldFile).GetSection(fieldName).Value;
             
             return
                 systemFieldName.IsEmpty() ?

@@ -135,23 +135,24 @@ namespace Tenderfoot.Database
         /// <returns>The count of the inserted entities.</returns>
         public int Insert()
         {
+            this.Entity.id = null;
+            this.Entity.insert_time = null;
             this.NonConditions.CreateColumnParameters(this.Entity);
 
             if (this.NonConditions.Parameters.Count() == 0)
             {
                 return 0;
             }
-
-            if (!this.Entity.insert_time.HasValue)
-            {
-                this.Entity.insert_time = DateTime.Now;
-            }
-
-            return this.ExecuteNonQuery(
+            
+            var count =  this.ExecuteNonQuery(
                 $"{Operations.INSERT} INTO {this.TableName}({this.NonConditions.ColumnNames}) VALUES({this.NonConditions.ColumnParameters});",
                 this.NonConditions.Parameters,
                 Operations.INSERT
                 );
+
+            this.Entity.id = count;
+
+            return count;
         }
 
         /// <summary>
@@ -181,7 +182,7 @@ namespace Tenderfoot.Database
         public int Delete()
         {
             return this.ExecuteNonQuery(
-                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(this.Join, true)};",
+                $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(null, true)};",
                 this.Case.Parameters,
                 Operations.DELETE
                 );
@@ -226,7 +227,7 @@ namespace Tenderfoot.Database
 
         public void Commit(Action<Schema<T>> action)
         {
-            this.NonQuery = new NonQuery();
+            this.NonQuery = new NonQuery() { TableName = this.TableName };
             this.NonQuery.Begin();
             
             action(new Schema<T>(this.TableName));
@@ -241,7 +242,7 @@ namespace Tenderfoot.Database
         {
             if (this.NonQuery == null)
             {
-                var nonQuery = new NonQuery(sql, parameters);
+                var nonQuery = new NonQuery(sql, parameters) { TableName = this.TableName };
                 return nonQuery.ExecuteNonQuery(operations);
             }
             else

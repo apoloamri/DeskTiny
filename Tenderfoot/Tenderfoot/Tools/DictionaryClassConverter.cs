@@ -60,7 +60,7 @@ namespace Tenderfoot.Tools
                 catch
                 {
                     TfDebug.WriteLog(
-                        Settings.Logs.System,
+                        TfSettings.Logs.System,
                         $"Ignored Malformed Line - {DateTime.Now}",
                         $"Name: {keyValue.Key}{Environment.NewLine}" +
                         $"Value: {keyValue.Value}{Environment.NewLine}" +

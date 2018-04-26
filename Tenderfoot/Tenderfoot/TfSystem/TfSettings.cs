@@ -3,10 +3,11 @@ using Tenderfoot.Tools.Extensions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Tenderfoot.TfSystem
 {
-    public static class Settings
+    public static class TfSettings
     {
         public static IConfigurationRoot Configuration(string fileName = null)
         {
@@ -22,6 +23,25 @@ namespace Tenderfoot.TfSystem
                 .AddJsonFile(fileName, optional: true, reloadOnChange: true);
 
             return configurationBuilder.Build();
+        }
+
+        public static object GetSettings(params string[] settings)
+        {
+            var config = Configuration();
+            var section = config.GetSection(settings.FirstOrDefault());
+
+            var skipFirst = true;
+            foreach (var setting in settings)
+            {
+                if (skipFirst)
+                {
+                    skipFirst = false;
+                    continue;
+                }
+                section = section.GetSection(setting);
+            }
+
+            return section.Value;
         }
 
         public static class Web

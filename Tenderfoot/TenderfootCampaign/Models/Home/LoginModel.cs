@@ -8,11 +8,6 @@ namespace TenderfootCampaign.Models.Home
 {
     public class LoginModel : TfModel<Login>
     {
-        public override void OnStartUp()
-        {
-            this.Library.Members.Entity.SetValuesFromModel(this);
-        }
-
         [Input]
         [ValidateInput(InputType.String, 50)]
         public string Username { get; set; }
@@ -20,18 +15,6 @@ namespace TenderfootCampaign.Models.Home
         [Input]
         [ValidateInput(InputType.All, 100)]
         public string Password { get; set; }
-
-        public override void HandleModel()
-        {
-            this.SessionId = Encryption.Encrypt(this.Username);
-            this.SessionKey = Session.AddSession(this.Username);
-        }
-
-        public override void MapModel()
-        {
-            this.SessionId = Encryption.Encrypt(this.Username);
-            this.SessionKey = this.SessionKey;
-        }
 
         public override IEnumerable<ValidationResult> Validate()
         {
@@ -51,9 +34,23 @@ namespace TenderfootCampaign.Models.Home
                 yield return this.FieldRequired(nameof(this.Password));
                 if (this.IsValid(nameof(this.Username), nameof(this.Password)))
                 {
+                    this.Library.Members.Entity.SetValuesFromModel(this);
                     yield return this.Library.CheckUsernamePassword(nameof(this.Username), nameof(this.Password));
+                    yield return this.Library.CheckActivity(nameof(this.Username));
                 }
             }
+        }
+
+        public override void HandleModel()
+        {
+            this.SessionId = Encryption.Encrypt(this.Username);
+            this.SessionKey = Session.AddSession(this.Username);
+        }
+
+        public override void MapModel()
+        {
+            this.SessionId = Encryption.Encrypt(this.Username);
+            this.SessionKey = this.SessionKey;
         }
     }
 }

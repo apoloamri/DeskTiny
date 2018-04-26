@@ -20,7 +20,7 @@ namespace Tenderfoot.TfSystem.Diagnostics
                 $"Message: {details.Message}";
 
             WriteLog(
-                Settings.Logs.System, 
+                TfSettings.Logs.System, 
                 $"System Exception Details - {DateTime.Now}", 
                 errorDetails);
         }

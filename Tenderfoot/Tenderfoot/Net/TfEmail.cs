@@ -17,7 +17,7 @@ namespace Tenderfoot.Net
 
         private static void SendBase(string mailTo, string title, string message)
         {
-            var mailFrom = Settings.Web.SmtpEmail;
+            var mailFrom = TfSettings.Web.SmtpEmail;
             var mail = new MailMessage(mailFrom, mailTo) { IsBodyHtml = true };
 
             var client = new SmtpClient
@@ -25,9 +25,9 @@ namespace Tenderfoot.Net
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
                 EnableSsl = true,
-                Host = Settings.Web.SmtpHost,
-                Port = Settings.Web.SmtpPort,
-                Credentials = new NetworkCredential(mailFrom, Settings.Web.SmtpPassword)
+                Host = TfSettings.Web.SmtpHost,
+                Port = TfSettings.Web.SmtpPort,
+                Credentials = new NetworkCredential(mailFrom, TfSettings.Web.SmtpPassword)
             };
 
             mail.Subject = title;
@@ -45,9 +45,9 @@ namespace Tenderfoot.Net
 
         private static EmailContent ReadEmailFromFile(string fileName, string[] items)
         {
-            var message = File.ReadAllText(Path.Combine(Settings.SystemResources.EmailFiles, fileName + ".html"));
-            message = message.Replace("{url}", Settings.Web.SiteUrl);
-            message = message.Replace("{api_url}", Settings.Web.ApiUrl);
+            var message = File.ReadAllText(Path.Combine(TfSettings.SystemResources.EmailFiles, fileName + ".html"));
+            message = message.Replace("{url}", TfSettings.Web.SiteUrl);
+            message = message.Replace("{api_url}", TfSettings.Web.ApiUrl);
             message = string.Format(message, items);
 
             var match = Regex.Match(message, @"<title>\s*(.+?)\s*</title>");

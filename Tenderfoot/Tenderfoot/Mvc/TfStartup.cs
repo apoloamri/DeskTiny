@@ -20,7 +20,7 @@ namespace Tenderfoot.Mvc
                 app.UseDeveloperExceptionPage();
             }
 
-            foreach (var origin in Settings.Web.AllowOrigins)
+            foreach (var origin in TfSettings.Web.AllowOrigins)
             {
                 app.UseCors(
                     options => options

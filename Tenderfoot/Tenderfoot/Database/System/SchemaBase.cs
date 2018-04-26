@@ -1,9 +1,10 @@
-﻿using Tenderfoot.Tools.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Tenderfoot.TfSystem;
+using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Database.System
 {
@@ -119,7 +120,12 @@ namespace Tenderfoot.Database.System
                 {
                     continue;
                 }
-                this.Case.Where(this._(property.Name), Is.EqualTo, value);
+                if (property.GetCustomAttribute<EncryptAttribute>() != null &&
+                    property.PropertyType == typeof(string))
+                {
+                    value = Encryption.Encrypt(Convert.ToString(value));
+                }
+                this.Case.Where($"{this.TableName}.{property.Name} = {{0}}", value);
             }
         }
         
@@ -128,7 +134,7 @@ namespace Tenderfoot.Database.System
             var customAttributes = property.GetCustomAttributes(false);
 
             string column = property.Name;
-            string dataType = this.GetColumnDataType(property.PropertyType, customAttributes);
+            string dataType = this.GetColumnDataType(property.PropertyType, customAttributes, out bool unArray);
             string attributes = string.Empty;
             
             if (dataType.IsEmpty())
@@ -146,15 +152,19 @@ namespace Tenderfoot.Database.System
                 dataType = string.Empty;
             }
 
-            string array = property.PropertyType.IsArray ? "[]" : string.Empty;
+            string array = 
+                property.PropertyType.IsArray && !unArray ? 
+                "[]" : 
+                string.Empty;
 
             return $"{column} {dataType}{array} {attributes}";
         }
 
-        private string GetColumnDataType(Type type, object[] attributes)
+        private string GetColumnDataType(Type type, object[] attributes, out bool unArray)
         {
             bool hasSerial = false;
             bool hasText = false;
+            unArray = false;
 
             foreach (var attribute in attributes)
             {
@@ -205,6 +215,17 @@ namespace Tenderfoot.Database.System
                     DataType.BIGSERIAL.GetString();
             }
             else if (
+                type == typeof(double) ||
+                type == typeof(double?) ||
+                type == typeof(double[]) ||
+                type == typeof(double?[]))
+            {
+                return
+                    !hasSerial ?
+                    DataType.DOUBLE_PRECISION.GetString() :
+                    DataType.DOUBLE_PRECISION.GetString();
+            }
+            else if (
                 type == typeof(short) ||
                 type == typeof(short?) ||
                 type == typeof(bool) ||
@@ -228,15 +249,12 @@ namespace Tenderfoot.Database.System
                 return DataType.TIMESTAMP_WITHOUT_TIME_ZONE.GetString();
             }
             else if (
-                type == typeof(byte) ||
-                type == typeof(byte?) ||
-                type == typeof(Byte) ||
-                type == typeof(Byte?) ||
                 type == typeof(byte[]) ||
                 type == typeof(byte?[]) ||
                 type == typeof(Byte[]) ||
                 type == typeof(Byte?[]))
             {
+                unArray = true;
                 return DataType.BYTEA.GetString();
             }
 
@@ -325,24 +343,27 @@ namespace Tenderfoot.Database.System
         /// <typeparam name="TProp"></typeparam>
         /// <param name="expression"></param>
         /// <returns>The column name.</returns>
-        public TableColumn _(string column)
+        public TableColumn _<TProp>(Expression<Func<T, TProp>> expression)
         {
-            if (column.IsEmpty())
+            var body = expression.Body as MemberExpression;
+            
+            if (body == null)
             {
                 return null;
             }
 
+            var column = body.Member.Name;
             var property = this.Entity.GetType().GetProperty(column);
 
             if (property == null)
             {
                 return null;
             }
-            
+
             return new TableColumn()
             {
                 ColumnName = column,
-                Type = property.PropertyType,
+                Property = property,
                 TableName = this.TableName
             };
         }
@@ -363,7 +384,7 @@ namespace Tenderfoot.Database.System
         }
     }
 
-    public enum DataType { BIGINT, BYTEA, BIGSERIAL, CHARACTER_VARYING, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE, TEXT }
+    public enum DataType { BIGINT, BYTEA, BIGSERIAL, CHARACTER_VARYING, DOUBLE_PRECISION, INTEGER, SERIAL, SMALLINT, SMALLSERIAL, TIMESTAMP_WITHOUT_TIME_ZONE, TEXT }
     public enum Operations { SELECT, INSERT, UPDATE, DELETE, CREATE_TABLE, ALTER_TABLE, ADD, DROP_COLUMN }
     public enum ColumnAttributes { NOT_NULL, PRIMARY_KEY, UNIQUE }
 
@@ -376,7 +397,7 @@ namespace Tenderfoot.Database.System
         {
             return $"{customName}.{this.ColumnName}";
         }
-        public Type Type { get; set; }
+        public PropertyInfo Property { get; set; }
     }
 
     public class Relation

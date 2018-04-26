@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,8 +15,6 @@ namespace Tenderfoot.Mvc
 
     public abstract class TfModel
     {
-        public abstract void HandleModel();
-        public abstract void MapModel();
         public abstract IEnumerable<ValidationResult> Validate();
 
         public string Host { get; set; }
@@ -38,6 +37,8 @@ namespace Tenderfoot.Mvc
 
         public virtual void BeforeStartUp() { }
         public virtual void OnStartUp() { }
+        public virtual void MapModel() { throw new NotImplementedException(); }
+        public virtual void HandleModel() { throw new NotImplementedException(); }
 
         public bool IsValid(params string[] fieldNames)
         {

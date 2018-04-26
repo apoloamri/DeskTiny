@@ -23,7 +23,7 @@ namespace TenderfootCampaign.Models.Home
         public override void MapModel()
         {
             var members = _DB.Members;
-            members.Case.Where(members._("username"), Is.EqualTo, this.Username);
+            members.Case.Where(members._(x => x.username), Is.EqualTo, this.Username);
             this.Result = members.Select.Dictionary;
         }
 

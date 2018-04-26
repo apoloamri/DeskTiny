@@ -7,13 +7,6 @@ namespace TenderfootCampaign.Controllers
     [Route("api/[controller]")]
     public class HomeController : TfController
     {
-        [HttpGet]
-        public JsonResult Index()
-        {
-            this.Initiate<IndexModel>();
-            return this.Conclude();
-        }
-        
         [HttpPost]
         [Route("login/validate")]
         public JsonResult ValidateLogin()

@@ -18,7 +18,7 @@ namespace Tenderfoot.Mvc
         [Route("su")]
         public JsonResult GetAuthorization()
         {
-            if (Settings.System.Debug)
+            if (TfSettings.System.Debug)
             {
                 this.Initiate<AuthorizeModel>(false);
                 return this.Conclude();
@@ -48,7 +48,7 @@ namespace Tenderfoot.Mvc
                 this.ValidateModel();
                 this.ModelObject.OnStartUp();
             }
-            catch (Exception ex) when (!Settings.System.Debug)
+            catch (Exception ex) when (!TfSettings.System.Debug)
             {
                 this.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 TfDebug.WriteLog(ex);
@@ -166,7 +166,7 @@ namespace Tenderfoot.Mvc
                     this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 }
             }
-            catch (Exception ex) when (!Settings.System.Debug)
+            catch (Exception ex) when (!TfSettings.System.Debug)
             {
                 this.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 TfDebug.WriteLog(ex);
