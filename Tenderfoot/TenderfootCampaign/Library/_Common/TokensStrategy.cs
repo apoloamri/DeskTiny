@@ -33,7 +33,7 @@ namespace TenderfootCampaign.Library._Common
             tokens.Case.Where(members._(x => x.username), Is.EqualTo, Encryption.Decrypt(sessionId));
             tokens.Case.OrderBy(tokens._(x => x.id), Order.DESC);
             tokens.Case.LimitBy(1);
-            return tokens.Select.Entity?.total_points ?? 0;
+            return tokens.SelectToEntity().total_points ?? 0;
         }
     }
 }

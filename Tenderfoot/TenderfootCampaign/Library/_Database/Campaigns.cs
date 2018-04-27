@@ -3,13 +3,20 @@ using Tenderfoot.Database;
 
 namespace TenderfootCampaign.Library._Database
 {
-    public class Campaign : Entity
+    public class Campaigns : Entity
     {
         [NotNull]
+        [Default("1")]
+        public int? level { get; set; }
+        
+        [NotNull]
         public string campaign_code { get; set; }
+        
+        public string[] prerequisite { get; set; }
 
         [NotNull]
-        public int? prerequisite { get; set; }
+        [Default("0")]
+        public int? price { get; set; }
 
         [NotNull]
         [Default("0")]

@@ -125,7 +125,14 @@ namespace Tenderfoot.Database.System
                 {
                     value = Encryption.Encrypt(Convert.ToString(value));
                 }
-                this.Case.Where($"{this.TableName}.{property.Name} = {{0}}", value);
+                if (property.PropertyType.IsArray)
+                {
+                    this.Case.Where($"{{0}} = ANY({this.TableName}.{property.Name})", value);
+                }
+                else
+                {
+                    this.Case.Where($"{this.TableName}.{property.Name} = {{0}}", value);
+                }
             }
         }
         
@@ -336,6 +343,13 @@ namespace Tenderfoot.Database.System
         /// Clears the values setted on the entity.
         /// </summary>
         public void ClearEntity() { this.Entity = new T(); }
+
+        public void Clear()
+        {
+            this.Case = new Conditions<T>();
+            this.Entity = new T();
+            this.Join = new List<JoinItem>();
+        }
 
         /// <summary>
         /// Returns the name of the particular selected column.

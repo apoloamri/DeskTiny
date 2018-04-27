@@ -25,7 +25,7 @@ namespace Tenderfoot.Mvc
             }
 
             this.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            return null;
+            return new JsonResult(null);
         }
 
         public void Initiate<Model>(bool authorize = true) where Model : TfModel, new()
@@ -149,6 +149,7 @@ namespace Tenderfoot.Mvc
             this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
         }
 
+        [NonAction]
         public JsonResult Conclude()
         {
             try
@@ -175,6 +176,7 @@ namespace Tenderfoot.Mvc
             return this.JsonResult;
         }
 
+        [NonAction]
         public JsonResult Validate()
         {
             if (this.ModelState.IsValid)
@@ -185,6 +187,7 @@ namespace Tenderfoot.Mvc
             return this.JsonResult;
         }
 
+        [NonAction]
         public override ViewResult View()
         {
             return this.View(this.Conclude());

@@ -2,7 +2,7 @@
 
 namespace TenderfootCampaign.Library._Database
 {
-    public class Bonus : Entity
+    public class Bonuses : Entity
     {
         [NotNull]
         public string campaign_code { get; set; }

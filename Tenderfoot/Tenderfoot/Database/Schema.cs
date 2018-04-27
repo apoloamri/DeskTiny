@@ -99,11 +99,17 @@ namespace Tenderfoot.Database
         /// </summary>
         public Select<T> Select { get; set; }
 
-        public void SelectToEntity()
+        public T SelectToEntity()
         {
             this.Entity.SetValuesFromModel(this.Select.Entity);
+            return this.Entity;
         }
-        
+
+        public NewT SelectToEntityAs<NewT>() where NewT : Entity
+        {
+            return this.Select.EntityAs<NewT>();
+        }
+
         /// <summary>
         /// Counts the number of result by the provided condition.
         /// </summary>
@@ -151,7 +157,7 @@ namespace Tenderfoot.Database
                 );
 
             this.Entity.id = count;
-
+            this.ClearNonConditions();
             return count;
         }
 
@@ -167,12 +173,15 @@ namespace Tenderfoot.Database
             {
                 return 0;
             }
-
-            return this.ExecuteNonQuery(
+            
+            var count = this.ExecuteNonQuery(
                 $"{Operations.UPDATE} {this.TableName} SET {this.NonConditions.ColumnValues} {this.GetWhere(this.Join, true)};",
                 this.NonConditions.Parameters.Union(this.Case.Parameters).ToDictionary(x => x.Key, x => x.Value),
                 Operations.UPDATE
                 );
+
+            this.ClearNonConditions();
+            return count;
         }
 
         /// <summary>
@@ -181,11 +190,14 @@ namespace Tenderfoot.Database
         /// <returns>The count of the deleted schemas.</returns>
         public int Delete()
         {
-            return this.ExecuteNonQuery(
+            var count = this.ExecuteNonQuery(
                 $"{Operations.DELETE} FROM {this.TableName} {this.GetWhere(null, true)};",
                 this.Case.Parameters,
                 Operations.DELETE
                 );
+
+            this.ClearNonConditions();
+            return count;
         }
         
         public void CreateTable()
@@ -335,9 +347,22 @@ namespace Tenderfoot.Database
             }
         }
 
+        public List<NewT> EntitiesAs<NewT>() where NewT : Entity
+        {
+            return this.Dictionaries.Select(item =>
+            {
+                return item.ToClass<NewT>();
+            })?.ToList();
+        }
+
         /// <summary>
         /// Returns the first entity by the provided condition.
         /// </summary>
         public T Entity => this.Entities.FirstOrDefault();
+
+        public NewT EntityAs<NewT>() where NewT : Entity
+        {
+            return this.EntitiesAs<NewT>().FirstOrDefault();
+        }
     }
 }
