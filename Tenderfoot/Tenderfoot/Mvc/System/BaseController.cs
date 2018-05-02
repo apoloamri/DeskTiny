@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -110,7 +111,7 @@ namespace Tenderfoot.Mvc.System
             {
                 string propertyName = query.Key;
 
-                var property = GetModelProperty(ref propertyName, obj);
+                var property = this.GetModelProperty(ref propertyName, obj);
 
                 if (property == null || this.ModelDictionary.ContainsKey(propertyName))
                 {
@@ -154,7 +155,8 @@ namespace Tenderfoot.Mvc.System
 
             name = name.Replace("[]", "");
 
-            var property = obj.GetType().GetProperty(name);
+            var type = obj.GetType();
+            var property = type.GetProperty(name);
 
             if (property == null)
             {
@@ -163,7 +165,22 @@ namespace Tenderfoot.Mvc.System
 
                 if (property == null)
                 {
-                    return null;
+                    foreach (var prop in type.GetProperties())
+                    {
+                        var attribute = prop.GetCustomAttribute<DisplayNameAttribute>();
+                        if (attribute != null)
+                        {
+                            if (attribute.DisplayName == name)
+                            {
+                                return prop;
+                            }
+
+                            if (attribute.DisplayName == name.ToUnderscore())
+                            {
+                                return prop;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -181,7 +198,7 @@ namespace Tenderfoot.Mvc.System
                 {
                     string propertyName = token.Key;
 
-                    var property = GetModelProperty(ref propertyName, obj);
+                    var property = this.GetModelProperty(ref propertyName, obj);
                     
                     if (property == null || this.ModelDictionary.ContainsKey(propertyName))
                     {
@@ -193,9 +210,9 @@ namespace Tenderfoot.Mvc.System
                     if (property.GetCustomAttribute<InputAttribute>(false) != null)
                     {
                         var jsonString = token.Value.ToString();
+                        var isValidJson = JsonTools.IsValidJson(jsonString);
 
-                        if (JsonTools.IsValidJson(jsonString) &&
-                            JToken.Parse(jsonString) is JArray)
+                        if (isValidJson && JToken.Parse(jsonString) is JArray)
                         {
                             var itemType = type.GetGenericArguments()[0];
 
@@ -223,8 +240,16 @@ namespace Tenderfoot.Mvc.System
                         }
                         else
                         {
-                            var tokenObject = token.Value.ToObject<object>();
-                            returnDictionary.Add(propertyName, tokenObject);
+                            if (type.GetConstructor(Type.EmptyTypes) != null &&
+                                !type.IsAbstract)
+                            {
+                                returnDictionary.Add(propertyName, token.Value.ToObject<Dictionary<string, object>>());
+                            }
+                            else
+                            {
+                                var tokenObject = token.Value.ToObject<object>();
+                                returnDictionary.Add(propertyName, tokenObject);
+                            }
                         }
                     }
                 }

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tenderfoot", "Tenderfoot\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenderfootCampaign", "TenderfootCampaign\TenderfootCampaign.csproj", "{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenderfootPrayerForum", "TenderfootPrayerForum\TenderfootPrayerForum.csproj", "{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

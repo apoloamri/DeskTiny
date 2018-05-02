@@ -89,5 +89,19 @@ namespace Tenderfoot.Tools.Extensions
             }
             return ReturnVal;
         }
+
+        public static string FormatFromDictionary(this string formatString, Dictionary<string, object> ValueDict)
+        {
+            int i = 0;
+            StringBuilder newFormatString = new StringBuilder(formatString);
+            Dictionary<string, int> keyToInt = new Dictionary<string, int>();
+            foreach (var tuple in ValueDict)
+            {
+                newFormatString = newFormatString.Replace("{" + tuple.Key + "}", "{" + i.ToString() + "}");
+                keyToInt.Add(tuple.Key, i);
+                i++;
+            }
+            return String.Format(newFormatString.ToString(), ValueDict.OrderBy(x => keyToInt[x.Key]).Select(x => x.Value).ToArray());
+        }
     }
 }

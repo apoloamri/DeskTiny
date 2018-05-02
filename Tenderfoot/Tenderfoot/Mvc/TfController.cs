@@ -58,24 +58,8 @@ namespace Tenderfoot.Mvc
         private void ValidateModel()
         {
             var validationDictionary = new Dictionary<string, object>();
-            
-            foreach (var property in this.ModelObject.GetType().GetProperties())
-            {
-                foreach (var attribute in property.GetCustomAttributes(false))
-                {
-                    if (attribute is ValidateInputAttribute)
-                    {
-                        var value = property.GetValue(this.ModelObject);
 
-                        if (value != null)
-                        {
-                            var validateInputAttribute = attribute as ValidateInputAttribute;
-                            var result = TfValidationResult.ValidateInput(validateInputAttribute.InputType, value, property.Name);
-                            this.AddModelErrors(property.Name, result, ref validationDictionary);
-                        }
-                    }
-                }
-            }
+            this.ValidateProperties(this.ModelObject, ref validationDictionary);
 
             if (this.ModelObject.Validate() is IEnumerable<ValidationResult> validationResults)
             {
@@ -102,6 +86,36 @@ namespace Tenderfoot.Mvc
             }
 
             this.JsonResult = base.Json(jsonDictionary, this.JsonSettings);
+        }
+
+        private void ValidateProperties(dynamic model, ref Dictionary<string, object> validationDictionary)
+        {
+            foreach (var property in model.GetType().GetProperties())
+            {
+                if (property.PropertyType.GetConstructor(Type.EmptyTypes) != null &&
+                    !property.PropertyType.GetType().IsAbstract)
+                {
+                    this.ValidateProperties(property.GetValue(model), ref validationDictionary);
+                }
+
+                foreach (var attribute in property.GetCustomAttributes(false))
+                {
+                    var value = property.GetValue(model);
+
+                    if (attribute is RequiredAttribute)
+                    {
+                        var result = TfValidationResult.FieldRequired(property.Name, value);
+                        this.AddModelErrors(property.Name, result, ref validationDictionary);
+                    }
+
+                    if (attribute is ValidateInputAttribute && value != null)
+                    {
+                        var validateInputAttribute = attribute as ValidateInputAttribute;
+                        var result = TfValidationResult.ValidateInput(validateInputAttribute.InputType, value, property.Name);
+                        this.AddModelErrors(property.Name, result, ref validationDictionary);
+                    }
+                }
+            }
         }
 
         private void ExecuteMapping()

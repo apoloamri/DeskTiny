@@ -9,6 +9,9 @@ namespace Tenderfoot.Mvc
     public class JsonPropertyAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Property)]
+    public class RequiredAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property)]
     public class ValidateInputAttribute : Attribute
     {
         public InputType InputType { get; set; }

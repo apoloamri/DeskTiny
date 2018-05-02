@@ -1,15 +1,17 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using Tenderfoot.Database;
 using Tenderfoot.TfSystem;
+using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Net
 {
     public static class TfEmail
     {
-        public static void Send(string mailTo, string emailFile, params string[] items)
+        public static void Send(string mailTo, string emailFile, Dictionary<string, object> items)
         {
             var emailContent = ReadEmailFromFile(emailFile, items);
             SendBase(mailTo, emailContent.Title, emailContent.Message);
@@ -43,12 +45,12 @@ namespace Tenderfoot.Net
             emails.Insert();
         }
 
-        private static EmailContent ReadEmailFromFile(string fileName, string[] items)
+        private static EmailContent ReadEmailFromFile(string fileName, Dictionary<string, object> items)
         {
             var message = File.ReadAllText(Path.Combine(TfSettings.SystemResources.EmailFiles, fileName + ".html"));
             message = message.Replace("{url}", TfSettings.Web.SiteUrl);
             message = message.Replace("{api_url}", TfSettings.Web.ApiUrl);
-            message = string.Format(message, items);
+            message = message.FormatFromDictionary(items);
 
             var match = Regex.Match(message, @"<title>\s*(.+?)\s*</title>");
             var title = string.Empty;
