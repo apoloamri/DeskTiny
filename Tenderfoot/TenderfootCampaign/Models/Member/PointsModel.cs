@@ -12,7 +12,7 @@ namespace TenderfootCampaign.Models.Member
 
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return this.CheckSessionActivity();
+            yield return this.ValidateSession();
         }
 
         public override void MapModel()

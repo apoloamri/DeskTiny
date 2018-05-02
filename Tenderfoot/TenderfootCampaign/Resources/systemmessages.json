@@ -3,6 +3,7 @@
   "ConfirmPassword": "Password does not match.",
   "EmptyCart": "Cart is empty.",
   "InactiveAccount": "Account not active yet. Please check your email for activation link.",
+  "InsufficientCash": "Wallet amount is not sufficient.",
   "InsufficientPoints": "You have insuffecient points to register to this bonus.",
   "InvalidActivationKey": "Invalid activation key.",
   "InvalidExistance": "{0} already exists.",

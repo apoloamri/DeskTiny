@@ -42,7 +42,7 @@ namespace Tenderfoot.Mvc.System
         public static ValidationResult ValidateNumber(object value, string[] memberNames)
         {
             return Validate(
-                @"^\d$",
+                @"^\d+$",
                 value,
                 memberNames);
         }

@@ -10,7 +10,7 @@ namespace TenderfootCampaign.Library.Member
         public ValidationResult ConfirmEmail(string email, string memberName)
         {
             var members = _DB.Members;
-            members.Case.Where(members._(x => x.gender), Is.EqualTo, email);
+            members.Case.Where(members._(x => x.email), Is.EqualTo, email);
             return
                 members.HasRecords ?
                 TfValidationResult.Compose("InvalidExistance", new[] { email }, memberName) :

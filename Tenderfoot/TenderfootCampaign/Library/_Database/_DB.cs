@@ -12,5 +12,6 @@ namespace TenderfootCampaign.Library._Database
         public static Schema<OrderHeaders> OrderHeaders => CreateTable<OrderHeaders>("order_headers");
         public static Schema<Orders> Orders => CreateTable<Orders>("orders");
         public static Schema<Tokens> Tokens => CreateTable<Tokens>("tokens");
+        public static Schema<Wallets> Wallets => CreateTable<Wallets>("wallets");
     }
 }

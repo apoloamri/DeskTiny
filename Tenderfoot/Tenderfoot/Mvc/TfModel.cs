@@ -22,9 +22,10 @@ namespace Tenderfoot.Mvc
         public Method Method { get; set; }
         public bool Mapping => this.Method == Method.GET;
         public bool Handling => this.Method != Method.GET;
+        public bool Stop { get; private set; }
 
         private List<string> InvalidFields { get; set; } = new List<string>();
-
+        
         [Input]
         [JsonProperty]
         [ValidateInput(InputType.All, 100)]
@@ -63,7 +64,7 @@ namespace Tenderfoot.Mvc
             return validation;
         }
 
-        public ValidationResult CheckSessionActivity()
+        public ValidationResult ValidateSession()
         {
             var validation = TfValidationResult.CheckSessionActivity(
                 this.SessionId, 
@@ -78,6 +79,17 @@ namespace Tenderfoot.Mvc
             }
 
             return validation;
+        }
+
+        public bool SessionActive()
+        {
+            return this.ValidateSession() == null;
+        }
+
+        public void NewSession(string sessionId)
+        {
+            this.SessionId = Session.AddSession(sessionId, out string sessionKey);
+            this.SessionKey = sessionKey;
         }
 
         public void SetValuesFromModel(object model)
@@ -104,6 +116,11 @@ namespace Tenderfoot.Mvc
                     thisProperty.SetValue(this, item.Value);
                 }
             }
+        }
+
+        public void StopProcess()
+        {
+            this.Stop = true;
         }
 
         private bool HasAttribute(PropertyInfo property)

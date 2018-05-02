@@ -30,5 +30,21 @@ namespace TenderfootCampaign.Controllers
             this.Initiate<PointsModel>();
             return this.Conclude();
         }
+
+        [HttpGet]
+        [Route("wallet")]
+        public JsonResult GetWallet()
+        {
+            this.Initiate<WalletModel>();
+            return this.Conclude();
+        }
+
+        [HttpPut]
+        [Route("wallet")]
+        public JsonResult PutWallet()
+        {
+            this.Initiate<WalletModel>();
+            return this.Conclude();
+        }
     }
 }

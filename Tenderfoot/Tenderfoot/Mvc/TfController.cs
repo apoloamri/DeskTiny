@@ -90,6 +90,11 @@ namespace Tenderfoot.Mvc
 
         private void ValidateProperties(dynamic model, ref Dictionary<string, object> validationDictionary)
         {
+            if (model == null)
+            {
+                return;
+            }
+
             foreach (var property in model.GetType().GetProperties())
             {
                 if (property.PropertyType.GetConstructor(Type.EmptyTypes) != null &&
@@ -168,7 +173,8 @@ namespace Tenderfoot.Mvc
         {
             try
             {
-                if (this.ModelObject != null && 
+                if (this.ModelObject != null &&
+                    this.ModelObject.Stop == false &&
                     this.ModelState.IsValid)
                 {
                     this.ExecuteMapping();

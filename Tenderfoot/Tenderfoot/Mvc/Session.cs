@@ -8,11 +8,13 @@ namespace Tenderfoot.Mvc
 {
     public static class Session
     {
-        public static string AddSession(string sessionId)
+        public static string AddSession(string sessionId, out string sessionKey)
         {
+            sessionKey = string.Empty;
+            
             if (sessionId.IsEmpty())
             {
-                return null;
+                return string.Empty;
             }
 
             var session = Schemas.Sessions;
@@ -23,25 +25,23 @@ namespace Tenderfoot.Mvc
 
             if (result != null)
             {
-                return result.session_key;
+                sessionKey = result.session_key;
+                return Encryption.Encrypt(sessionId);
             }
-
-            session.ClearCase();
-
-            var sessionKey = KeyGenerator.GetUniqueKey(64);
-            session.Case.Where(session._(x => x.session_key), Is.EqualTo, sessionKey);
-
-            while (session.Count > 0)
+            
+            do
             {
                 sessionKey = KeyGenerator.GetUniqueKey(64);
+                session.ClearCase();
+                session.Entity.session_key = sessionKey;
             }
+            while (session.Count > 0);
 
             session.Entity.session_id = sessionId;
-            session.Entity.session_key = sessionKey;
             session.Entity.session_time = DateTime.Now;
             session.Insert();
 
-            return sessionKey;
+            return Encryption.Encrypt(sessionId);
         }
 
         public static bool IsSessionActive(string sessionId, string sessionKey)

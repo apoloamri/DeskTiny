@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Tenderfoot.Mvc;
-using Tenderfoot.TfSystem;
 using TenderfootCampaign.Library.Home;
 
 namespace TenderfootCampaign.Models.Home
@@ -20,12 +19,7 @@ namespace TenderfootCampaign.Models.Home
         {
             if (this.Mapping)
             {
-                yield return this.FieldRequired(nameof(this.SessionId));
-                yield return this.FieldRequired(nameof(this.SessionKey));
-                if (this.IsValid(nameof(this.SessionId), nameof(this.SessionKey)))
-                {
-                    yield return this.CheckSessionActivity();
-                }
+                yield return this.ValidateSession();
             }
 
             if (this.Handling)
@@ -43,14 +37,9 @@ namespace TenderfootCampaign.Models.Home
 
         public override void HandleModel()
         {
-            this.SessionId = Encryption.Encrypt(this.Username);
-            this.SessionKey = Session.AddSession(this.Username);
+            this.NewSession(this.Username);
         }
 
-        public override void MapModel()
-        {
-            this.SessionId = Encryption.Encrypt(this.Username);
-            this.SessionKey = this.SessionKey;
-        }
+        public override void MapModel() { }
     }
 }

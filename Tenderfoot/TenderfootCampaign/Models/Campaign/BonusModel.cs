@@ -18,7 +18,7 @@ namespace TenderfootCampaign.Models.Campaign
         
         public override IEnumerable<ValidationResult> Validate()
         {
-            yield return this.CheckSessionActivity();
+            yield return this.ValidateSession();
 
             if (this.Handling)
             {

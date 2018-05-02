@@ -37,6 +37,11 @@ namespace Tenderfoot.Database
 
         public void SetValuesFromModel(object model)
         {
+            if (model == null)
+            {
+                return;
+            }
+
             var type = model.GetType();
 
             foreach (var property in type.GetProperties())
@@ -51,6 +56,11 @@ namespace Tenderfoot.Database
 
         public void SetValuesFromDictionary(Dictionary<string, object> dictionary)
         {
+            if (dictionary == null)
+            {
+                return;
+            }
+
             foreach (var item in dictionary)
             {
                 var thisProperty = this.GetType().GetProperty(item.Key.ToUnderscore());

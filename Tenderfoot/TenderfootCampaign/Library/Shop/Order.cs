@@ -7,19 +7,34 @@ using Tenderfoot.Mvc;
 using Tenderfoot.TfSystem;
 using TenderfootCampaign.Library._Common;
 using TenderfootCampaign.Library._Database;
+using TenderfootCampaign.Library.Campaign;
 
 namespace TenderfootCampaign.Library.Shop
 {
     public class Order
     {
+        public Members Member { get; set; }
         public Schema<Carts> Carts { get; set; } = _DB.Carts;
         public List<dynamic> CartItems { get; set; }
+
+        private int TotalPoints { get; set; }
+        private int TotalPrice { get; set; }
 
         public ValidationResult ValidateCart(params string[] memberNames)
         {
             if (!this.Carts.HasRecords)
             {
                 return TfValidationResult.Compose("EmptyCart", memberNames);
+            }
+            return null;
+        }
+
+        public ValidationResult ValidateWallet(string sessionId, params string[] memberNames)
+        {
+            var wallet = MemberStrategy.GetMemberWallet(this.Member.id);
+            if (this.TotalPrice > wallet.amount)
+            {
+                return TfValidationResult.Compose("InsufficientCash", memberNames);
             }
             return null;
         }
@@ -40,6 +55,21 @@ namespace TenderfootCampaign.Library.Shop
                 members.Relation(members._(x => x.username), sessions._(x => x.session_id)));
             
             this.CartItems = this.Carts.Select.Result;
+            this.TotalPoints = this.CartItems.Sum(x => (((int)x.price * (int)x.amount) / 100) * percent);
+            this.TotalPrice = this.CartItems.Sum(x => (int)x.price * (int)x.amount);
+        }
+
+        public void ApplyDiscounts(string sessionId)
+        {
+            var bonus = new GetBonus();
+            bonus.GetCampaignCode(sessionId);
+            var currentLevel = bonus.GetCurrentLevel();
+            if (currentLevel == null)
+            {
+                return;
+            }
+            this.TotalPoints = this.TotalPoints + (this.TotalPoints * (Convert.ToInt32(currentLevel["multiplier"]) / 100));
+            this.TotalPrice = this.TotalPrice - (this.TotalPrice * (Convert.ToInt32(currentLevel["discount"]) / 100));
         }
 
         public void DeleteCart()
@@ -57,18 +87,18 @@ namespace TenderfootCampaign.Library.Shop
 
         private void InsertOrderHeaders(out int orderId, out int totalPoints)
         {
-            var memberId = (int?)this.CartItems.FirstOrDefault()?.id3;
             var orderHeader = _DB.OrderHeaders;
 
-            orderHeader.Entity.member_id = memberId;
-            orderHeader.Entity.price = this.CartItems.Sum(x => (int)x.price * (int)x.amount);
-            orderHeader.Entity.points = this.CartItems.Sum(x => (((int)x.price * (int)x.amount) / 100) * percent);
+            orderHeader.Entity.member_id = this.Member.id;
+            orderHeader.Entity.price = this.TotalPrice;
+            orderHeader.Entity.points = this.TotalPoints;
             orderHeader.Insert();
 
             orderId = orderHeader.Entity.id ?? 0;
             totalPoints = orderHeader.Entity.points ?? 0;
 
-            TokensStrategy.Add(memberId, totalPoints);
+            TokensStrategy.Add(this.Member.id, totalPoints);
+            MemberStrategy.UpdateMemberWallet(this.Member.id, -this.TotalPrice);
         }
 
         private void InsertOrders(long orderId)
