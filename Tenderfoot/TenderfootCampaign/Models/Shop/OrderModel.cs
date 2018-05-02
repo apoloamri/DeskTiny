@@ -24,6 +24,7 @@ namespace TenderfootCampaign.Models.Shop
         
         public override void HandleModel()
         {
+            this.Library.ApplyDiscounts(this.SessionId);
             this.Library.DeleteCart();
             this.Library.ExecuteOrder();
         }

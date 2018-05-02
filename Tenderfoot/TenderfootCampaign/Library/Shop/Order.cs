@@ -55,8 +55,9 @@ namespace TenderfootCampaign.Library.Shop
                 members.Relation(members._(x => x.username), sessions._(x => x.session_id)));
             
             this.CartItems = this.Carts.Select.Result;
-            this.TotalPoints = this.CartItems.Sum(x => (((int)x.price * (int)x.amount) / 100) * percent);
             this.TotalPrice = this.CartItems.Sum(x => (int)x.price * (int)x.amount);
+            this.TotalPoints =
+                (int)Math.Ceiling(this.TotalPrice * (Convert.ToDouble(percent) / 100));
         }
 
         public void ApplyDiscounts(string sessionId)
@@ -68,8 +69,11 @@ namespace TenderfootCampaign.Library.Shop
             {
                 return;
             }
-            this.TotalPoints = this.TotalPoints + (this.TotalPoints * (Convert.ToInt32(currentLevel["multiplier"]) / 100));
-            this.TotalPrice = this.TotalPrice - (this.TotalPrice * (Convert.ToInt32(currentLevel["discount"]) / 100));
+            this.TotalPoints = 
+                (int)Math.Ceiling(this.TotalPoints + (this.TotalPoints * (Convert.ToDouble(currentLevel["multiplier"]) / 100)));
+
+            this.TotalPrice =
+                (int)Math.Ceiling(this.TotalPrice - (this.TotalPrice * (Convert.ToDouble(currentLevel["discount"]) / 100)));
         }
 
         public void DeleteCart()
