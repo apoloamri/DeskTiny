@@ -6,38 +6,38 @@ namespace TenderfootPrayerForum.Database
     public class Requests : Entity
     {
         [Input]
-        [Required]
+        [RequireInput]
         [ValidateInput(InputType.Email)]
         [NotNull]
         public string email { get; set; }
 
         [Input]
-        [Required]
-        [ValidateInput(InputType.Alphabet)]
+        [RequireInput]
+        [ValidateInput(InputType.String)]
         [NotNull]
         public string last_name { get; set; }
 
         [Input]
-        [Required]
-        [ValidateInput(InputType.Alphabet)]
+        [RequireInput]
+        [ValidateInput(InputType.String)]
         [NotNull]
         public string first_name { get; set; }
 
         [Input]
-        [Required]
+        [RequireInput]
         [ValidateInput(InputType.All)]
         [NotNull]
         public string message { get; set; }
 
         [Input]
-        [Required]
+        [RequireInput]
         [ValidateInput(InputType.Number)]
         [NotNull]
         [Default("1")]
         public int? request_type { get; set; }
 
         [Input]
-        [Required]
+        [RequireInput]
         [ValidateInput(InputType.Number)]
         [NotNull]
         [Default("0")]

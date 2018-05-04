@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Tenderfoot.Tools;
 using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Database
@@ -35,7 +36,7 @@ namespace Tenderfoot.Database
                 .ToList();
         }
 
-        public void SetValuesFromModel(object model)
+        public void SetValuesFromModel(object model, bool setNulls = true)
         {
             if (model == null)
             {
@@ -49,7 +50,11 @@ namespace Tenderfoot.Database
                 var thisProperty = this.GetType().GetProperty(property.Name.ToUnderscore());
                 if (this.HasAttribute(thisProperty))
                 {
-                    thisProperty.SetValue(this, property.GetValue(model));
+                    var value = property.GetValue(model);
+                    if (setNulls || (!value?.ToString().IsEmpty() ?? false))
+                    {
+                        thisProperty.SetValue(this, value);
+                    }
                 }
             }
         }
@@ -73,7 +78,7 @@ namespace Tenderfoot.Database
 
         public Dictionary<string, object> ToDictionary()
         {
-            return this.ToDictionary();
+            return DictionaryClassConverter.ToDictionary(this);
         }
 
         private bool HasAttribute(PropertyInfo property)

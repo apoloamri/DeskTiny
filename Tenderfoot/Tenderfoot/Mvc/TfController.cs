@@ -103,21 +103,35 @@ namespace Tenderfoot.Mvc
                     this.ValidateProperties(property.GetValue(model), ref validationDictionary);
                 }
 
+                var isValidated = false;
                 foreach (var attribute in property.GetCustomAttributes(false))
                 {
+                    if (isValidated == true)
+                    {
+                        break;
+                    }
+
                     var value = property.GetValue(model);
 
-                    if (attribute is RequiredAttribute)
+                    if (attribute is RequireInputAttribute)
                     {
                         var result = TfValidationResult.FieldRequired(property.Name, value);
-                        this.AddModelErrors(property.Name, result, ref validationDictionary);
+                        if (result != null)
+                        {
+                            this.AddModelErrors(property.Name, result, ref validationDictionary);
+                            isValidated = true;
+                        }
                     }
 
                     if (attribute is ValidateInputAttribute && value != null)
                     {
                         var validateInputAttribute = attribute as ValidateInputAttribute;
                         var result = TfValidationResult.ValidateInput(validateInputAttribute.InputType, value, property.Name);
-                        this.AddModelErrors(property.Name, result, ref validationDictionary);
+                        if (result != null)
+                        {
+                            this.AddModelErrors(property.Name, result, ref validationDictionary);
+                            isValidated = true;
+                        }
                     }
                 }
             }

@@ -40,41 +40,35 @@ namespace Tenderfoot.Tools
                 var value = queryStrings[item];
                 var regex = Regex.Matches(item, @"\[.*?\]");
                 
-                if (regex.Count >= 2)
+                if (regex.Count == 2)
                 {
                     var newParentName = item.Split("[")[0];
                     var keyName = regex[1].Groups[0].Value?
                         .Replace("[", "")
                         .Replace("]", "");
-                    
-                    if (parentName == newParentName)
-                    {
-                        if (parentDictionary.ContainsKey(keyName))
-                        {
-                            if (parentList.ContainsKey(parentName))
-                            {
-                                parentList[parentName].Add(parentDictionary);
-                            }
-                            else
-                            {
-                                parentList.Add(
-                                    parentName,
-                                    new List<Dictionary<string, object>> { { parentDictionary } });
-                            }
-                            
-                            parentDictionary = new Dictionary<string, object>();
-                            parentDictionary.Add(keyName, value);
-                        }
-                        else
-                        {
-                            parentDictionary.Add(keyName, value);
-                        }
-                    }
-                    else
-                    {
-                        parentDictionary.Add(keyName, value);
-                        parentName = newParentName;
-                    }
+
+                    GenerateDictionary(
+                        ref parentDictionary,
+                        ref parentList,
+                        ref parentName, 
+                        newParentName, 
+                        keyName, 
+                        value);
+                }
+                else if (regex.Count == 1)
+                {
+                    var newParentName = item.Split("[")[0];
+                    var keyName = regex[0].Groups[0].Value?
+                        .Replace("[", "")
+                        .Replace("]", "");
+
+                    GenerateDictionary(
+                        ref parentDictionary,
+                        ref parentList,
+                        ref parentName,
+                        newParentName,
+                        keyName,
+                        value);
                 }
                 else if (item.Contains("[]"))
                 {
@@ -133,6 +127,44 @@ namespace Tenderfoot.Tools
             jsonString += string.Join(",", jsonList);
             jsonString += "}";
             return jsonString;
+        }
+
+        private static void GenerateDictionary(
+            ref Dictionary<string, object> parentDictionary,
+            ref Dictionary<string, List<Dictionary<string, object>>> parentList,
+            ref string parentName,
+            string newParentName,
+            string keyName,
+            string value)
+        {
+            if (parentName == newParentName)
+            {
+                if (parentDictionary.ContainsKey(keyName))
+                {
+                    if (parentList.ContainsKey(parentName))
+                    {
+                        parentList[parentName].Add(parentDictionary);
+                    }
+                    else
+                    {
+                        parentList.Add(
+                            parentName,
+                            new List<Dictionary<string, object>> { { parentDictionary } });
+                    }
+
+                    parentDictionary = new Dictionary<string, object>();
+                    parentDictionary.Add(keyName, value);
+                }
+                else
+                {
+                    parentDictionary.Add(keyName, value);
+                }
+            }
+            else
+            {
+                parentDictionary.Add(keyName, value);
+                parentName = newParentName;
+            }
         }
     }
 }

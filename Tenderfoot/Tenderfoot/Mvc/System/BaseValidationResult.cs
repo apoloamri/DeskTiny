@@ -50,7 +50,7 @@ namespace Tenderfoot.Mvc.System
         public static ValidationResult ValidateString(object value, string[] memberNames)
         {
             return Validate(
-                @"^\w+$",
+                @"^\w+( \w+)*$",
                 value,
                 memberNames);
         }

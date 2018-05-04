@@ -76,7 +76,7 @@ namespace Tenderfoot.Tools
             return (T)GetObject(dict, typeof(T));
         }
         
-        public static Dictionary<string, object>ToDictionary(this object obj, string optionalName = null)
+        public static Dictionary<string, object> ToDictionary(this object obj, string optionalName = null)
         {
             return obj.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)

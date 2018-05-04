@@ -214,8 +214,11 @@ namespace Tenderfoot.Mvc.System
 
                         if (isValidJson && JToken.Parse(jsonString) is JArray)
                         {
-                            var itemType = type.GetGenericArguments()[0];
-
+                            var itemType = 
+                                type.IsArray ? 
+                                type.GetGenericArguments()[0] :
+                                type;
+                            
                             if (itemType.GetConstructor(Type.EmptyTypes) != null &&
                                 !itemType.IsAbstract)
                             {
@@ -224,14 +227,17 @@ namespace Tenderfoot.Mvc.System
 
                                 foreach (var item in token.Value.ToObject<List<object>>())
                                 {
-                                    if (type.IsGenericType &&
-                                        type.GetGenericTypeDefinition() == typeof(List<>))
-                                    {
-                                        list.Add(this.GetJson(item.ToString(), objectClass));
-                                    }
+                                    list.Add(this.GetJson(item.ToString(), objectClass));
                                 }
 
-                                returnDictionary.Add(propertyName, list);
+                                if (type.IsArray)
+                                {
+                                    returnDictionary.Add(propertyName, list);
+                                }
+                                else
+                                {
+                                    returnDictionary.Add(propertyName, list.FirstOrDefault());
+                                }
                             }
                             else
                             {
