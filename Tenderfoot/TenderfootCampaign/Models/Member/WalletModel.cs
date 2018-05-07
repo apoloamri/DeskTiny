@@ -14,7 +14,7 @@ namespace TenderfootCampaign.Models.Member
 
         [Input]
         [JsonProperty]
-        [ValidateInput(InputType.Number)]
+        [ValidateInput(InputType.Numeric)]
         public int? Amount { get; set; }
 
         public override IEnumerable<ValidationResult> Validate()

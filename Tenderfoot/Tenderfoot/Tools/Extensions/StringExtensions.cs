@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Tenderfoot.Tools.Extensions
 {
@@ -51,6 +52,11 @@ namespace Tenderfoot.Tools.Extensions
             string newname = string.Join("", array);
             
             return newname;
+        }
+
+        public static string ToTitleCase (this string input)
+        {
+            return Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(input.ToLower());
         }
 
         public static Boolean ToBooleanOrDefault(this String s, Boolean Default)

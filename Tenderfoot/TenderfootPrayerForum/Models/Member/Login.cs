@@ -9,7 +9,7 @@ namespace TenderfootPrayerForum.Models.Member
     {
         public Schema<Members> Members { get; set; } = _DB.Members;
 
-        public ValidationResult CheckUsernamePassword(params string[] memberNames)
+        public ValidationResult CheckMember(params string[] memberNames)
         {
             return
                 this.Members.Count == 0 ?

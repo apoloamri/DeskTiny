@@ -144,6 +144,7 @@ namespace Tenderfoot.Mvc.System
             }
 
             this.ControllerContext.ModelState.AddModelError(name, result.ErrorMessage);
+            this.ModelObject.InvalidFields.Add(name);
         }
 
         private PropertyInfo GetModelProperty(ref string name, object obj)

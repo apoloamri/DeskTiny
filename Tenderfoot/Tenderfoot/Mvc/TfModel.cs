@@ -23,8 +23,7 @@ namespace Tenderfoot.Mvc
         public bool Mapping => this.Method == Method.GET;
         public bool Handling => this.Method != Method.GET;
         public bool Stop { get; private set; }
-
-        private List<string> InvalidFields { get; set; } = new List<string>();
+        public List<string> InvalidFields { get; set; } = new List<string>();
         
         [Input]
         [JsonProperty]
@@ -45,8 +44,7 @@ namespace Tenderfoot.Mvc
         {
             foreach (var fieldName in fieldNames)
             {
-                var field = this.GetType().GetProperty(fieldName)?.GetValue(this);
-                if (field?.ToString().IsEmpty() ?? true)
+                if (this.InvalidFields.Contains(fieldName))
                 {
                     return false;
                 }

@@ -14,7 +14,7 @@ namespace TenderfootCampaign.Models.Shop
         public string ProductName { get; set; }
 
         [Input]
-        [ValidateInput(InputType.Number)]
+        [ValidateInput(InputType.Numeric)]
         public int? ProductType { get; set; }
 
         [JsonProperty]

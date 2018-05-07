@@ -69,7 +69,7 @@ namespace Tenderfoot.Mvc
                     return BaseValidationResult.ValidateEmail(value, memberNames);
                 case InputType.DateTime:
                     return BaseValidationResult.ValidateDateTime(value, memberNames);
-                case InputType.Number:
+                case InputType.Numeric:
                     return BaseValidationResult.ValidateNumber(value, memberNames);
                 case InputType.String:
                     return BaseValidationResult.ValidateString(value, memberNames);

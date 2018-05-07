@@ -31,14 +31,14 @@ namespace TenderfootPrayerForum.Database
 
         [Input]
         [RequireInput]
-        [ValidateInput(InputType.Number)]
+        [ValidateInput(InputType.Numeric)]
         [NotNull]
         [Default("1")]
         public int? request_type { get; set; }
 
         [Input]
         [RequireInput]
-        [ValidateInput(InputType.Number)]
+        [ValidateInput(InputType.Numeric)]
         [NotNull]
         [Default("0")]
         public int? shared { get; set; }
