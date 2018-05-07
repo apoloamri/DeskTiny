@@ -18,7 +18,7 @@ namespace TenderfootPrayerForum.Models.Request
 
         public override void BeforeStartUp()
         {
-            var name = this.FullName.Split(',');
+            var name = this.FullName?.Split(',');
             if (this.Request != null)
             {
                 this.Request.last_name = name.Length >= 1 ? name[0].Trim() : string.Empty;

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Tenderfoot.Database;
+using Tenderfoot.Net;
+using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.TfSystem.Diagnostics
 {
@@ -27,15 +31,17 @@ namespace Tenderfoot.TfSystem.Diagnostics
 
         public static void WriteLog(string path, string title, string details)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            SaveToDB(GenerateText(title, details));
 
-            stringBuilder.Append(GenerateText(title, details));
+            //StringBuilder stringBuilder = new StringBuilder();
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-            File.AppendAllText(path, stringBuilder.ToString());
-
-            stringBuilder.Clear();
+            //stringBuilder.Append(GenerateText(title, details));
+            //var message = stringBuilder.ToString();
+            
+            //Directory.CreateDirectory(Path.GetDirectoryName(path)); 
+            //File.AppendAllText(path, message);
+            
+            //stringBuilder.Clear();
         }
 
         private static string GenerateText(string title, string details)
@@ -45,6 +51,13 @@ namespace Tenderfoot.TfSystem.Diagnostics
                 $"[{title}]:{Environment.NewLine}" +
                 $"{details}{Environment.NewLine}" +
                 $"------------------------------{Environment.NewLine}";
+        }
+
+        private static void SaveToDB(string message)
+        {
+            var systemLogs = Schemas.SystemLogs;
+            systemLogs.Entity.message = message;
+            systemLogs.Insert();
         }
     }
 }

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using Tenderfoot.Database;
 using Tenderfoot.TfSystem;
+using Tenderfoot.TfSystem.Diagnostics;
 using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Net
@@ -13,8 +15,15 @@ namespace Tenderfoot.Net
     {
         public static void Send(string mailTo, string emailFile, Dictionary<string, object> items)
         {
-            var emailContent = ReadEmailFromFile(emailFile, items);
-            SendBase(mailTo, emailContent.Title, emailContent.Message);
+            try
+            {
+                var emailContent = ReadEmailFromFile(emailFile, items);
+                SendBase(mailTo, emailContent.Title, emailContent.Message);
+            }
+            catch (Exception ex) when (!TfSettings.System.Debug)
+            {
+                TfDebug.WriteLog(ex);
+            }
         }
 
         private static void SendBase(string mailTo, string title, string message)
@@ -31,7 +40,7 @@ namespace Tenderfoot.Net
                 Port = TfSettings.Web.SmtpPort,
                 Credentials = new NetworkCredential(mailFrom, TfSettings.Web.SmtpPassword)
             };
-
+            
             mail.Subject = title;
             mail.Body = message;
 

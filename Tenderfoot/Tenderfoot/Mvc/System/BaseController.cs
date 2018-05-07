@@ -46,7 +46,7 @@ namespace Tenderfoot.Mvc.System
                 accesses.Case.Where(accesses._(x => x.secret), Is.EqualTo, TfSettings.System.DefaultSecret);
                 if (accesses.Count == 0)
                 {
-                    var uri = new Uri(TfSettings.Web.SiteUrl);
+                    var uri = new Uri(TfSettings.Web.ApiUrl);
                     accesses.Entity.key = TfSettings.System.DefaultKey;
                     accesses.Entity.secret = TfSettings.System.DefaultSecret;
                     accesses.Entity.host = $"{uri.Host}:{uri.Port}";
@@ -56,7 +56,7 @@ namespace Tenderfoot.Mvc.System
 
             accesses.ClearCase();
             accesses.Case.Where("CONCAT(key, secret, host) = {0}", Encryption.Decrypt(this.Request.Headers["Authorization"].ToString()));
-            accesses.Case.Where(accesses._(x => x.host), Is.EqualTo, this.Request.Host.ToString());
+            //accesses.Case.Where(accesses._(x => x.host), Is.EqualTo, this.Request.Host.ToString());
             accesses.Case.Where(accesses._(x => x.active), Is.EqualTo, 1);
 
             if (accesses.Count == 0 || (TfSettings.Web.RequireHttps && this.Request.Scheme != "https"))
