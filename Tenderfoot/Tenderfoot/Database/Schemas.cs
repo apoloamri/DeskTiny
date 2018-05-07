@@ -1,5 +1,5 @@
 ﻿using Tenderfoot.Database.Tables;
-using Tenderfoot.DTSystem;
+using Tenderfoot.TfSystem;
 using Tenderfoot.Tools;
 using Tenderfoot.Tools.Extensions;
 using System.Linq;
@@ -17,24 +17,18 @@ namespace Tenderfoot.Database
         /// <returns></returns>
         public static Schema<T> CreateTable<T>(string tableName) where T : Entity, new()
         {
-            if (Settings.Database.Migrate == false)
+            if (TfSettings.Database.Migrate == false)
             {
                 return new Schema<T>(tableName);
             }
 
             var table = InformationSchemaTables;
-
-            table.Conditions.Where(
-                table.Column(x => x.table_name),
-                Condition.EqualTo,
-                tableName);
-
-            table.Conditions.AddColumns(
-                table.Column(x => x.table_name));
+            table.Case.Where(table._(x => x.table_name), Is.EqualTo, tableName);
+            table.Case.AddColumns(table._(x => x.table_name));
 
             var newSchema = new Schema<T>(tableName);
 
-            if (table.Count() == 0)
+            if (table.Count == 0)
             {
                 newSchema.CreateTable();
             }
@@ -42,13 +36,8 @@ namespace Tenderfoot.Database
             {
                 var columns = InformationSchemaColumns;
 
-                columns.Conditions.Where(
-                    columns.Column(x => x.table_name),
-                    Condition.EqualTo,
-                    tableName);
-
-                columns.Conditions.AddColumns(
-                    columns.Column(x => x.column_name));
+                columns.Case.Where(columns._(x => x.table_name), Is.EqualTo, tableName);
+                columns.Case.AddColumns(columns._(x => x.column_name));
 
                 var currentColumns = columns.Select.Entities?.Select(x => x.column_name)?.ToList();
                 var entityColumns = newSchema.Entity.GetColumns();
@@ -72,6 +61,9 @@ namespace Tenderfoot.Database
         
         private static Schema<InformationSchema> InformationSchemaTables => new Schema<InformationSchema>("information_schema.tables");
         private static Schema<InformationSchema> InformationSchemaColumns => new Schema<InformationSchema>("information_schema.columns");
+        public static Schema<Accesses> Accesses => CreateTable<Accesses>("accesses");
+        public static Schema<SystemLogs> SystemLogs => CreateTable<SystemLogs>("system_logs");
+        public static Schema<Emails> Emails => CreateTable<Emails>("emails");
         public static Schema<Sessions> Sessions => CreateTable<Sessions>("sessions");
         public static Schema<SetupChanges> SetupChanges => CreateTable<SetupChanges>("setup_changes");
     }

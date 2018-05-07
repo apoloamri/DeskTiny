@@ -6,10 +6,12 @@ namespace Tenderfoot.Database.Tables
     {
         [NotNull]
         [Encrypt]
+        [Length(100)]
         public string session_id { get; set; }
 
         [NotNull]
         [Encrypt]
+        [Length(100)]
         public string session_key { get; set; }
 
         [NotNull]

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Tenderfoot.DTSystem;
+using Tenderfoot.TfSystem;
 using Tenderfoot.Tools;
 
 namespace Tenderfoot.Database.System
@@ -38,9 +38,18 @@ namespace Tenderfoot.Database.System
             this.ColumnParameters = string.Join(", ", properties?.Select(x => $"{Param}{this.OptionalName}{x.Name}"));
             this.ColumnValues = string.Join(", ", properties?.Select(x => { return $"{x.Name} = {Param}{this.OptionalName}{x.Name}"; }));
             this.Parameters =
-                DictionaryClassConverter.ClassToDictionary(entity, this.OptionalName)
+                entity.ToDictionary(this.OptionalName)
                 .Where(x => x.Value != null)
                 .ToDictionary(x => x.Key, x => x.Value);
+
+            foreach (var property in this.Parameters)
+            {
+                if (property.Value is bool || property.Value is bool?)
+                {
+                    var value = property.Value as bool?;
+                    this.Parameters[property.Key] = (value ?? false) ? 1 : 0;
+                }
+            }
         }
     }
 }

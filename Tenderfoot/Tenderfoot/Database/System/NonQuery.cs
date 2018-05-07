@@ -1,5 +1,5 @@
-﻿using Tenderfoot.DTSystem;
-using Tenderfoot.DTSystem.Diagnostics;
+﻿using Tenderfoot.TfSystem;
+using Tenderfoot.TfSystem.Diagnostics;
 using Tenderfoot.Tools.Extensions;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,8 @@ namespace Tenderfoot.Database.System
 {
     public class NonQuery : Connect
     {
+        public string TableName { get; set; }
+
         public NonQuery(string sql, Dictionary<string, object> parameters) : base(sql, parameters) { }
 
         public NonQuery() : base()
@@ -25,15 +27,23 @@ namespace Tenderfoot.Database.System
             {
                 this.SqlConnection.Open();
             }
-            
-            var executionCount = this.SqlCommand.ExecuteNonQuery();
 
+            long executionCount = 0;
+            
+            executionCount = this.SqlCommand.ExecuteNonQuery();
+
+            if (operation == Operations.INSERT)
+            {
+                this.WriteSql($"{Operations.SELECT} currval('{this.TableName}_id_seq');", null);
+                executionCount = this.SqlCommand.ExecuteScalar();
+            }
+            
             if (this.SqlTransaction == null)
             {
                 this.SqlConnection.Close();
             }
 
-            DTDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
+            TfDebug.WriteLine($"{operation.GetString()} count", Convert.ToString(executionCount));
 
             if (new[] {
                 Operations.ADD,
@@ -41,13 +51,13 @@ namespace Tenderfoot.Database.System
                 Operations.CREATE_TABLE,
                 Operations.DROP_COLUMN }.Contains(operation))
             {
-                DTDebug.WriteLog(
-                    Settings.Logs.Migration,
+                TfDebug.WriteLog(
+                    TfSettings.Logs.Migration,
                     $"Migration Details - {DateTime.Now}",
                    this.SqlCommand.CommandText);
             }
             
-            return executionCount;
+            return (int)executionCount;
         }
         
         public void Begin()
@@ -69,7 +79,7 @@ namespace Tenderfoot.Database.System
             catch (Exception ex)
             {
                 this.SqlTransaction.Rollback();
-                DTDebug.WriteLog(ex);
+                TfDebug.WriteLog(ex);
             }
             
             this.SqlConnection.Close();

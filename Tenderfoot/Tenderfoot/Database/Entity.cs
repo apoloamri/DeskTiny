@@ -1,8 +1,9 @@
-﻿using Tenderfoot.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Tenderfoot.Tools;
+using Tenderfoot.Tools.Extensions;
 
 namespace Tenderfoot.Database
 {
@@ -11,7 +12,7 @@ namespace Tenderfoot.Database
         [Serial]
         [PrimaryKey]
         [NotNull]
-        public virtual long? id { get; set; }
+        public int? id { get; set; }
 
         [NotNull]
         [Default("Now()")]
@@ -35,24 +36,56 @@ namespace Tenderfoot.Database
                 .ToList();
         }
 
-        public void SetValuesFromModel(object model)
+        public void SetValuesFromModel(object model, bool setNulls = true)
         {
-            throw new NotImplementedException();
+            if (model == null)
+            {
+                return;
+            }
+
+            var type = model.GetType();
+
+            foreach (var property in type.GetProperties())
+            {
+                var thisProperty = this.GetType().GetProperty(property.Name.ToUnderscore());
+                if (this.HasAttribute(thisProperty))
+                {
+                    var value = property.GetValue(model);
+                    if (setNulls || (!value?.ToString().IsEmpty() ?? false))
+                    {
+                        thisProperty.SetValue(this, value);
+                    }
+                }
+            }
         }
 
         public void SetValuesFromDictionary(Dictionary<string, object> dictionary)
         {
-            throw new NotImplementedException();
+            if (dictionary == null)
+            {
+                return;
+            }
+
+            foreach (var item in dictionary)
+            {
+                var thisProperty = this.GetType().GetProperty(item.Key.ToUnderscore());
+                if (this.HasAttribute(thisProperty))
+                {
+                    thisProperty.SetValue(this, item.Value);
+                }
+            }
         }
 
         public Dictionary<string, object> ToDictionary()
         {
-            return DictionaryClassConverter.ClassToDictionary(this);
+            return DictionaryClassConverter.ToDictionary(this);
         }
 
-        private void SetValues(object model, object value)
+        private bool HasAttribute(PropertyInfo property)
         {
-            throw new NotImplementedException();
+            return
+                property != null &&
+                property?.GetCustomAttribute<NonTableColumnAttribute>(false) == null;
         }
     }
 }

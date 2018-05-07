@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenderfootAPI", "TenderfootAPI\TenderfootAPI.csproj", "{AFBD8958-2978-45AF-A44D-BF3CCA5651DF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenderfootMessenger", "TenderfootMessenger\TenderfootMessenger.csproj", "{FDDF0EA5-F2FF-4C62-BC41-29DF3F2DF992}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tenderfoot", "Tenderfoot\Tenderfoot.csproj", "{E752A690-A33B-4827-A0BC-2147EA6BD8E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenderfootStorybook", "TenderfootStorybook\TenderfootStorybook.csproj", "{58884FF0-C03A-4FE9-88A8-E7DC88A841C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenderfootCampaign", "TenderfootCampaign\TenderfootCampaign.csproj", "{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenderfootPrayerForum", "TenderfootPrayerForum\TenderfootPrayerForum.csproj", "{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,22 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AFBD8958-2978-45AF-A44D-BF3CCA5651DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFBD8958-2978-45AF-A44D-BF3CCA5651DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFBD8958-2978-45AF-A44D-BF3CCA5651DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFBD8958-2978-45AF-A44D-BF3CCA5651DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDDF0EA5-F2FF-4C62-BC41-29DF3F2DF992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDDF0EA5-F2FF-4C62-BC41-29DF3F2DF992}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDDF0EA5-F2FF-4C62-BC41-29DF3F2DF992}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDDF0EA5-F2FF-4C62-BC41-29DF3F2DF992}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E752A690-A33B-4827-A0BC-2147EA6BD8E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E752A690-A33B-4827-A0BC-2147EA6BD8E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E752A690-A33B-4827-A0BC-2147EA6BD8E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E752A690-A33B-4827-A0BC-2147EA6BD8E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58884FF0-C03A-4FE9-88A8-E7DC88A841C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58884FF0-C03A-4FE9-88A8-E7DC88A841C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58884FF0-C03A-4FE9-88A8-E7DC88A841C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58884FF0-C03A-4FE9-88A8-E7DC88A841C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA57BDEC-0335-4C1A-BC5F-85F3CF48424A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8D1611-A4F1-4AF4-8539-DE4305C34BD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

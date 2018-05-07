@@ -1,5 +1,5 @@
-﻿using Tenderfoot.DTSystem;
-using Tenderfoot.DTSystem.Diagnostics;
+﻿using Tenderfoot.TfSystem;
+using Tenderfoot.TfSystem.Diagnostics;
 using Tenderfoot.Tools.Extensions;
 using MySql.Data.MySqlClient;
 using Npgsql;
@@ -11,8 +11,8 @@ namespace Tenderfoot.Database.System
 {
     public class Connect
     {
-        private string ConnectionString => Settings.Database.ConnectionString;
-        private Provider Provider => Settings.Database.Provider;
+        private string ConnectionString => TfSettings.Database.ConnectionString;
+        private Provider Provider => TfSettings.Database.Provider;
         public dynamic SqlConnection { get; set; } = null;
         public dynamic SqlCommand { get; set; } = null;
         public dynamic SqlDataReader { get; set; } = null;
@@ -33,7 +33,7 @@ namespace Tenderfoot.Database.System
         {
             if (sql.IsEmpty())
             {
-                throw new DTException("SQL not provided.");
+                throw new TfException("SQL not provided.");
             }
 
             if (this.SqlCommand == null)
@@ -41,16 +41,19 @@ namespace Tenderfoot.Database.System
                 this.SqlCommand = this.SqlConnection.CreateCommand();
             }
 
-            DTDebug.WriteLine("Executing query", sql);
+            TfDebug.WriteLine("Executing query", sql);
             
             this.SqlCommand.CommandText = sql;
 
-            foreach (var parameter in parameters)
+            if (parameters != null)
             {
-                this.SqlCommand.Parameters.Add(ConnectProvider.SqlParameter(parameter.Key, parameter.Value));
-            }
+                foreach (var parameter in parameters)
+                {
+                    this.SqlCommand.Parameters.Add(ConnectProvider.SqlParameter(parameter.Key, parameter.Value));
+                }
 
-            DTDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
+                TfDebug.WriteLine("SQL Parameters", string.Join(Environment.NewLine, parameters));
+            }
         }
     }
 
@@ -58,7 +61,7 @@ namespace Tenderfoot.Database.System
     {
         public static string Param()
         {
-            switch (Settings.Database.Provider)
+            switch (TfSettings.Database.Provider)
             {
                 case Provider.MySql:
                 case Provider.SqlServer:
@@ -72,11 +75,11 @@ namespace Tenderfoot.Database.System
 
         public static dynamic SqlConnection()
         {
-            string connection = Settings.Database.ConnectionString;
+            string connection = TfSettings.Database.ConnectionString;
 
-            DTDebug.WriteLine("Connecting database", connection);
+            TfDebug.WriteLine("Connecting database", connection);
 
-            switch (Settings.Database.Provider)
+            switch (TfSettings.Database.Provider)
             {
                 case Provider.MySql:
                     return new MySqlConnection(connection);
@@ -91,7 +94,7 @@ namespace Tenderfoot.Database.System
 
         public static dynamic SqlParameter(string key, object value)
         {
-            switch (Settings.Database.Provider)
+            switch (TfSettings.Database.Provider)
             {
                 case Provider.MySql:
                     return new MySqlParameter(key, value);

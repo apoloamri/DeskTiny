@@ -1,0 +1,5 @@
+﻿{
+  //"Deployment": ""
+  //"Deployment": "Development"
+  "Deployment": "Production"
+}
