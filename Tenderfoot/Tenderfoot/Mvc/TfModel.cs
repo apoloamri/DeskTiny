@@ -52,6 +52,11 @@ namespace Tenderfoot.Mvc
             return true;
         }
 
+        public bool IsValidSession()
+        {
+            return this.IsValid(nameof(this.SessionId), nameof(this.SessionKey));
+        }
+
         public ValidationResult FieldRequired(string fieldName)
         {
             var validation = TfValidationResult.FieldRequired(fieldName, this.GetType().GetProperty(fieldName)?.GetValue(this));

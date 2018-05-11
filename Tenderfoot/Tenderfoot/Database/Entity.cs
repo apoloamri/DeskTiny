@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Tenderfoot.Mvc;
 using Tenderfoot.Tools;
 using Tenderfoot.Tools.Extensions;
 
@@ -29,7 +30,23 @@ namespace Tenderfoot.Database
                     {
                         return true;
                     }
+                    return false;
+                })
+                .Select(x => x.Name)
+                .ToList();
+        }
 
+        public List<string> GetInputColumns()
+        {
+            return this
+                .GetType()
+                .GetProperties()
+                .Where(x =>
+                {
+                    if (x.GetCustomAttribute<InputAttribute>(false) != null)
+                    {
+                        return true;
+                    }
                     return false;
                 })
                 .Select(x => x.Name)

@@ -115,11 +115,26 @@ namespace Tenderfoot.Mvc
 
                     if (attribute is RequireInputAttribute)
                     {
+                        var attr = attribute as RequireInputAttribute;
                         var result = TfValidationResult.FieldRequired(property.Name, value);
-                        if (result != null)
+                        if (attr.Method != null)
                         {
-                            this.AddModelErrors(property.Name, result, ref validationDictionary);
-                            isValidated = true;
+                            if (attr.Method.ToList().Contains(this.ModelObject.Method))
+                            {
+                                if (result != null)
+                                {
+                                    this.AddModelErrors(property.Name, result, ref validationDictionary);
+                                    isValidated = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (result != null)
+                            {
+                                this.AddModelErrors(property.Name, result, ref validationDictionary);
+                                isValidated = true;
+                            }
                         }
                     }
 
