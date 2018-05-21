@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Tenderfoot.Database;
 using Tenderfoot.Mvc;
@@ -39,6 +40,7 @@ namespace TenderfootEtherWallet.Models.Wallet
         public override void HandleModel()
         {
             this.TokenWallets.Entity.member_id = this.GetMemberId();
+            this.TokenWallets.Entity.token_address = Convert.ToString(TfSettings.GetSettings("EtherWallet", "ContractAddress"));
             this.TokenWallets.Entity.SetValuesFromModel(this.Wallet, false);
             this.TokenWallets.Insert();
         }

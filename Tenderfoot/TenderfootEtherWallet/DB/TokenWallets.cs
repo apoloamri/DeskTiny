@@ -13,10 +13,7 @@ namespace TenderfootEtherWallet.DB
         [ValidateInput(InputType.String)]
         [NotNull]
         public string address { get; set; }
-
-        [Input]
-        [RequireInput]
-        [ValidateInput(InputType.String)]
+        
         [NotNull]
         public string token_address { get; set; }
 

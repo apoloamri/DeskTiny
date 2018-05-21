@@ -28,14 +28,6 @@ namespace TenderfootCampaign.Models.Shop
         public override void MapModel()
         {
             var items = _DB.Items;
-            if (this.IsValid(nameof(this.ProductName)))
-            {
-                items.Case.Where(items._(x => x.name), Is.Like, $" %{this.ProductName}%");
-            }
-            if (this.IsValid(nameof(this.ProductType)))
-            {
-                items.Case.Where(items._(x => x.product_type), Is.EqualTo, this.ProductType);
-            }
             this.Result = items.Select.Dictionaries;
         }
 
